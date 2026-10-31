@@ -11,23 +11,33 @@ import yaml
 import jsonschema
 
 
+def get_repo_root() -> Path:
+    """Returns the Sinew repository root directory."""
+    return Path(__file__).resolve().parent.parent.parent
+
+
+def get_pipeline_dir() -> Path:
+    """Returns tool/pipeline directory."""
+    return get_repo_root() / "tool" / "pipeline"
+
+
 def get_base_dir() -> Path:
-    """Returns the data/ root directory."""
-    cwd = Path.cwd().resolve()
-    if (cwd / "schema" / "exercise.schema.json").is_file():
-        return cwd
-    if (cwd / "data" / "schema" / "exercise.schema.json").is_file():
-        return cwd / "data"
-    # Fallback to repo root data dir
-    data_dir = Path("/Users/gautam/Desktop/Projects/Personal/Sinew/data")
-    if data_dir.is_dir():
-        return data_dir
-    return cwd
+    """Returns tool/pipeline directory (maintains compatibility with existing scripts)."""
+    return get_pipeline_dir()
+
+
+def get_schema_dir() -> Path:
+    """Returns specs/data/schema directory."""
+    return get_repo_root() / "specs" / "data" / "schema"
+
+
+def get_dist_dir() -> Path:
+    """Returns specs/data directory."""
+    return get_repo_root() / "specs" / "data"
 
 
 def load_config() -> Dict[str, Any]:
-    base_dir = get_base_dir()
-    config_path = base_dir / "config.yaml"
+    config_path = get_pipeline_dir() / "config.yaml"
     if not config_path.is_file():
         raise FileNotFoundError(f"Missing config at {config_path}")
     with open(config_path, "r", encoding="utf-8") as f:
@@ -35,15 +45,13 @@ def load_config() -> Dict[str, Any]:
 
 
 def load_vocab() -> Dict[str, Any]:
-    base_dir = get_base_dir()
-    vocab_path = base_dir / "schema" / "vocab.json"
+    vocab_path = get_schema_dir() / "vocab.json"
     with open(vocab_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def load_muscle_regions() -> Dict[str, Any]:
-    base_dir = get_base_dir()
-    path = base_dir / "schema" / "muscle_regions.json"
+    path = get_schema_dir() / "muscle_regions.json"
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -80,7 +88,7 @@ _SCHEMA_CACHE: Dict[str, Any] = {}
 
 def get_exercise_schema() -> Dict[str, Any]:
     if "exercise" not in _SCHEMA_CACHE:
-        schema_path = get_base_dir() / "schema" / "exercise.schema.json"
+        schema_path = get_schema_dir() / "exercise.schema.json"
         with open(schema_path, "r", encoding="utf-8") as f:
             _SCHEMA_CACHE["exercise"] = json.load(f)
     return _SCHEMA_CACHE["exercise"]
@@ -88,7 +96,7 @@ def get_exercise_schema() -> Dict[str, Any]:
 
 def get_flow_schema() -> Dict[str, Any]:
     if "flow" not in _SCHEMA_CACHE:
-        schema_path = get_base_dir() / "schema" / "flow.schema.json"
+        schema_path = get_schema_dir() / "flow.schema.json"
         with open(schema_path, "r", encoding="utf-8") as f:
             _SCHEMA_CACHE["flow"] = json.load(f)
     return _SCHEMA_CACHE["flow"]

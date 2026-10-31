@@ -30,10 +30,9 @@ batchSize: 30
 maxValidationRetries: 2
 
 paths:
-  schema: "schema/exercise.schema.json"
-  flowSchema: "schema/flow.schema.json"
-  vocab: "schema/vocab.json"
-  muscleRegions: "schema/muscle_regions.json"
+  schema: "../../specs/data/schema/exercise.schema.json"
+  flowSchema: "../../specs/data/schema/flow.schema.json"
+  vocab: "../../specs/data/schema/vocab.json"
+  muscleRegions: "../../specs/data/schema/muscle_regions.json"
   stage: "stage"
-  dist: "dist"
-  appSpecsData: "../specs/data"
+  specsData: "../../specs/data"

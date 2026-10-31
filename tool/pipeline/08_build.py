@@ -21,7 +21,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
-from utils import get_base_dir, load_config, validate_exercise_record, validate_flow_record
+from utils import (
+    get_base_dir,
+    get_dist_dir,
+    get_schema_dir,
+    load_config,
+    validate_exercise_record,
+    validate_flow_record,
+)
 
 
 def compute_sha256(filepath: Path) -> str:
@@ -34,10 +41,10 @@ def compute_sha256(filepath: Path) -> str:
 
 def main():
     base_dir = get_base_dir()
-    dist_dir = base_dir / "dist"
-    specs_data_dir = base_dir.parent / "specs" / "data"
+    dist_dir = get_dist_dir()
+    schema_dir = get_schema_dir()
     dist_dir.mkdir(parents=True, exist_ok=True)
-    specs_data_dir.mkdir(parents=True, exist_ok=True)
+    schema_dir.mkdir(parents=True, exist_ok=True)
 
     config = load_config()
     lib_version = config.get("libraryVersion", "1.0.0")
@@ -65,18 +72,12 @@ def main():
     with open(exercises_out, "w", encoding="utf-8") as f:
         json.dump(final_exercises, f, indent=2, ensure_ascii=False)
 
-    # 2. Copy schema files into dist/
-    for fname in ["exercise.schema.json", "flow.schema.json", "vocab.json", "muscle_regions.json"]:
-        src = base_dir / "schema" / fname
-        if src.is_file():
-            shutil.copy2(src, dist_dir / fname)
-
-    # 3. Copy SOURCES.md into dist/
+    # 2. Copy SOURCES.md into specs/data/
     src_sources = base_dir / "sources" / "SOURCES.md"
     if src_sources.is_file():
         shutil.copy2(src_sources, dist_dir / "SOURCES.md")
 
-    # 4. Check previous manifest for diffing
+    # 3. Check previous manifest for diffing
     manifest_file = dist_dir / "manifest.json"
     prev_manifest = None
     prev_ids: Set[str] = set()
@@ -107,7 +108,7 @@ def main():
         print(f"Removed IDs: {removed_ids}")
         print("Note: Removing a published ID requires explicit user approval per project guidelines.")
 
-    # 5. Build CHANGELOG.md
+    # 4. Build CHANGELOG.md
     changelog_file = dist_dir / "CHANGELOG.md"
     now_iso = datetime.now(timezone.utc).isoformat()
     changelog_entry = [
@@ -122,13 +123,14 @@ def main():
         new_changelog = existing_changelog.replace("# Sinew Database Changelog\n\n", "# Sinew Database Changelog\n\n" + "\n".join(changelog_entry) + "\n")
         changelog_file.write_text(new_changelog, encoding="utf-8")
 
-    # 6. Compute sha256 for all dist files
+    # 5. Compute sha256 for all distribution files
     hashes = {}
-    for item in sorted(list(dist_dir.glob("*"))):
+    for item in sorted(list(dist_dir.rglob("*"))):
         if item.is_file() and item.name != "manifest.json" and not item.name.endswith(".prev"):
-            hashes[item.name] = compute_sha256(item)
+            rel_path = item.relative_to(dist_dir).as_posix()
+            hashes[rel_path] = compute_sha256(item)
 
-    # 7. Category counts breakdown
+    # 6. Category counts breakdown
     from collections import Counter
     cat_counts = dict(Counter(x["category"] for x in final_exercises))
 
@@ -147,22 +149,16 @@ def main():
     # Backup current exercises.json for next diff
     shutil.copy2(exercises_out, dist_dir / "exercises.json.prev")
 
-    # 8. Copy dist/ to specs/data/
-    print(f"Syncing artifacts to app repository at {specs_data_dir}...")
-    for item in dist_dir.glob("*"):
-        if item.is_file() and not item.name.endswith(".prev"):
-            shutil.copy2(item, specs_data_dir / item.name)
-
     print("=" * 60)
     print("STAGE 08 BUILD COMPLETE")
     print("=" * 60)
     print(f"Library Version    : {lib_version}")
     print(f"Total Exercises    : {len(final_exercises)}")
-    print(f"Dist Location      : {dist_dir}")
-    print(f"Specs Data Location: {specs_data_dir}")
+    print(f"Specs Data Location: {dist_dir}")
     print("Files Compiled:")
     for fn, h in hashes.items():
-        print(f"  - {fn:<25} ({h[:12]}...)")
+        print(f"  - {fn:<28} ({h[:12]}...)")
+    print("=" * 60)
     print("=" * 60)
 
 

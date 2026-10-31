@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from utils import validate_exercise_record, get_base_dir
+from utils import validate_exercise_record, get_base_dir, get_dist_dir
 
 SAMPLE_EXERCISES = [
     {
@@ -2572,8 +2572,7 @@ SAMPLE_EXERCISES = [
 ]
 
 def main():
-    base_dir = get_base_dir()
-    dist_dir = base_dir / "dist"
+    dist_dir = get_dist_dir()
     dist_dir.mkdir(parents=True, exist_ok=True)
     out_file = dist_dir / "exercises.sample.json"
 

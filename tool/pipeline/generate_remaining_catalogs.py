@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Tuple
 
 from utils import (
     get_base_dir,
+    get_dist_dir,
     load_vocab,
     validate_exercise_record
 )
@@ -66,7 +67,7 @@ def generate_calisthenics_catalog() -> List[Dict[str, Any]]:
 
     # Load published sample entries
     base_dir = get_base_dir()
-    sample_file = base_dir / "dist" / "exercises.sample.json"
+    sample_file = get_dist_dir() / "exercises.sample.json"
     if sample_file.is_file():
         with open(sample_file, "r", encoding="utf-8") as f:
             for s in json.load(f):
@@ -212,7 +213,7 @@ def generate_mobility_catalog() -> List[Dict[str, Any]]:
     seen = set()
 
     base_dir = get_base_dir()
-    sample_file = base_dir / "dist" / "exercises.sample.json"
+    sample_file = get_dist_dir() / "exercises.sample.json"
     if sample_file.is_file():
         with open(sample_file, "r", encoding="utf-8") as f:
             for s in json.load(f):
@@ -331,7 +332,7 @@ def generate_hiit_catalog() -> List[Dict[str, Any]]:
     seen = set()
 
     base_dir = get_base_dir()
-    sample_file = base_dir / "dist" / "exercises.sample.json"
+    sample_file = get_dist_dir() / "exercises.sample.json"
     if sample_file.is_file():
         with open(sample_file, "r", encoding="utf-8") as f:
             for s in json.load(f):
@@ -440,7 +441,7 @@ def generate_cardio_catalog() -> List[Dict[str, Any]]:
     seen = set()
 
     base_dir = get_base_dir()
-    sample_file = base_dir / "dist" / "exercises.sample.json"
+    sample_file = get_dist_dir() / "exercises.sample.json"
     if sample_file.is_file():
         with open(sample_file, "r", encoding="utf-8") as f:
             for s in json.load(f):
@@ -538,7 +539,7 @@ def generate_pilates_catalog() -> List[Dict[str, Any]]:
     seen = set()
 
     base_dir = get_base_dir()
-    sample_file = base_dir / "dist" / "exercises.sample.json"
+    sample_file = get_dist_dir() / "exercises.sample.json"
     if sample_file.is_file():
         with open(sample_file, "r", encoding="utf-8") as f:
             for s in json.load(f):

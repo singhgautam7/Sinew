@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from utils import get_base_dir, validate_flow_record
+from utils import get_base_dir, get_dist_dir, validate_flow_record
 
 FLOWS = [
     {
@@ -94,8 +94,7 @@ FLOWS = [
 ]
 
 def main():
-    base_dir = get_base_dir()
-    dist_dir = base_dir / "dist"
+    dist_dir = get_dist_dir()
     dist_dir.mkdir(parents=True, exist_ok=True)
     out_file = dist_dir / "flows.json"
 

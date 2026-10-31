@@ -19,7 +19,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List
 
-from utils import get_base_dir, load_config, load_muscle_regions, load_vocab
+from utils import get_base_dir, get_dist_dir, load_config, load_muscle_regions, load_vocab
 
 
 def format_exercise_markdown(ex: Dict[str, Any]) -> str:
@@ -55,7 +55,7 @@ def format_exercise_markdown(ex: Dict[str, Any]) -> str:
 def main():
     base_dir = get_base_dir()
     deduped_file = base_dir / "stage" / "deduped" / "all_exercises.json"
-    sample_file = base_dir / "dist" / "exercises.sample.json"
+    sample_file = get_dist_dir() / "exercises.sample.json"
     reports_dir = base_dir / "stage" / "reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
     report_md_file = reports_dir / "qa_report.md"

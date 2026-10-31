@@ -13,7 +13,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from utils import get_base_dir, validate_exercise_record
+from utils import get_base_dir, get_dist_dir, validate_exercise_record
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
     total_rejected = 0
 
     # Also include exercises.sample.json if available
-    sample_file = base_dir / "dist" / "exercises.sample.json"
+    sample_file = get_dist_dir() / "exercises.sample.json"
     if sample_file.is_file():
         with open(sample_file, "r", encoding="utf-8") as f:
             sample_recs = json.load(f)

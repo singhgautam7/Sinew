@@ -35,10 +35,10 @@ void main() {
         'runtime_states',
       ]),
     );
-    final int version = (await db
-            .customSelect('PRAGMA user_version')
-            .getSingle())
-        .read<int>('user_version');
+    final int version =
+        (await db.customSelect('PRAGMA user_version').getSingle()).read<int>(
+          'user_version',
+        );
     expect(version, UserDatabase.currentSchemaVersion);
   });
 

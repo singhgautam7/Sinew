@@ -13,6 +13,11 @@ import 'db/repositories/timer_preset_repository.dart';
 import 'db/user/user_db.dart';
 import 'settings/app_settings.dart';
 
+/// Riverpod 3 retries a failed provider with backoff by default. Sinew has
+/// no network, so every failure is deterministic: a retry only keeps a screen
+/// in its loading state instead of showing the error. Set on the root scope.
+Duration? noRetry(int retryCount, Object error) => null;
+
 /// The provider graph for data access. Widgets never touch a database: they
 /// read a repository from here (Riverpod is the DI).
 

@@ -244,10 +244,7 @@ class CustomExerciseRepository {
 /// library, then a tombstone (an exercise a library update removed). History
 /// never shows a blank row.
 class ExerciseResolver {
-  ExerciseResolver({
-    required this._custom,
-    required this._library,
-  });
+  ExerciseResolver({required this._custom, required this._library});
 
   final CustomExerciseRepository _custom;
   final LibraryRepository _library;

@@ -175,7 +175,10 @@ void main() {
       );
       expect(replacedFrom, '1->1.1.0');
       expect(await File(next.dbPath).readAsBytes(), <int>[9]);
-      expect(dir.listSync().where((FileSystemEntity e) => e.path.endsWith('.part')), isEmpty);
+      expect(
+        dir.listSync().where((FileSystemEntity e) => e.path.endsWith('.part')),
+        isEmpty,
+      );
     });
 
     test('a missing asset is a typed error, not a crash', () async {

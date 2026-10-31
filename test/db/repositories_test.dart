@@ -79,7 +79,9 @@ void main() {
 
       await repo.setArchived(saved.id, archived: true);
       expect(await repo.watchAll().first, isEmpty);
-      final List<Exercise> all = await repo.watchAll(includeArchived: true).first;
+      final List<Exercise> all = await repo
+          .watchAll(includeArchived: true)
+          .first;
       expect(all.single.archived, isTrue);
       expect(all.single.equipment, <String>['sled']);
     });
@@ -163,29 +165,31 @@ void main() {
       expect(history.single.volumeKg, 600);
     });
 
-    test('previousSets returns the latest finished session for an exercise',
-        () async {
-      final SessionRepository repo = SessionRepository(db, clock: clock);
-      Future<void> session(double kg) async {
-        final WorkoutSession s = await repo.start();
-        final SessionExercise e = await repo.addExercise(s.id, 'deadlift');
-        await repo.upsertSet(
-          s.id,
-          e.id,
-          SetEntry(id: newId(), position: 0, weightKg: kg, reps: 3),
-        );
-        await repo.finish(s.id, endedAt: clock());
-      }
+    test(
+      'previousSets returns the latest finished session for an exercise',
+      () async {
+        final SessionRepository repo = SessionRepository(db, clock: clock);
+        Future<void> session(double kg) async {
+          final WorkoutSession s = await repo.start();
+          final SessionExercise e = await repo.addExercise(s.id, 'deadlift');
+          await repo.upsertSet(
+            s.id,
+            e.id,
+            SetEntry(id: newId(), position: 0, weightKg: kg, reps: 3),
+          );
+          await repo.finish(s.id, endedAt: clock());
+        }
 
-      await session(140);
-      await session(150);
-      final WorkoutSession current = await repo.start();
-      await repo.addExercise(current.id, 'deadlift');
+        await session(140);
+        await session(150);
+        final WorkoutSession current = await repo.start();
+        await repo.addExercise(current.id, 'deadlift');
 
-      final List<SetEntry> prev = await repo.previousSets('deadlift');
-      expect(prev.single.weightKg, 150);
-      expect(await repo.previousSets('bench-press'), isEmpty);
-    });
+        final List<SetEntry> prev = await repo.previousSets('deadlift');
+        expect(prev.single.weightKg, 150);
+        expect(await repo.previousSets('bench-press'), isEmpty);
+      },
+    );
 
     test('saveTree and allWithTree round-trip a whole session', () async {
       final SessionRepository repo = SessionRepository(db, clock: clock);
@@ -234,7 +238,10 @@ void main() {
         );
 
     test('entries, latest values and history', () async {
-      final MeasurementRepository repo = MeasurementRepository(db, clock: clock);
+      final MeasurementRepository repo = MeasurementRepository(
+        db,
+        clock: clock,
+      );
       await repo.saveField(field('waist', anchor: BodyAnchor.waist));
       await repo.saveField(field('weight'));
       await repo.saveEntry(
@@ -270,32 +277,40 @@ void main() {
       expect(entries.last.values, <String, double>{'waist': 90, 'weight': 80});
     });
 
-    test('removing a field with data archives it; without data deletes it',
-        () async {
-      final MeasurementRepository repo = MeasurementRepository(db, clock: clock);
-      await repo.saveField(field('neck'));
-      await repo.saveField(field('wrist'));
-      await repo.saveEntry(
-        MeasurementEntry(
-          id: 'e1',
-          date: DateTime.utc(2026),
-          values: <String, double>{'neck': 38},
-          updatedAt: DateTime.utc(2026),
-        ),
-      );
-      expect(await repo.removeField('neck'), FieldRemoval.archived);
-      expect(await repo.removeField('wrist'), FieldRemoval.deleted);
-      expect(await repo.fields(), isEmpty);
-      final List<MeasurementField> all = await repo.fields(
-        includeArchived: true,
-      );
-      expect(all.single.id, 'neck');
-      expect(all.single.enabled, isFalse);
-      expect((await repo.history('neck')).single.value, 38);
-    });
+    test(
+      'removing a field with data archives it; without data deletes it',
+      () async {
+        final MeasurementRepository repo = MeasurementRepository(
+          db,
+          clock: clock,
+        );
+        await repo.saveField(field('neck'));
+        await repo.saveField(field('wrist'));
+        await repo.saveEntry(
+          MeasurementEntry(
+            id: 'e1',
+            date: DateTime.utc(2026),
+            values: <String, double>{'neck': 38},
+            updatedAt: DateTime.utc(2026),
+          ),
+        );
+        expect(await repo.removeField('neck'), FieldRemoval.archived);
+        expect(await repo.removeField('wrist'), FieldRemoval.deleted);
+        expect(await repo.fields(), isEmpty);
+        final List<MeasurementField> all = await repo.fields(
+          includeArchived: true,
+        );
+        expect(all.single.id, 'neck');
+        expect(all.single.enabled, isFalse);
+        expect((await repo.history('neck')).single.value, 38);
+      },
+    );
 
     test('reorder writes positions', () async {
-      final MeasurementRepository repo = MeasurementRepository(db, clock: clock);
+      final MeasurementRepository repo = MeasurementRepository(
+        db,
+        clock: clock,
+      );
       await repo.saveField(field('a', pos: 0));
       await repo.saveField(field('b', pos: 1));
       await repo.reorderFields(<String>['b', 'a']);
@@ -308,14 +323,25 @@ void main() {
 
   group('JSON payload repositories', () {
     test('timer presets round-trip; unreadable payloads are skipped', () async {
-      final TimerPresetRepository repo = TimerPresetRepository(db, clock: clock);
+      final TimerPresetRepository repo = TimerPresetRepository(
+        db,
+        clock: clock,
+      );
       final TimerPreset tabata = TimerPreset(
         id: 'tabata',
         name: 'Tabata',
         mode: TimerMode.tabata,
         steps: const <TimerStepSpec>[
-          TimerStepSpec(label: 'Work', durationMs: 20000, phase: TimerPhase.work),
-          TimerStepSpec(label: 'Rest', durationMs: 10000, phase: TimerPhase.rest),
+          TimerStepSpec(
+            label: 'Work',
+            durationMs: 20000,
+            phase: TimerPhase.work,
+          ),
+          TimerStepSpec(
+            label: 'Rest',
+            durationMs: 10000,
+            phase: TimerPhase.rest,
+          ),
         ],
         cues: const TimerCues(voice: true),
         updatedAt: DateTime.utc(2026),
@@ -327,55 +353,66 @@ void main() {
       expect(back.schemaVersion, TimerPreset.currentSchemaVersion);
 
       DateTime t = DateTime.utc(2026);
-      await db.into(db.timerPresets).insert(
-        TimerPresetsCompanion.insert(
-          id: 'corrupt',
-          name: 'x',
-          mode: TimerMode.custom,
-          payload: '{not json',
-          updatedAt: t,
-        ),
-      );
+      await db
+          .into(db.timerPresets)
+          .insert(
+            TimerPresetsCompanion.insert(
+              id: 'corrupt',
+              name: 'x',
+              mode: TimerMode.custom,
+              payload: '{not json',
+              updatedAt: t,
+            ),
+          );
       t = t.add(const Duration(seconds: 1));
-      await db.into(db.timerPresets).insert(
-        TimerPresetsCompanion.insert(
-          id: 'future',
-          name: 'y',
-          mode: TimerMode.custom,
-          payload: jsonEncode(<String, Object>{
-            'schemaVersion': 99,
-            'id': 'future',
-          }),
-          updatedAt: t,
-          position: const Value<int>(5),
-        ),
-      );
-      expect((await repo.all()).map((TimerPreset p) => p.id), <String>['tabata']);
+      await db
+          .into(db.timerPresets)
+          .insert(
+            TimerPresetsCompanion.insert(
+              id: 'future',
+              name: 'y',
+              mode: TimerMode.custom,
+              payload: jsonEncode(<String, Object>{
+                'schemaVersion': 99,
+                'id': 'future',
+              }),
+              updatedAt: t,
+              position: const Value<int>(5),
+            ),
+          );
+      expect((await repo.all()).map((TimerPreset p) => p.id), <String>[
+        'tabata',
+      ]);
     });
 
-    test('plate inventory: default, round trip, newer payload falls back',
-        () async {
-      final PlateInventoryRepository repo = PlateInventoryRepository(
+    test(
+      'plate inventory: default, round trip, newer payload falls back',
+      () async {
+        final PlateInventoryRepository repo = PlateInventoryRepository(
+          db,
+          clock: clock,
+        );
+        expect(await repo.get(), PlateInventory.metricDefault);
+        final PlateInventory mine = PlateInventory.metricDefault.copyWith(
+          plates: const <PlateStock>[PlateStock(weightKg: 20, count: 2)],
+        );
+        await repo.save(mine);
+        expect((await repo.get()).plates, mine.plates);
+
+        await (db.update(db.plateInventories)).write(
+          const PlateInventoriesCompanion(
+            payload: Value<String>('{"schemaVersion": 7}'),
+          ),
+        );
+        expect(await repo.get(), PlateInventory.metricDefault);
+      },
+    );
+
+    test('runtime state survives, newer versions read as absent', () async {
+      final RuntimeStateRepository repo = RuntimeStateRepository(
         db,
         clock: clock,
       );
-      expect(await repo.get(), PlateInventory.metricDefault);
-      final PlateInventory mine = PlateInventory.metricDefault.copyWith(
-        plates: const <PlateStock>[PlateStock(weightKg: 20, count: 2)],
-      );
-      await repo.save(mine);
-      expect((await repo.get()).plates, mine.plates);
-
-      await (db.update(db.plateInventories)).write(
-        const PlateInventoriesCompanion(
-          payload: Value<String>('{"schemaVersion": 7}'),
-        ),
-      );
-      expect(await repo.get(), PlateInventory.metricDefault);
-    });
-
-    test('runtime state survives, newer versions read as absent', () async {
-      final RuntimeStateRepository repo = RuntimeStateRepository(db, clock: clock);
       await repo.write(RuntimeStateRepository.runningTimer, <String, Object>{
         'schemaVersion': 1,
         'startedAtMs': 123,

@@ -118,8 +118,9 @@ def main():
     ]
 
     existing_changelog = changelog_file.read_text(encoding="utf-8") if changelog_file.is_file() else "# Sinew Database Changelog\n\n"
-    new_changelog = existing_changelog.replace("# Sinew Database Changelog\n\n", "# Sinew Database Changelog\n\n" + "\n".join(changelog_entry) + "\n")
-    changelog_file.write_text(new_changelog, encoding="utf-8")
+    if f"- **Total Exercises:** {len(final_exercises)}" not in existing_changelog:
+        new_changelog = existing_changelog.replace("# Sinew Database Changelog\n\n", "# Sinew Database Changelog\n\n" + "\n".join(changelog_entry) + "\n")
+        changelog_file.write_text(new_changelog, encoding="utf-8")
 
     # 6. Compute sha256 for all dist files
     hashes = {}

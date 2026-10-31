@@ -91,6 +91,18 @@ def verify_record_rule_based(rec: Dict[str, Any], vocab: Dict[str, Any]) -> Tupl
             else:
                 return ("reject", fixed, "Unilateral movement does not instruct switching sides and steps is full.")
 
+    # 7. Anatomical accuracy for rear deltoid movements
+    if any(k in fixed.get("id", "") for k in ["rear-delt", "reverse-fly", "face-pull"]):
+        if "rearDeltoids" not in fixed.get("primaryMuscles", []):
+            prims = list(fixed.get("primaryMuscles", []))
+            secs = list(fixed.get("secondaryMuscles", []))
+            if "rearDeltoids" in secs:
+                secs.remove("rearDeltoids")
+            prims.append("rearDeltoids")
+            fixed["primaryMuscles"] = sorted(list(set(prims)))
+            fixed["secondaryMuscles"] = sorted(list(set(secs)))
+            notes.append("Refined primary anatomical target to rearDeltoids.")
+
     current_passes = fixed.get("verification", {}).get("passes", 0)
     fixed["verification"] = {
         "status": "verified",

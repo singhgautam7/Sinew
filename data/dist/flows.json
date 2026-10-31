@@ -1,244 +1,1472 @@
 [
   {
-    "id": "surya-namaskar-a-sequence",
-    "name": "Sun Salutation A (Surya Namaskar A)",
+    "id": "surya-namaskar-a",
+    "name": "Sun Salutation A",
     "category": "yoga",
     "difficulty": "beginner",
-    "description": "Classical foundational vinyasa sequence linking breath with dynamic standing and forward bend transitions.",
+    "description": "Classical 9-vinyasa sequence linking breath and movement.",
     "totalDurationSec": 180,
+    "rounds": 5,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "urdhva-hastasana",
+        "durationSec": 10,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "uttanasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "ardha-uttanasana",
+        "durationSec": 10,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "urdhva-mukha-svanasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "ardha-uttanasana",
+        "durationSec": 10,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "uttanasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "urdhva-hastasana",
+        "durationSec": 10,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "vinyasa",
+      "flow"
+    ]
+  },
+  {
+    "id": "surya-namaskar-b",
+    "name": "Sun Salutation B",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Dynamic 17-vinyasa sequence adding chair and warrior postures.",
+    "totalDurationSec": 240,
     "rounds": 3,
     "items": [
       {
         "exerciseId": "tadasana",
         "durationSec": 15,
         "transitionSec": 3,
-        "notes": "Ground through feet and lengthen spine."
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utkatasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
         "exerciseId": "uttanasana",
         "durationSec": 15,
         "transitionSec": 3,
-        "notes": "Hinge forward from hips on exhale."
-      },
-      {
-        "exerciseId": "ardha-uttanasana",
-        "durationSec": 10,
-        "transitionSec": 3,
-        "notes": "Inhale, flat back, gaze forward."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
         "exerciseId": "urdhva-mukha-svanasana",
         "durationSec": 15,
         "transitionSec": 3,
-        "notes": "Inhale, open chest into upward dog."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "adho-mukha-svanasana",
-        "durationSec": 30,
-        "transitionSec": 5,
-        "notes": "Exhale, push hips up and hold downward dog."
-      },
-      {
-        "exerciseId": "ardha-uttanasana",
-        "durationSec": 10,
+        "exerciseId": "tadasana",
+        "durationSec": 20,
         "transitionSec": 3,
-        "notes": "Step forward to flat back on inhale."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "uttanasana",
+        "exerciseId": "virabhadrasana-i",
+        "durationSec": 20,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "urdhva-mukha-svanasana",
         "durationSec": 15,
         "transitionSec": 3,
-        "notes": "Exhale and fold deeply."
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 20,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utkatasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
         "exerciseId": "tadasana",
         "durationSec": 15,
         "transitionSec": 3,
-        "notes": "Inhale, sweep tall to standing mountain."
+        "notes": "Maintain steady form and breathe with awareness."
       }
     ],
     "tags": [
       "yoga",
       "vinyasa",
-      "flow",
-      "morning",
-      "sunSalutation"
+      "heat"
     ]
   },
   {
-    "id": "boxing-shadowboxing-fundamentals",
-    "name": "Boxing Fundamentals: Punches and Guard Flow",
-    "category": "boxing",
+    "id": "chandra-namaskar",
+    "name": "Moon Salutation (Chandra Namaskar)",
+    "category": "yoga",
     "difficulty": "beginner",
-    "description": "Rhythmic shadowboxing round emphasizing stance stability, 1-2 straight punch mechanics, and defensive slipping.",
-    "totalDurationSec": 300,
+    "description": "Cooling lateral sequence honoring the lunar energy.",
+    "totalDurationSec": 240,
     "rounds": 2,
     "items": [
       {
-        "exerciseId": "orthodox-boxing-stance",
+        "exerciseId": "tadasana",
+        "durationSec": 20,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "urdhva-hastasana",
+        "durationSec": 15,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utkata-konasana",
         "durationSec": 30,
         "transitionSec": 5,
-        "notes": "Establish active balance and guard."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "boxing-lead-jab",
-        "durationSec": 45,
-        "transitionSec": 5,
-        "notes": "Double and single 1 jabs from stance."
-      },
-      {
-        "exerciseId": "boxing-rear-cross",
-        "durationSec": 45,
-        "transitionSec": 5,
-        "notes": "Full rear hip rotation on 2 cross."
-      },
-      {
-        "exerciseId": "one-two-lead-hook-combo",
-        "durationSec": 60,
-        "transitionSec": 5,
-        "notes": "Fluid 1-2-3 combination cycles."
-      },
-      {
-        "exerciseId": "orthodox-boxing-stance",
+        "exerciseId": "utthita-trikonasana",
         "durationSec": 30,
         "transitionSec": 5,
-        "notes": "Active recovery in tight guard."
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "skandasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "malasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 20,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
       }
     ],
     "tags": [
-      "boxing",
-      "shadowboxing",
-      "rounds",
-      "technique"
+      "yoga",
+      "lunar",
+      "cooling"
     ]
   },
   {
-    "id": "full-body-dynamic-mobility-warmup",
-    "name": "Full Body Joint Mobility & Activation Warmup",
-    "category": "mobility",
+    "id": "morning-energy-vinyasa",
+    "name": "Morning Vitality Flow",
+    "category": "yoga",
     "difficulty": "beginner",
-    "description": "Comprehensive pre-workout sequence targeting thoracic mobility, hip capsule expansion, and shoulder ranges.",
+    "description": "Gentle morning flow to awaken spine and mobilize joints.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utthita-trikonasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "morning",
+      "vitality"
+    ]
+  },
+  {
+    "id": "evening-restorative-winddown",
+    "name": "Evening Restorative Winddown",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Calming sequences promoting parasympathetic recovery and sleep.",
+    "totalDurationSec": 360,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "baddha-konasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "supta-matsyendrasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "viparita-karani",
+        "durationSec": 90,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "evening",
+      "restorative"
+    ]
+  },
+  {
+    "id": "deep-hip-opener-flow",
+    "name": "Deep Hip Opener Sequence",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Targeted progression through external and internal hip rotators.",
+    "totalDurationSec": 360,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "malasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "skandasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "agnistambhasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "baddha-konasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "hips",
+      "flexibility"
+    ]
+  },
+  {
+    "id": "warrior-balance-flow",
+    "name": "Warrior & Balance Progression",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Strengthens standing legs while refining spatial awareness.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 20,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "virabhadrasana-i",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "parsva-virabhadrasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "virabhadrasana-iii",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 20,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "balance",
+      "warrior"
+    ]
+  },
+  {
+    "id": "heart-opening-backbends",
+    "name": "Heart-Opening Backbend Series",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Progressive thoracic extension and shoulder opening sequence.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "salabhasana-a",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "dhanurasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "ustrasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "setu-bandhasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "matsyasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "backbends",
+      "posture"
+    ]
+  },
+  {
+    "id": "inversion-prep-series",
+    "name": "Inversion Conditioning Sequence",
+    "category": "yoga",
+    "difficulty": "advanced",
+    "description": "Develops shoulder girdle stability and core alignment for inversions.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "pincha-mayurasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "salamba-sarvangasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "halasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "inversion",
+      "strength"
+    ]
+  },
+  {
+    "id": "arm-balance-flight-flow",
+    "name": "Arm Balance Flight Progression",
+    "category": "yoga",
+    "difficulty": "advanced",
+    "description": "Wrist preparation, deep core integration, and crow to eight-angle balances.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "malasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "bakasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "astavakrasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "mayurasana",
+        "durationSec": 20,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "armBalance",
+      "advanced"
+    ]
+  },
+  {
+    "id": "detox-spinal-twist-flow",
+    "name": "Spinal Detox & Twist Series",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Rotational articulation improving thoracic mobility and digestion.",
     "totalDurationSec": 240,
     "rounds": 1,
     "items": [
       {
-        "exerciseId": "cat-cow-stretch",
+        "exerciseId": "ardha-matsyendrasana",
         "durationSec": 45,
         "transitionSec": 5,
-        "notes": "Segmental spinal articulation."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "thoracic-foam-roll-extension",
+        "exerciseId": "marichyasana-c",
         "durationSec": 45,
         "transitionSec": 5,
-        "notes": "Mid-back tissue opening."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "worlds-greatest-stretch",
+        "exerciseId": "supta-matsyendrasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
         "durationSec": 60,
         "transitionSec": 5,
-        "notes": "Hip flexor and thoracic rotation."
-      },
-      {
-        "exerciseId": "ninety-ninety-hip-switch",
-        "durationSec": 45,
-        "transitionSec": 5,
-        "notes": "Internal and external hip rotation."
-      },
-      {
-        "exerciseId": "shoulder-pass-through",
-        "durationSec": 30,
-        "transitionSec": 5,
-        "notes": "Shoulder girdle mobilization."
+        "notes": "Maintain steady form and breathe with awareness."
       }
     ],
     "tags": [
-      "mobility",
-      "warmup",
-      "fullBody",
+      "yoga",
+      "twists",
+      "spine"
+    ]
+  },
+  {
+    "id": "hamstring-release-series",
+    "name": "Hamstring & Posterior Chain Release",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Systematic passive and active forward folds.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "uttanasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "padangusthasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "janu-sirsasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "supta-padangusthasana-b",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "hamstrings",
+      "release"
+    ]
+  },
+  {
+    "id": "core-power-vinyasa",
+    "name": "Core Power Vinyasa",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Dynamic postures targeting the powerhouse and abdominal wall.",
+    "totalDurationSec": 240,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "utkatasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "virabhadrasana-iii",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "bakasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "core",
+      "power"
+    ]
+  },
+  {
+    "id": "gentle-desk-relief",
+    "name": "Desk Relief & Posture Reset",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Counters forward head posture and tight hip flexors from seated work.",
+    "totalDurationSec": 240,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "urdhva-hastasana",
+        "durationSec": 30,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "parighasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "setu-bandhasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "deskRelief",
+      "posture"
+    ]
+  },
+  {
+    "id": "post-run-yoga-release",
+    "name": "Post-Run Recovery Sequence",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Lengthens calves, IT bands, quads, and hip flexors after running.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "uttanasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "virabhadrasana-i",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "supta-padangusthasana-b",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "running",
       "recovery"
     ]
   },
   {
-    "id": "hiit-bodyweight-tabata-circuit",
-    "name": "High-Intensity Bodyweight Tabata Flow",
-    "category": "hiit",
-    "difficulty": "intermediate",
-    "description": "Short burst high-cadence interval sequence targeting cardiorespiratory endurance and muscular power.",
-    "totalDurationSec": 240,
-    "rounds": 2,
+    "id": "yin-deep-relaxation",
+    "name": "Yin Yoga Surrender",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Passive holds targeting connective fascia and joints.",
+    "totalDurationSec": 420,
+    "rounds": 1,
     "items": [
       {
-        "exerciseId": "standard-burpee",
-        "durationSec": 20,
+        "exerciseId": "baddha-konasana",
+        "durationSec": 90,
         "transitionSec": 10,
-        "notes": "Maximum effort chest-to-floor burpees."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "mountain-climber",
-        "durationSec": 20,
+        "exerciseId": "mandukasana",
+        "durationSec": 90,
         "transitionSec": 10,
-        "notes": "Rapid knee cadence in plank."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "jumping-lunge",
-        "durationSec": 20,
+        "exerciseId": "ananda-balasana",
+        "durationSec": 90,
         "transitionSec": 10,
-        "notes": "Explosive split switch jumps."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "hollow-body-hold",
-        "durationSec": 20,
-        "transitionSec": 10,
-        "notes": "Isometric core tension hold."
+        "exerciseId": "balasana",
+        "durationSec": 120,
+        "transitionSec": 0,
+        "notes": "Maintain steady form and breathe with awareness."
       }
     ],
     "tags": [
-      "hiit",
-      "tabata",
-      "conditioning",
-      "fatBurn"
+      "yoga",
+      "yin",
+      "calm"
     ]
   },
   {
-    "id": "classic-pilates-core-mat-series",
-    "name": "Classic Pilates Mat Flow",
-    "category": "pilates",
-    "difficulty": "intermediate",
-    "description": "Classic Joseph Pilates mat progression focusing on deep powerhouse engagement and spinal articulation.",
+    "id": "pranayama-breathwork-foundation",
+    "name": "Pranayama Breathwork Foundation",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Balances sympathetic and parasympathetic nervous systems.",
     "totalDurationSec": 300,
     "rounds": 1,
     "items": [
       {
-        "exerciseId": "pilates-the-hundred",
+        "exerciseId": "sukhasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "nadi-shodhana",
+        "durationSec": 90,
+        "transitionSec": 10,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "bhramari",
         "durationSec": 60,
         "transitionSec": 10,
-        "notes": "Rhythmic pumping breathwork."
+        "notes": "Maintain steady form and breathe with awareness."
       },
       {
-        "exerciseId": "pilates-single-leg-stretch",
-        "durationSec": 45,
+        "exerciseId": "ujjayi",
+        "durationSec": 90,
         "transitionSec": 5,
-        "notes": "Reciprocating leg extensions."
-      },
-      {
-        "exerciseId": "pilates-the-teaser",
-        "durationSec": 45,
-        "transitionSec": 5,
-        "notes": "Articulated V-sit balance."
-      },
-      {
-        "exerciseId": "corpse-pose",
-        "durationSec": 60,
-        "transitionSec": 0,
-        "notes": "Final integration and restorative breathing."
+        "notes": "Maintain steady form and breathe with awareness."
       }
     ],
     "tags": [
-      "pilates",
-      "classicMat",
-      "core",
+      "yoga",
+      "pranayama",
       "breath"
+    ]
+  },
+  {
+    "id": "ashtanga-primary-standing",
+    "name": "Ashtanga Primary Standing Sequence",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Authentic standing foundation of the Ashtanga Yoga system.",
+    "totalDurationSec": 360,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "padangusthasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "padahastasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utthita-trikonasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utthita-parsvakonasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "prasarita-padottanasana-a",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "virabhadrasana-i",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "ashtanga",
+      "classical"
+    ]
+  },
+  {
+    "id": "ashtanga-finishing-sequence",
+    "name": "Ashtanga Classical Finishing Sequence",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Closing postures that stabilize energy and calm the mind.",
+    "totalDurationSec": 360,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "salamba-sarvangasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "halasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "matsyasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "padmasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 120,
+        "transitionSec": 0,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "ashtanga",
+      "closing"
+    ]
+  },
+  {
+    "id": "standing-strength-heat",
+    "name": "Standing Strength & Heat Builder",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Builds sustained endurance in quads and glutes.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "utkatasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utkata-konasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "skandasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "malasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "strength",
+      "legs"
+    ]
+  },
+  {
+    "id": "gentle-prenatal-safe-flow",
+    "name": "Gentle Open Pelvis Flow",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Safe wide-stance sequence with zero prone pressure.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "baddha-konasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "upavistha-konasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "viparita-karani",
+        "durationSec": 90,
+        "transitionSec": 0,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "gentle",
+      "open"
+    ]
+  },
+  {
+    "id": "neck-shoulder-unwind",
+    "name": "Neck & Shoulder Unwind",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Alleviates tension in cervical spine, traps, and upper back.",
+    "totalDurationSec": 240,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "sukhasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "garudasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "gomukhasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "neck",
+      "shoulders"
+    ]
+  },
+  {
+    "id": "chakra-balancing-flow",
+    "name": "Chakra Vitality Alignment",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Seven-pose sequence mapping root to crown energy centers.",
+    "totalDurationSec": 360,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "baddha-konasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utkatasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "matsyasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 90,
+        "transitionSec": 0,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "chakras",
+      "alignment"
+    ]
+  },
+  {
+    "id": "dynamic-lunge-flow",
+    "name": "Dynamic Crescent Lunge Flow",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Continuous fluid lunges challenging balance and hip extension.",
+    "totalDurationSec": 240,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "virabhadrasana-i",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "parsva-virabhadrasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "utthita-parsvakonasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "lunges",
+      "flow"
+    ]
+  },
+  {
+    "id": "stress-relief-calm",
+    "name": "Stress Relief & Nervous Reset",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Deep restorative breathing and supported spinal releases.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "ananda-balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "supta-matsyendrasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "nadi-shodhana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "sukhasana",
+        "durationSec": 60,
+        "transitionSec": 0,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "calm",
+      "nervousSystem"
+    ]
+  },
+  {
+    "id": "wild-backbend-expression",
+    "name": "Expressive Backbends",
+    "category": "yoga",
+    "difficulty": "advanced",
+    "description": "Dynamic flow through Wild Thing and Wheel posture.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "camatkarasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "urdhva-dhanurasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "matsyasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "wildThing",
+      "advanced"
+    ]
+  },
+  {
+    "id": "warrior-endurance-flow",
+    "name": "Warrior Endurance Challenge",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Sustained holds across Warrior I, II, and III.",
+    "totalDurationSec": 300,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "virabhadrasana-i",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "virabhadrasana-iii",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "endurance",
+      "strength"
+    ]
+  },
+  {
+    "id": "spinal-wave-mobility",
+    "name": "Spinal Wave Mobility Flow",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Continuous fluid articulation from cat-cow through cobra.",
+    "totalDurationSec": 240,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "mobility",
+      "spine"
+    ]
+  },
+  {
+    "id": "total-body-vinyasa-integration",
+    "name": "Total Body Vinyasa Integration",
+    "category": "yoga",
+    "difficulty": "intermediate",
+    "description": "Complete peak vinyasa flow uniting strength, balance, and surrender.",
+    "totalDurationSec": 420,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 30,
+        "transitionSec": 3,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "ardha-chandrasana",
+        "durationSec": 45,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "tadasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "salamba-sarvangasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 90,
+        "transitionSec": 0,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "vinyasa",
+      "complete"
+    ]
+  },
+  {
+    "id": "deep-sleep-induction",
+    "name": "Deep Sleep Induction",
+    "category": "yoga",
+    "difficulty": "beginner",
+    "description": "Nighttime sequence designed to induce deep delta sleep.",
+    "totalDurationSec": 360,
+    "rounds": 1,
+    "items": [
+      {
+        "exerciseId": "vajrasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "balasana",
+        "durationSec": 60,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "baddha-konasana",
+        "durationSec": 90,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "viparita-karani",
+        "durationSec": 90,
+        "transitionSec": 5,
+        "notes": "Maintain steady form and breathe with awareness."
+      },
+      {
+        "exerciseId": "sukhasana",
+        "durationSec": 60,
+        "transitionSec": 0,
+        "notes": "Maintain steady form and breathe with awareness."
+      }
+    ],
+    "tags": [
+      "yoga",
+      "sleep",
+      "restorative"
     ]
   }
 ]

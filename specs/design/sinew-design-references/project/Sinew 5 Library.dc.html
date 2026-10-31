@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<script src="./sinew-art.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0">
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Bold.ttf);font-weight:700}
+body{margin:0;background:#E9E8E2}
+a{color:#617600}a:hover{color:#394B00}
+@keyframes skel{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
+</style>
+</helmet>
+<div style="font-family:Inter;padding:56px;display:flex;flex-direction:column;gap:40px;font-variant-numeric:tabular-nums">
+<div style="display:flex;flex-direction:column;gap:6px;color:#1F1E1B"><div style="font-size:40px;font-weight:700;letter-spacing:-.5px">Library</div><div style="font-size:18px;color:#6B6A64">The third segment of Train. About 3,400 bundled exercises and poses. Rows are a fixed 64dp with a letter index so long lists stay easy to scan. <a href="Sinew 4 Train.dc.html">← Train</a> · <a href="Sinew 6 Timer.dc.html">Timer →</a></div></div>
+<div style="display:flex;gap:40px;align-items:flex-start">
+
+<div data-screen-label="Library browse" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Browse · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;height:48px"><div style="font-size:22px;font-weight:600;flex:1">Train</div><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">add</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;border:1px solid #858878;border-radius:999px;overflow:hidden;height:40px"><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Routines</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #858878">History</div><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#E0EAC9;color:#394B00;font-size:14px;font-weight:600;border-left:1px solid #858878"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Library</div></div>
+<div style="height:48px;border-radius:999px;background:#E6EADB;display:flex;align-items:center;gap:10px;padding:0 16px"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#626556">search</span><div style="font-size:16px;color:#626556">Search 3,412 exercises and poses</div></div>
+<div style="display:flex;gap:8px;overflow:hidden;margin-right:-20px"><div style="flex:none;height:32px;padding:0 8px 0 12px;border-radius:8px;border:1px solid #D4D8C7;color:#626556;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">tune</span>Filters</div><sc-for list="{{ cats }}" as="c" hint-placeholder-count="6"><div style="flex:none;height:32px;padding:0 12px;border-radius:8px;border:1px solid #D4D8C7;color:#626556;display:flex;align-items:center;font-size:14px;font-weight:600">{{ c }}</div></sc-for></div>
+<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556"><span>3,412 · A–Z</span><span>Sort: name</span></div>
+</div>
+<div style="position:relative;margin-top:4px">
+<div style="padding:0 34px 0 20px">
+<sc-for list="{{ browse }}" as="g" hint-placeholder-count="2"><div style="font-size:13px;font-weight:700;color:#617600;padding:8px 0 4px">{{ g.l }}</div><div style="border:1px solid #D4D8C7;border-radius:20px;background:#EFF2E5;overflow:hidden"><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:12px;padding:0 12px;height:64px;border-bottom:1px solid #D4D8C7"><div style="width:40px;height:44px;border-radius:10px;background:#F9FBF4;padding:2px;box-sizing:border-box;flex:none"><x-import component-from-global-scope="sinew-muscles" view="front" labels="false" primary="{{ r.p }}" secondary="{{ r.s }}" hint-size="36px,40px"></x-import></div><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.n }}</div><div style="font-size:13px;color:#626556;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.m }}</div></div></div></sc-for></div></sc-for>
+</div>
+<div style="position:absolute;right:8px;top:0;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:10px;font-weight:600;color:#626556"><sc-for list="{{ alpha }}" as="a" hint-placeholder-count="20"><span style="height:15px;line-height:15px">{{ a }}</span></sc-for></div>
+</div>
+<dc-import name="NavPill" tab="1" theme="light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Library search" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Search + filters applied · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px"><div style="height:48px;border-radius:999px;background:#2D2F24;display:flex;align-items:center;gap:8px;padding:0 4px 0 12px"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#A3A69C">arrow_back</span><div style="flex:1;font-size:16px">hip<span style="display:inline-block;width:2px;height:20px;background:#A1B567;vertical-align:middle;margin-left:1px"></span></div><div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#A3A69C">close</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px;flex-wrap:wrap"><div style="height:32px;padding:0 12px 0 8px;border-radius:8px;background:#252C0F;color:#D9E3C0;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Yoga</div><div style="height:32px;padding:0 8px 0 12px;border-radius:8px;background:#252C0F;color:#D9E3C0;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600">Glutes, Hips<span style="font-family:'Material Symbols Rounded';font-size:18px">arrow_drop_down</span></div><div style="height:32px;padding:0 8px 0 12px;border-radius:8px;border:1px solid #3C3F33;color:#A3A69C;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600">Difficulty<span style="font-family:'Material Symbols Rounded';font-size:18px">arrow_drop_down</span></div><div style="height:32px;padding:0 12px;display:flex;align-items:center;font-size:14px;font-weight:600;color:#A1B567">Clear</div></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">24 RESULTS · NAME, SANSKRIT AND ALIASES</div>
+<div style="border:1px solid #3C3F33;border-radius:20px;background:#22241B;overflow:hidden"><sc-for list="{{ yogaResults }}" as="r" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:12px;padding:0 12px;height:64px;border-bottom:1px solid #3C3F33"><div style="width:40px;height:44px;border-radius:10px;background:#161811;padding:2px;box-sizing:border-box;flex:none"><x-import component-from-global-scope="sinew-muscles" theme="dark" view="front" labels="false" primary="{{ r.p }}" secondary="{{ r.s }}" hint-size="36px,40px"></x-import></div><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.n }}</div><div style="font-size:13px;color:#A3A69C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="font-style:italic">{{ r.sk }}</span> · {{ r.lvl }}</div></div></div></sc-for></div>
+</div>
+<dc-import name="NavPill" tab="1" theme="dark" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Library filter sheet" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Filter sheet · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="position:absolute;inset:0;background:#00000052"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;top:96px;background:#F4F7ED;border-radius:28px 28px 0 0;padding:12px 20px 24px;display:flex;flex-direction:column;gap:16px">
+<div style="align-self:center;width:32px;height:4px;border-radius:2px;background:#858878"></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:24px;line-height:32px;font-weight:600">Filters</div><div style="font-size:14px;font-weight:600;color:#617600">Reset</div></div>
+<sc-for list="{{ filterGroups }}" as="g" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">{{ g.h }}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ g.chips }}" as="c" hint-placeholder-count="6"><div style="height:32px;padding:0 12px;border-radius:8px;background:{{ c.bg }};color:{{ c.fg }};border:{{ c.bd }};box-sizing:border-box;display:flex;align-items:center;font-size:14px;font-weight:600">{{ c.t }}</div></sc-for></div></div></sc-for>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">DIFFICULTY</div><div style="display:flex;border:1px solid #858878;border-radius:999px;overflow:hidden;height:40px"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#E0EAC9;color:#394B00;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Beginner</div><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#E0EAC9;color:#394B00;font-size:14px;font-weight:600;border-left:1px solid #858878"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Intermediate</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #858878">Advanced</div></div></div>
+<div style="flex:1"></div>
+<div style="height:56px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Show 128 exercises</div>
+</div></div></div>
+
+<div data-screen-label="Library empty" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">No results + loading · dynamic dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#1C1514;color:#F5F0F0;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px"><div style="height:48px;border-radius:999px;background:#362B2A;display:flex;align-items:center;gap:8px;padding:0 4px 0 12px"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#ACA2A1">arrow_back</span><div style="flex:1;font-size:16px">zercher lunge</div><div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#ACA2A1">close</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:48px 8px 12px">
+<div style="width:88px;height:88px;border-radius:28px;background:#3B211F;color:#F8D4D0;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:40px">search_off</span></div>
+<div style="font-size:22px;font-weight:600">No matches for "zercher lunge"</div>
+<div style="font-size:14px;line-height:20px;color:#ACA2A1">Try a shorter word, or remove the Strength filter. You can also add it yourself.</div>
+<div style="display:flex;gap:8px;margin-top:8px"><div style="height:48px;padding:0 18px;border-radius:999px;border:1px solid #453A39;display:flex;align-items:center;font-size:14px;font-weight:600">Clear filters</div><div style="height:48px;padding:0 18px;border-radius:999px;background:#DE958E;color:#0D0807;display:flex;align-items:center;font-size:14px;font-weight:600">Create exercise</div></div>
+</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#ACA2A1;padding-top:12px">LOADING STATE</div>
+<div style="border:1px solid #453A39;border-radius:20px;overflow:hidden;animation:skel 1.4s ease-in-out infinite"><sc-for list="{{ four }}" as="x" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:12px;padding:0 12px;height:64px;border-bottom:1px solid #453A39;background:#29201F"><div style="width:40px;height:44px;border-radius:10px;background:#362B2A"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="height:13px;width:58%;border-radius:7px;background:#362B2A"></div><div style="height:11px;width:40%;border-radius:6px;background:#362B2A"></div></div></div></sc-for></div>
+</div>
+<dc-import name="NavPill" tab="1" theme="dyn-dark" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+</div>
+
+<div style="display:flex;gap:40px;align-items:flex-start">
+
+<div data-screen-label="Exercise detail strength" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Exercise detail · strength · light (top)</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 8px 16px;display:flex;align-items:center;gap:6px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div><div style="flex:1"></div><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">bookmark_border</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:14px">
+<div><div style="font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.25px">Bench press</div><div style="font-size:14px;color:#626556">Also: flat bench, barbell bench press</div></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ benchMeta }}" as="m" hint-placeholder-count="4"><div style="height:28px;padding:0 10px;border-radius:8px;background:#E6EADB;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:16px;color:#626556">{{ m.i }}</span>{{ m.t }}</div></sc-for></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:14px 16px;display:flex;gap:12px;align-items:center"><div style="width:170px;height:186px"><x-import component-from-global-scope="sinew-muscles" primary="chest,triceps" secondary="shoulders" hint-size="170px,186px"></x-import></div><div style="flex:1;display:flex;flex-direction:column;gap:10px;font-size:13px"><div><div style="display:flex;align-items:center;gap:6px;font-weight:600"><div style="width:10px;height:10px;border-radius:3px;background:#617600"></div>Primary</div><div style="color:#626556;padding-left:16px">Chest, triceps</div></div><div><div style="display:flex;align-items:center;gap:6px;font-weight:600"><div style="width:10px;height:10px;border-radius:3px;background:#C4DE7A"></div>Secondary</div><div style="color:#626556;padding-left:16px">Front shoulders</div></div></div></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">STEPS</div>
+<div style="display:flex;flex-direction:column;gap:10px"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="4"><div style="display:flex;gap:12px"><div style="flex:none;width:28px;height:28px;border-radius:50%;background:#E0EAC9;color:#394B00;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ s.n }}</div><div style="font-size:15px;line-height:22px;padding-top:3px">{{ s.t }}</div></div></sc-for></div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:12px 20px 28px;background:#F9FBF4;border-top:1px solid #D4D8C7;display:flex;gap:10px"><div style="flex:1;height:56px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:22px">playlist_add</span>Add to routine</div><div style="width:56px;height:56px;border-radius:50%;background:#E0EAC9;color:#394B00;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:24px;font-variation-settings:'FILL' 1">play_arrow</span></div></div>
+</div></div>
+
+<div data-screen-label="Exercise detail strength lower" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Exercise detail · scrolled · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:12px 20px 0;display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{ notes }}" as="n" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">{{ n.h }}</div><div style="border:1px solid #D4D8C7;border-radius:20px;background:#EFF2E5;overflow:hidden"><sc-for list="{{ n.items }}" as="it" hint-placeholder-count="2"><div style="display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid #D4D8C7"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#626556">{{ n.i }}</span><div style="font-size:14px;line-height:20px">{{ it }}</div></div></sc-for></div></div></sc-for>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">YOUR HISTORY</div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:15px;font-weight:600">Best: 82.5 kg × 8</div><div style="font-size:13px;color:#626556">31 sessions · est. 1RM 104 kg</div></div><svg viewBox="0 0 90 36" style="width:90px"><path d="M0 30 L15 28 L30 24 L45 25 L60 16 L75 12 L90 4" fill="none" stroke="#617600" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#626556">chevron_right</span></div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:12px 20px 28px;background:#F9FBF4;border-top:1px solid #D4D8C7;display:flex;gap:10px"><div style="flex:1;height:56px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:22px">playlist_add</span>Add to routine</div><div style="width:56px;height:56px;border-radius:50%;background:#E0EAC9;color:#394B00;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:24px;font-variation-settings:'FILL' 1">play_arrow</span></div></div>
+</div></div>
+
+<div data-screen-label="Exercise detail yoga" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Pose detail · yoga · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 8px 16px;display:flex;align-items:center;gap:6px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px" data-comment-anchor="000422c920-div">
+<div><div style="font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.25px">Downward dog</div><div style="font-size:15px;line-height:22px;color:#C5C8BC">Adho Mukha Svanasana · Yoga</div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><sc-for list="{{ dogMeta }}" as="m" hint-placeholder-count="3"><div style="background:#22241B;border:1px solid #3C3F33;border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;line-height:16px;color:#A3A69C">{{ m.l }}</div><div style="font-size:16px;line-height:22px;font-weight:600">{{ m.t }}</div></div></sc-for></div>
+<div style="background:#22241B;border:1px solid #3C3F33;border-radius:20px;padding:12px 16px 12px 12px;display:flex;gap:14px;align-items:center"><div style="width:112px;height:112px;border-radius:14px;background:#161811;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" theme="dark" fit="crop" view="back" labels="false" primary="hamstrings,calves" secondary="shoulders,triceps,lats" hint-size="112px,112px"></x-import></div><div style="flex:1;display:flex;flex-direction:column;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600"><div style="width:10px;height:10px;border-radius:3px;background:#A1B567"></div>Stretches</div><div style="font-size:14px;line-height:20px;color:#C5C8BC;padding-left:18px">Hamstrings, calves</div></div><div style="display:flex;flex-direction:column;gap:2px"><div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600"><div style="width:10px;height:10px;border-radius:3px;background:#607223"></div>Works</div><div style="font-size:14px;line-height:20px;color:#C5C8BC;padding-left:18px">Shoulders, triceps, back</div></div></div></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C;margin-top:4px">STEPS</div>
+<div style="display:flex;flex-direction:column;gap:12px"><sc-for list="{{ dogSteps }}" as="s" hint-placeholder-count="3"><div style="display:flex;gap:12px;align-items:flex-start"><div style="flex:none;width:28px;height:28px;border-radius:50%;background:#252C0F;color:#D9E3C0;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ s.n }}</div><div style="font-size:15px;line-height:22px;padding-top:3px;color:#F1F2EE;text-wrap:pretty">{{ s.t }}</div></div></sc-for></div>
+<div style="background:#2A2314;border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;color:#F2DFB8"><span style="font-family:'Material Symbols Rounded';font-size:20px">health_and_safety</span><div style="font-size:14px;line-height:20px">Bend your knees if your back rounds. Rest on your forearms instead with high blood pressure or late pregnancy.</div></div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:12px 20px 28px;background:#161811;border-top:1px solid #3C3F33"><div style="height:56px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:22px">playlist_add</span>Add to flow or routine</div></div>
+</div></div>
+
+<div data-screen-label="Create custom exercise" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Create custom exercise · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px;display:flex;align-items:center;gap:6px;height:48px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">close</span></div></div><div style="font-size:22px;font-weight:600;flex:1">New exercise</div><div style="height:40px;padding:0 16px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;font-size:14px;font-weight:600">Save</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:14px">
+<div style="height:56px;border-radius:16px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 16px;box-shadow:inset 0 0 0 2px #A1B567"><div style="font-size:12px;color:#A1B567">Name</div><div style="font-size:16px">Zercher lunge</div></div>
+<div style="display:flex;gap:12px"><div style="flex:1;height:56px;border-radius:16px;background:#2D2F24;display:flex;align-items:center;padding:0 12px 0 16px"><div style="flex:1"><div style="font-size:12px;color:#A3A69C">Category</div><div style="font-size:16px">Strength</div></div><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#A3A69C">arrow_drop_down</span></div><div style="flex:1;height:56px;border-radius:16px;background:#2D2F24;display:flex;align-items:center;padding:0 12px 0 16px"><div style="flex:1"><div style="font-size:12px;color:#A3A69C">Equipment</div><div style="font-size:16px">Barbell</div></div><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#A3A69C">arrow_drop_down</span></div></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">HOW YOU TRACK IT</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"><sc-for list="{{ trackTypes }}" as="t" hint-placeholder-count="8"><div style="height:72px;border-radius:16px;background:{{ t.bg }};border:1px solid {{ t.bd }};color:{{ t.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;text-align:center"><span style="font-family:'Material Symbols Rounded';font-size:22px">{{ t.i }}</span>{{ t.t }}</div></sc-for></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">MUSCLES · TAP ONCE FOR PRIMARY, TWICE FOR SECONDARY</div>
+<div style="background:#22241B;border:1px solid #3C3F33;border-radius:20px;padding:12px;height:180px;box-sizing:border-box"><x-import component-from-global-scope="sinew-muscles" theme="dark" primary="quads,glutes" secondary="abs,adductors" hint-size="100%,156px"></x-import></div>
+</div></div></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const chip = (t, on) => ({ t, bg: on ? '#E0EAC9' : 'transparent', fg: on ? '#394B00' : '#626556', bd: on ? '1px solid #E0EAC9' : '1px solid #D4D8C7' });
+    return {
+      four: [1, 2, 3, 4],
+      cats: ['Strength', 'Yoga', 'Boxing', 'Cardio', 'Mobility', 'Calisthenics', 'HIIT', 'Pilates'],
+      alpha: 'ABCDEFGHIKLMNOPRSTUVW'.split(''),
+      browse: [
+        { l: 'B', rows: [{ n: 'Back squat', m: 'Legs · Barbell · Intermediate', p: 'quads,glutes', s: 'hamstrings,abs' }, { n: 'Battle ropes', m: 'HIIT · Rope · Beginner', p: 'shoulders,forearms', s: 'abs' }, { n: 'Bench press', m: 'Chest · Barbell · Intermediate', p: 'chest,triceps', s: 'shoulders' }, { n: 'Bicycle crunch', m: 'Core · Bodyweight · Beginner', p: 'abs,obliques', s: '' }, { n: 'Bird dog', m: 'Mobility · Bodyweight · Beginner', p: 'lower-back', s: 'glutes,shoulders' }] },
+        { l: 'C', rows: [{ n: 'Cable fly', m: 'Chest · Cable · Beginner', p: 'chest', s: 'shoulders' }, { n: 'Camel pose · Ustrasana', m: 'Yoga · Bodyweight · Intermediate', p: 'abs,quads', s: 'chest' }, { n: 'Chin-up', m: 'Back · Bodyweight · Intermediate', p: 'lats,biceps', s: 'forearms' }] }
+      ],
+      yogaResults: [
+        { n: 'Pigeon pose', sk: 'Eka Pada Rajakapotasana', lvl: 'Intermediate', p: 'glutes', s: 'quads' },
+        { n: 'Bridge', sk: 'Setu Bandha Sarvangasana', lvl: 'Beginner', p: 'glutes,hamstrings', s: 'lower-back' },
+        { n: 'Low lunge', sk: 'Anjaneyasana', lvl: 'Beginner', p: 'quads,glutes', s: 'adductors' },
+        { n: 'Happy baby', sk: 'Ananda Balasana', lvl: 'Beginner', p: 'adductors,glutes', s: '' },
+        { n: 'Goddess', sk: 'Utkata Konasana', lvl: 'Beginner', p: 'quads,adductors', s: 'glutes' },
+        { n: 'Lizard', sk: 'Utthan Pristhasana', lvl: 'Intermediate', p: 'adductors,glutes', s: 'quads' },
+        { n: 'Garland', sk: 'Malasana', lvl: 'Beginner', p: 'adductors,glutes', s: 'calves' }
+      ],
+      filterGroups: [
+        { h: 'CATEGORY', chips: [chip('Strength', 1), chip('Yoga'), chip('Boxing'), chip('Cardio'), chip('Mobility'), chip('Calisthenics', 1), chip('HIIT'), chip('Pilates')] },
+        { h: 'MUSCLE', chips: [chip('Chest', 1), chip('Back'), chip('Shoulders'), chip('Biceps'), chip('Triceps', 1), chip('Core'), chip('Glutes'), chip('Quads'), chip('Hamstrings'), chip('Calves')] },
+        { h: 'EQUIPMENT · MINE FIRST', chips: [chip('Barbell', 1), chip('Dumbbell', 1), chip('Bodyweight'), chip('Cable'), chip('Machine'), chip('Kettlebell'), chip('Band'), chip('Bench')] }
+      ],
+      benchMeta: [{ i: 'fitness_center', t: 'Barbell, bench' }, { i: 'stacked_bar_chart', t: 'Intermediate' }, { i: 'edit_note', t: 'Weight × reps' }, { i: 'category', t: 'Strength' }],
+      steps: [
+        { n: 1, t: 'Lie on the bench with your eyes under the bar. Feet flat, shoulder blades pulled together.' },
+        { n: 2, t: 'Grip a little wider than your shoulders. Unrack and hold the bar over your shoulders.' },
+        { n: 3, t: 'Lower to mid-chest with elbows about 45° from your body.' },
+        { n: 4, t: 'Press up and slightly back until your arms are straight.' }
+      ],
+      notes: [
+        { h: 'TIPS', i: 'lightbulb', items: ['Keep your wrists stacked over your elbows.', 'Breathe in on the way down, out as you press.'] },
+        { h: 'COMMON MISTAKES', i: 'error_outline', items: ['Bouncing the bar off your chest.', 'Flaring elbows out to 90°.'] },
+        { h: 'SAFETY', i: 'health_and_safety', items: ['Use safety arms or a spotter for heavy sets.', 'Stop if you feel sharp shoulder pain.'] }
+      ],
+      dogMeta: [{ l: 'Hold', t: '30–60 s' }, { l: 'Level', t: 'Beginner' }, { l: 'Sides', t: 'Both' }],
+      dogSteps: [
+        { n: 1, t: 'Start on hands and knees, hands a little ahead of your shoulders.' },
+        { n: 2, t: 'Tuck your toes and lift your hips up and back into an upside-down V.' },
+        { n: 3, t: 'Press the floor away and let your heels reach down. Hold for 5 breaths.' }
+      ],
+      trackTypes: [['Weight × reps', 'fitness_center', 1], ['Reps', 'tag', 0], ['Time', 'timer', 0], ['Distance', 'route', 0], ['Rounds', 'sports_mma', 0], ['Hold', 'self_improvement', 0], ['Flow', 'waves', 0], ['Custom', 'tune', 0]].map(([t, i, on]) => ({ t, i, bg: on ? '#252C0F' : '#22241B', bd: on ? '#A1B567' : '#3C3F33', fg: on ? '#D9E3C0' : '#F1F2EE' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

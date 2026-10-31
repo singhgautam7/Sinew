@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<script src="./sinew-art.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0">
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Bold.ttf);font-weight:700}
+body{margin:0;background:#E9E8E2}
+a{color:#617600}a:hover{color:#394B00}
+@keyframes skel{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
+</style>
+</helmet>
+<div style="font-family:Inter;padding:56px;display:flex;flex-direction:column;gap:40px;font-variant-numeric:tabular-nums">
+<div style="display:flex;flex-direction:column;gap:6px;color:#1F1E1B"><div style="font-size:40px;font-weight:700;letter-spacing:-.5px">Body</div><div style="font-size:18px;color:#6B6A64">Measurements, stats and the silhouette. A stat only shows a number when its inputs exist. Otherwise it says what's missing. No goals are set by default and no colours signal alarm. <a href="Sinew 6 Timer.dc.html">← Timer</a> · <a href="Sinew 8 More.dc.html">More →</a></div></div>
+
+<div style="display:flex;gap:40px;align-items:flex-start">
+<div data-screen-label="Body overview" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Overview · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;height:48px"><div style="font-size:22px;font-weight:600;flex:1">Body</div><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">show_chart</span></div></div><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">more_vert</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:14px 16px;display:flex;gap:8px">
+<div style="width:150px;height:250px"><x-import component-from-global-scope="sinew-silhouette" base="{{ sex }}" data="{{ silNow }}" compare="{{ silThen }}" hint-size="150px,250px"></x-import></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;color:#394B00;background:#E0EAC9;padding:3px 8px;border-radius:999px;align-self:flex-start">Shape trend</div>
+<sc-for list="{{ latest }}" as="m" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #D4D8C7;padding-bottom:6px"><span style="font-size:13px;color:#626556">{{ m.k }}</span><span style="font-size:15px;font-weight:700">{{ m.v }} <span style="font-size:12px;font-weight:500;color:#626556">{{ m.d }}</span></span></div></sc-for>
+<div style="display:flex;gap:10px;font-size:11px;color:#626556;padding-top:2px"><span style="display:flex;align-items:center;gap:4px"><span style="width:14px;border-top:2px dotted #858878"></span>12 Jan</span><span style="display:flex;align-items:center;gap:4px"><span style="width:14px;border-top:2px solid #617600"></span>Today</span></div></div>
+</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">STATS</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600">BMI</span><span style="font-family:'Material Symbols Rounded';font-size:18px;color:#626556">info</span></div><div style="font-size:26px;font-weight:700;line-height:30px">24.7</div><div style="position:relative;height:14px"><div style="display:flex;gap:2px;height:6px;margin-top:4px"><div style="flex:18.5;background:#C4DE7A;border-radius:3px 0 0 3px"></div><div style="flex:6.5;background:#9CB450"></div><div style="flex:5;background:#6C8213"></div><div style="flex:10;background:#495C00;border-radius:0 3px 3px 0"></div></div><div style="position:absolute;left:61%;top:0;width:3px;height:14px;border-radius:2px;background:#15180B"></div></div><div style="font-size:12px;color:#626556">Healthy weight · WHO</div></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600">Maintenance</span><span style="font-family:'Material Symbols Rounded';font-size:18px;color:#626556">info</span></div><div style="font-size:26px;font-weight:700;line-height:30px">2,690</div><div style="font-size:12px;color:#626556">kcal/day</div><div style="height:28px;border-radius:8px;border:1px solid #D4D8C7;display:flex;align-items:center;justify-content:space-between;padding:0 6px 0 10px;font-size:12px;font-weight:600">Active<span style="font-family:'Material Symbols Rounded';font-size:18px">arrow_drop_down</span></div></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600">Waist ÷ height</span><span style="font-family:'Material Symbols Rounded';font-size:18px;color:#626556">info</span></div><div style="font-size:26px;font-weight:700;line-height:30px">0.47</div><div style="position:relative;height:14px"><div style="height:6px;margin-top:4px;border-radius:3px;background:#C4DE7A"></div><div style="position:absolute;left:50%;top:-2px;width:2px;height:18px;background:#626556"></div><div style="position:absolute;left:47%;top:0;width:3px;height:14px;border-radius:2px;background:#15180B"></div></div><div style="font-size:12px;color:#626556">Marker at 0.5</div></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600">Body fat %</span><span style="font-family:'Material Symbols Rounded';font-size:18px;color:#626556">info</span></div><div style="font-size:26px;font-weight:700;line-height:30px">17.8%</div><div style="font-size:12px;color:#626556">Estimate · US Navy method</div><div style="font-size:12px;color:#626556">Lean mass 64.4 kg</div></div>
+</div>
+</div>
+<div style="position:absolute;right:20px;bottom:100px;height:56px;padding:0 20px 0 16px;border-radius:16px;background:#E0EAC9;color:#394B00;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:24px">add</span>Add entry</div>
+<dc-import name="NavPill" tab="3" theme="light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Body new user" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Overview · no data · locked stats · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;height:48px"><div style="font-size:22px;font-weight:600;flex:1">Body</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#22241B;border:1px solid #3C3F33;border-radius:20px;padding:14px 16px;display:flex;gap:12px;align-items:center">
+<div style="width:120px;height:210px"><x-import component-from-global-scope="sinew-silhouette" theme="dark" base="neutral" hint-size="120px,210px"></x-import></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px"><div style="font-size:18px;font-weight:600;line-height:24px">Your shape, over time</div><div style="font-size:14px;line-height:20px;color:#A3A69C">Add a few measurements and this outline redraws from them. It's a shape trend, not a body scan.</div><div style="height:40px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Add first entry</div></div></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">STATS</div>
+<sc-for list="{{ locked }}" as="l" hint-placeholder-count="4"><div style="border:1px dashed #7F8178;border-radius:20px;padding:12px 14px;display:flex;align-items:center;gap:12px"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#A3A69C">lock</span><div style="flex:1"><div style="font-size:14px;font-weight:600">{{ l.t }}</div><div style="font-size:13px;color:#A3A69C">{{ l.d }}</div></div><div style="height:36px;padding:0 12px;border-radius:999px;background:#252C0F;color:#D9E3C0;display:flex;align-items:center;font-size:13px;font-weight:600">{{ l.a }}</div></div></sc-for>
+</div>
+<dc-import name="NavPill" tab="3" theme="dark" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Add measurement entry" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Add entry · dark · last values as hints</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px;display:flex;align-items:center;gap:6px;height:48px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">close</span></div></div><div style="font-size:22px;font-weight:600;flex:1">New entry</div><div style="height:40px;padding:0 16px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;font-size:14px;font-weight:600">Save</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:8px"><div style="height:36px;padding:0 12px;border-radius:8px;background:#252C0F;color:#D9E3C0;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">event</span>Today, 31 Oct</div><div style="height:36px;padding:0 12px;border-radius:8px;border:1px solid #3C3F33;display:flex;align-items:center;font-size:14px;font-weight:600;color:#A3A69C">Skip empty fields</div></div>
+<sc-for list="{{ entry }}" as="e" hint-placeholder-count="8">
+<sc-if value="{{ e.single }}"><div style="display:flex;align-items:center;gap:12px;height:56px"><div style="flex:1;font-size:15px;font-weight:600">{{ e.k }}</div><div style="width:150px;height:52px;border-radius:14px;background:#2D2F24;display:flex;align-items:center;padding:0 12px;box-shadow:{{ e.ring }}"><div style="flex:1;font-size:18px;font-weight:600;color:{{ e.c }}">{{ e.v }}</div><div style="font-size:13px;color:#A3A69C">{{ e.u }}</div></div></div></sc-if>
+<sc-if value="{{ e.pair }}"><div style="display:flex;align-items:center;gap:8px;height:56px"><div style="flex:1;font-size:15px;font-weight:600">{{ e.k }}</div><div style="width:96px;height:52px;border-radius:14px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 10px"><div style="font-size:16px;font-weight:600;color:#A3A69C">{{ e.l }}</div><div style="font-size:10px;color:#A3A69C">left · cm</div></div><div style="width:96px;height:52px;border-radius:14px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 10px"><div style="font-size:16px;font-weight:600;color:#A3A69C">{{ e.r }}</div><div style="font-size:10px;color:#A3A69C">right · cm</div></div></div></sc-if>
+</sc-for>
+<div style="font-size:12px;line-height:16px;color:#A3A69C">Grey values are from 24 Oct. Leave them and they won't be saved for today.</div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:260px;background:#22241B;border-radius:28px 28px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:12px 12px 28px;box-sizing:border-box"><sc-for list="{{ keypad }}" as="k" hint-placeholder-count="12"><div style="border-radius:16px;background:#2D2F24;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600">{{ k }}</div></sc-for></div>
+</div></div>
+
+<div data-screen-label="Measurement fields" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Measurement fields · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 8px 16px;display:flex;align-items:center;gap:6px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div><div style="flex:1"><div style="font-size:22px;font-weight:600;line-height:28px">Measurement fields</div><div style="font-size:14px;color:#626556">16 of 19 shown on new entries</div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">BUILT IN</div>
+<div style="border:1px solid #D4D8C7;border-radius:20px;overflow:hidden;background:#EFF2E5"><sc-for list="{{ fields }}" as="f" hint-placeholder-count="8"><div style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 6px;min-height:60px;box-sizing:border-box;border-bottom:1px solid #D4D8C7"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#858878">drag_indicator</span><div style="flex:1;min-width:0"><div style="display:flex;gap:6px;align-items:center"><div style="font-size:15px;font-weight:600">{{ f.n }}</div><sc-if value="{{ f.pair }}"><div style="font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;background:#E6EADB;color:#626556">L / R</div></sc-if></div><div style="font-size:13px;color:#626556">{{ f.m }}</div></div><div style="width:52px;height:32px;border-radius:999px;background:{{ f.trk }};border:2px solid {{ f.bd }};box-sizing:border-box;position:relative;flex:none"><div style="position:absolute;top:50%;transform:translateY(-50%);left:{{ f.kx }};width:{{ f.ks }};height:{{ f.ks }};border-radius:50%;background:{{ f.knob }}"></div></div></div></sc-for></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556;padding-top:6px">CUSTOM</div>
+<div style="border:1px solid #D4D8C7;border-radius:20px;overflow:hidden;background:#EFF2E5"><div style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 6px;min-height:60px;box-sizing:border-box;border-bottom:1px solid #D4D8C7"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#858878">drag_indicator</span><div style="flex:1"><div style="font-size:15px;font-weight:600">Wrist</div><div style="font-size:13px;color:#626556">cm · not drawn</div></div><div style="width:52px;height:32px;border-radius:999px;background:#617600;position:relative"><div style="position:absolute;top:4px;left:24px;width:24px;height:24px;border-radius:50%;background:#fff"></div></div></div><div style="display:flex;align-items:center;gap:14px;padding:8px 16px;min-height:56px"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#617600">add</span><div style="font-size:15px;font-weight:600;color:#617600">Add custom field</div></div></div>
+</div></div></div>
+
+<div data-screen-label="Edit field sheet" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Edit field sheet · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="position:absolute;inset:0;background:#00000080"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;top:150px;background:#1C1E16;border-radius:28px 28px 0 0;padding:12px 20px 24px;display:flex;flex-direction:column;gap:16px">
+<div style="align-self:center;width:32px;height:4px;border-radius:2px;background:#7F8178"></div>
+<div style="font-size:24px;line-height:32px;font-weight:600">Thigh</div>
+<div style="height:56px;border-radius:16px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 16px"><div style="font-size:12px;color:#A3A69C">Name</div><div style="font-size:16px">Thigh</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">UNIT</div><div style="display:flex;border:1px solid #7F8178;border-radius:999px;overflow:hidden;height:40px"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#252C0F;color:#D9E3C0;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Length</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #7F8178">Weight</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #7F8178">%</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #7F8178">Number</div></div></div>
+<div style="display:flex;align-items:center;gap:12px;padding:4px 0"><div style="flex:1"><div style="font-size:16px;font-weight:600">Left and right</div><div style="font-size:13px;color:#A3A69C">Log each side separately</div></div><div style="width:52px;height:32px;border-radius:999px;background:#A1B567;position:relative"><div style="position:absolute;top:4px;left:24px;width:24px;height:24px;border-radius:50%;background:#090A05"></div></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">DRAW ON SILHOUETTE AT</div><div style="display:flex;gap:12px;align-items:center"><div style="width:90px;height:150px"><x-import component-from-global-scope="sinew-silhouette" theme="dark" base="neutral" data="{&quot;height&quot;:172}" highlight="thigh" hint-size="90px,150px"></x-import></div><div style="flex:1;display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ positions }}" as="p" hint-placeholder-count="8"><div style="height:32px;padding:0 10px;border-radius:8px;background:{{ p.bg }};color:{{ p.fg }};border:1px solid {{ p.bd }};display:flex;align-items:center;font-size:13px;font-weight:600">{{ p.t }}</div></sc-for></div></div></div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:10px"><div style="height:48px;padding:0 18px;border-radius:999px;display:flex;align-items:center;font-size:14px;font-weight:600;color:#A3A69C">Hide field</div><div style="flex:1;height:48px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Done</div></div>
+</div></div></div>
+</div>
+
+<div style="display:flex;gap:40px;align-items:flex-start">
+<div data-screen-label="Progress chart" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Progress · chart per field · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px;display:flex;align-items:center;gap:6px;height:48px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div><div style="font-size:22px;font-weight:600;flex:1">Progress</div><div style="height:40px;padding:0 14px;border-radius:999px;background:#E0EAC9;color:#394B00;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">compare</span>Compare</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px;overflow:hidden;margin-right:-20px"><sc-for list="{{ fieldChips }}" as="c" hint-placeholder-count="6"><div style="flex:none;height:32px;padding:0 12px;border-radius:8px;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }};display:flex;align-items:center;font-size:14px;font-weight:600">{{ c.t }}</div></sc-for></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div style="font-size:14px;font-weight:600">Waist</div><div style="font-size:32px;font-weight:700;line-height:40px">84.0 <span style="font-size:16px;font-weight:500;color:#626556">cm</span></div></div><div style="text-align:right;font-size:13px;color:#626556">−8.0 cm since 12 Jan<br>11 entries</div></div>
+<svg viewBox="0 0 320 150" style="width:100%;display:block"><g stroke="#D4D8C7"><line x1="28" x2="320" y1="20" y2="20"/><line x1="28" x2="320" y1="65" y2="65"/><line x1="28" x2="320" y1="110" y2="110"/></g><g font-size="10" fill="#626556" font-family="Inter"><text x="0" y="24">92</text><text x="0" y="69">88</text><text x="0" y="114">84</text></g><path d="M34 22 L62 30 L90 34 L118 46 L146 50 L174 64 L202 70 L230 84 L258 92 L286 104 L314 110" fill="none" stroke="#617600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><g fill="#617600"><circle cx="34" cy="22" r="3.5"/><circle cx="62" cy="30" r="3.5"/><circle cx="90" cy="34" r="3.5"/><circle cx="118" cy="46" r="3.5"/><circle cx="146" cy="50" r="3.5"/><circle cx="174" cy="64" r="3.5"/><circle cx="202" cy="70" r="3.5"/><circle cx="230" cy="84" r="3.5"/><circle cx="258" cy="92" r="3.5"/><circle cx="286" cy="104" r="3.5"/></g><circle cx="314" cy="110" r="6" fill="#617600" stroke="#EFF2E5" stroke-width="2.5"/><g font-size="10" fill="#626556" font-family="Inter"><text x="30" y="140">Jan</text><text x="100" y="140">Mar</text><text x="170" y="140">May</text><text x="240" y="140">Jul</text><text x="296" y="140">Oct</text></g></svg>
+<div style="display:flex;border:1px solid #858878;border-radius:999px;overflow:hidden;height:36px;font-size:13px;font-weight:600"><div style="flex:1;display:flex;align-items:center;justify-content:center">1M</div><div style="flex:1;display:flex;align-items:center;justify-content:center;border-left:1px solid #858878">3M</div><div style="flex:1;display:flex;align-items:center;justify-content:center;border-left:1px solid #858878">6M</div><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#E0EAC9;color:#394B00;border-left:1px solid #858878"><span style="font-family:'Material Symbols Rounded';font-size:16px">check</span>1Y</div></div>
+</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">ENTRIES</div>
+<div style="border:1px solid #D4D8C7;border-radius:20px;overflow:hidden;background:#EFF2E5"><sc-for list="{{ waistEntries }}" as="w" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #D4D8C7;font-size:15px"><span>{{ w.d }}</span><span style="font-weight:600">{{ w.v }} <span style="color:#626556;font-weight:500;font-size:13px">{{ w.c }}</span></span></div></sc-for></div>
+</div>
+<dc-import name="NavPill" tab="3" theme="light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Compare dates" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Compare two dates · dark · scrubber morphs</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px;display:flex;align-items:center;gap:6px;height:48px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div><div style="font-size:22px;font-weight:600;flex:1">Compare</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px"><div style="flex:1;height:56px;border-radius:16px;background:#2D2F24;display:flex;align-items:center;gap:10px;padding:0 14px"><span style="width:16px;border-top:2px dotted #7F8178"></span><div><div style="font-size:12px;color:#A3A69C">From</div><div style="font-size:15px;font-weight:600">12 Jan</div></div></div><div style="flex:1;height:56px;border-radius:16px;background:#2D2F24;display:flex;align-items:center;gap:10px;padding:0 14px"><span style="width:16px;border-top:2.5px solid #A1B567"></span><div><div style="font-size:12px;color:#A3A69C">To</div><div style="font-size:15px;font-weight:600">{{ cmpDate }}</div></div></div></div>
+<div style="background:#22241B;border:1px solid #3C3F33;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:center"><div style="width:200px;height:300px"><x-import component-from-global-scope="sinew-silhouette" theme="dark" base="{{ sex }}" data="{{ silNow }}" compare="{{ silThen }}" t="{{ cmpT }}" highlight="waist" hint-size="200px,300px"></x-import></div><input type="range" min="0" max="100" value="{{ cmpPct }}" onInput="{{ onCmp }}" style="width:100%;accent-color:#A1B567"><div style="font-size:12px;color:#A3A69C">Drag to morph between the two dates · shape trend, not a scan</div></div>
+<div style="border:1px solid #3C3F33;border-radius:20px;overflow:hidden;background:#22241B"><div style="display:flex;padding:8px 16px;font-size:12px;font-weight:600;color:#A3A69C;border-bottom:1px solid #3C3F33"><span style="flex:1">FIELD</span><span style="width:64px;text-align:right">12 JAN</span><span style="width:64px;text-align:right">{{ cmpShort }}</span><span style="width:60px;text-align:right">CHANGE</span></div><sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="4"><div style="display:flex;padding:10px 16px;font-size:14px;border-bottom:1px solid #3C3F33"><span style="flex:1">{{ r.k }}</span><span style="width:64px;text-align:right;color:#A3A69C">{{ r.a }}</span><span style="width:64px;text-align:right;font-weight:600">{{ r.b }}</span><span style="width:60px;text-align:right;font-weight:600">{{ r.d }}</span></div></sc-for></div>
+</div></div></div>
+
+<div data-screen-label="Region tap" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Tap a region · waist sheet · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="display:flex;justify-content:center;padding-top:20px"><div style="width:220px;height:380px"><x-import component-from-global-scope="sinew-silhouette" base="{{ sex }}" data="{{ silNow }}" highlight="waist" hint-size="220px,380px"></x-import></div></div>
+<div style="position:absolute;left:0;right:0;bottom:0;background:#F4F7ED;border-radius:28px 28px 0 0;padding:12px 20px 28px;display:flex;flex-direction:column;gap:12px;box-shadow:0 -1px 0 #D4D8C7">
+<div style="align-self:center;width:32px;height:4px;border-radius:2px;background:#858878"></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div style="font-size:14px;color:#626556">Waist</div><div style="font-size:32px;font-weight:700;line-height:40px">84.0 cm</div></div><div style="text-align:right;font-size:14px;color:#626556">31 Oct<br>−1.0 since 24 Oct</div></div>
+<svg viewBox="0 0 320 70" style="width:100%"><path d="M0 8 L32 12 L64 16 L96 24 L128 26 L160 34 L192 38 L224 46 L256 50 L288 58 L320 62" fill="none" stroke="#617600" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="320" cy="62" r="0"/></svg>
+<div style="display:flex;gap:8px"><div style="flex:1;height:48px;border-radius:999px;border:1px solid #D4D8C7;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">See all entries</div><div style="flex:1;height:48px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Add waist</div></div>
+</div></div></div>
+
+<div data-screen-label="Body loading" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Overview · loading · dynamic light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F7FAFF;color:#11161F;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;height:48px"><div style="font-size:22px;font-weight:600;flex:1">Body</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px;animation:skel 1.4s ease-in-out infinite">
+<div style="height:280px;border-radius:20px;background:#EBF0FA;border:1px solid #CFD6E3;display:flex;gap:12px;padding:16px;box-sizing:border-box"><div style="width:130px;border-radius:65px 65px 20px 20px;background:#E2E8F4"></div><div style="flex:1;display:flex;flex-direction:column;gap:14px;padding-top:30px"><div style="height:12px;border-radius:6px;background:#E2E8F4"></div><div style="height:12px;border-radius:6px;background:#E2E8F4;width:80%"></div><div style="height:12px;border-radius:6px;background:#E2E8F4"></div><div style="height:12px;border-radius:6px;background:#E2E8F4;width:70%"></div></div></div>
+<div style="height:12px;width:60px;border-radius:6px;background:#E2E8F4"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="height:120px;border-radius:20px;background:#EBF0FA"></div><div style="height:120px;border-radius:20px;background:#EBF0FA"></div><div style="height:120px;border-radius:20px;background:#EBF0FA"></div><div style="height:120px;border-radius:20px;background:#EBF0FA"></div></div>
+</div>
+<dc-import name="NavPill" tab="3" theme="dyn-light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Stat info sheet" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Stat info sheet · BMI · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="position:absolute;inset:0;background:#00000080"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;top:110px;background:#1C1E16;border-radius:28px 28px 0 0;padding:12px 20px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="align-self:center;width:32px;height:4px;border-radius:2px;background:#7F8178"></div>
+<div style="font-size:24px;line-height:32px;font-weight:600">About BMI</div>
+<div style="font-size:15px;line-height:22px;color:#A3A69C">Body mass index compares weight to height. It's a quick population measure, not a verdict on one body.</div>
+<div style="background:#22241B;border:1px solid #3C3F33;border-radius:16px;padding:14px 16px;font-size:15px;line-height:22px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C;margin-bottom:4px">FORMULA</div>weight (kg) ÷ height (m)²<br><span style="color:#A3A69C">78.4 ÷ 1.78² = 24.7</span></div>
+<div style="border:1px solid #3C3F33;border-radius:16px;overflow:hidden"><sc-for list="{{ bands }}" as="b" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #3C3F33;font-size:14px;background:{{ b.bg }}"><span>{{ b.k }}</span><span style="color:#A3A69C">{{ b.v }}</span></div></sc-for></div>
+<div style="display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:15px;font-weight:600">Asian cut-offs</div><div style="font-size:13px;color:#A3A69C">Overweight from 23, obese from 27.5</div></div><div style="width:52px;height:32px;border-radius:999px;border:2px solid #7F8178;box-sizing:border-box;position:relative"><div style="position:absolute;top:6px;left:6px;width:16px;height:16px;border-radius:50%;background:#7F8178"></div></div></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">LIMITS</div>
+<div style="font-size:14px;line-height:20px;color:#A3A69C">BMI doesn't account for muscle, bone or where fat sits. Strong, muscular people often read as overweight. It isn't designed for children or pregnancy. Waist-to-height ratio is a useful second view.</div>
+</div></div></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"sex":{"editor":"enum","options":["male","female"],"default":"male","tsType":"\"male\" | \"female\""}}'>
+class Component extends DCLogic {
+  state = { t: 1 };
+  renderVals() {
+    const sex = this.props.sex === 'female' ? 'female' : 'male';
+    const then = sex === 'female' ? { height: 165, waist: 78, chest: 92, hips: 104, shoulders: 100, thigh: 61, bicep: 29, calf: 37, neck: 32, forearm: 24 } : { height: 178, waist: 92, chest: 101, hips: 103, shoulders: 116, thigh: 60, bicep: 32, calf: 38, neck: 40, forearm: 28 };
+    const now = sex === 'female' ? { height: 165, waist: 71, chest: 90, hips: 100, shoulders: 103, thigh: 58, bicep: 30, calf: 36, neck: 32, forearm: 24.5 } : { height: 178, waist: 84, chest: 103, hips: 98, shoulders: 120, thigh: 57, bicep: 34.5, calf: 38, neck: 39, forearm: 29 };
+    const t = this.state.t;
+    const months = ['12 Jan', '8 Feb', '15 Mar', '12 Apr', '17 May', '21 Jun', '19 Jul', '23 Aug', '27 Sep', '31 Oct'];
+    const sw = on => on ? { trk: '#617600', bd: '#617600', knob: '#FFFFFF', kx: '22px', ks: '24px' } : { trk: '#E6EADB', bd: '#858878', knob: '#858878', kx: '6px', ks: '16px' };
+    const chip = (t2, on) => ({ t: t2, bg: on ? '#E0EAC9' : 'transparent', fg: on ? '#394B00' : '#626556', bd: on ? '#E0EAC9' : '#D4D8C7' });
+    const chipD = (t2, on) => ({ t: t2, bg: on ? '#252C0F' : 'transparent', fg: on ? '#D9E3C0' : '#A3A69C', bd: on ? '#A1B567' : '#3C3F33' });
+    const v = k => then[k] + (now[k] - then[k]) * t;
+    return {
+      sex, silNow: JSON.stringify(now), silThen: JSON.stringify(then),
+      latest: [['Weight', sex === 'female' ? '61.2 kg' : '78.4 kg', '−0.6'], ['Chest', now.chest + ' cm', '+0.5'], ['Waist', now.waist + ' cm', '−1.0'], ['Hips', now.hips + ' cm', '−0.5'], ['Bicep L/R', now.bicep + ' / ' + (now.bicep - 0.5), '+0.5']].map(([k, vv, d]) => ({ k, v: vv, d })),
+      locked: [['BMI', 'Needs weight and height', 'Add'], ['Maintenance calories', 'Needs weight, height, age, sex, activity', 'Add'], ['Body fat % · estimate', 'Needs neck, waist, height, sex', 'Add'], ['Waist ÷ height', 'Needs waist and height', 'Add']].map(([tt, d, a]) => ({ t: tt, d, a })),
+      entry: [
+        { k: 'Weight', v: '78.4', u: 'kg', c: '#F1F2EE', ring: 'inset 0 0 0 2px #A1B567', single: true },
+        { k: 'Neck', v: '39.0', u: 'cm', c: '#A3A69C', ring: 'none', single: true },
+        { k: 'Chest', v: '102.5', u: 'cm', c: '#A3A69C', ring: 'none', single: true },
+        { k: 'Bicep', l: '34.0', r: '33.5', pair: true },
+        { k: 'Waist', v: '85.0', u: 'cm', c: '#A3A69C', ring: 'none', single: true },
+        { k: 'Hips', v: '98.5', u: 'cm', c: '#A3A69C', ring: 'none', single: true },
+        { k: 'Thigh', l: '57.0', r: '57.5', pair: true }
+      ].map(e => ({ ...e, single: !!e.single, pair: !!e.pair })),
+      keypad: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'],
+      fields: [['Weight', 'kg · not drawn', 0, 1], ['Height', 'cm · sets proportions', 0, 1], ['Neck', 'cm · neck', 0, 1], ['Shoulders', 'cm · shoulders', 0, 1], ['Chest', 'cm · chest', 0, 1], ['Bicep', 'cm · upper arm', 1, 1], ['Forearm', 'cm · forearm', 1, 0], ['Waist', 'cm · waist', 0, 1], ['2 in above navel', 'cm · not drawn', 0, 0], ['Hips', 'cm · hips', 0, 1]].map(([n, m, pair, on]) => ({ n, m, pair: !!pair, ...sw(on) })),
+      positions: [['Neck', 0], ['Shoulders', 0], ['Chest', 0], ['Upper arm', 0], ['Waist', 0], ['Hips', 0], ['Thigh', 1], ['Calf', 0], ['None', 0]].map(([tt, on]) => chipD(tt, on)),
+      fieldChips: [chip('Waist', 1), chip('Weight'), chip('Chest'), chip('Hips'), chip('Bicep'), chip('Body fat %')],
+      waistEntries: [['31 Oct', '84.0', '−1.0'], ['24 Oct', '85.0', '−0.5'], ['27 Sep', '85.5', '−1.0'], ['23 Aug', '86.5', '−0.5']].map(([d, vv, c]) => ({ d, v: vv, c })),
+      cmpT: String(t), cmpPct: Math.round(t * 100), cmpDate: months[Math.round(t * 9)], cmpShort: months[Math.round(t * 9)].toUpperCase(),
+      onCmp: e => this.setState({ t: +e.target.value / 100 }),
+      cmpRows: ['waist', 'hips', 'chest', 'shoulders'].map(k => { const d = v(k) - then[k]; return { k: k[0].toUpperCase() + k.slice(1), a: then[k].toFixed(1), b: v(k).toFixed(1), d: (d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d).toFixed(1) }; }),
+      bands: [['Underweight', 'below 18.5', 'transparent'], ['Healthy weight', '18.5–24.9', '#252C0F'], ['Overweight', '25–29.9', 'transparent'], ['Obese', '30 and over', 'transparent']].map(([k, vv, bg]) => ({ k, v: vv, bg }))
+    };
+  }
+}
+</script>
+</body>
+</html>

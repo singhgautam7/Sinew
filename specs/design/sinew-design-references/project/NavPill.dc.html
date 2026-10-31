@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./sinew-art.js"></script></helmet>
+<sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;pointer-events:none">
+<div style="pointer-events:auto;height:56px;box-sizing:border-box;padding:8px;display:flex;gap:2px;align-items:center;background:#F9FBF4;border:1px solid #D4D8C7;border-radius:999px">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+<sc-if value="{{ it.active }}"><div style="height:40px;display:flex;align-items:center;gap:8px;padding:0 14px 0 11px;border-radius:999px;background:#E0EAC9;color:#394B00"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import><span style="font:600 14px/20px Inter;letter-spacing:.1px">{{ it.label }}</span></div></sc-if>
+<sc-if value="{{ it.idle }}"><div style="height:40px;width:40px;display:flex;align-items:center;justify-content:center;color:#626556"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import></div></sc-if>
+</sc-for></div></div></sc-if>
+<sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;pointer-events:none">
+<div style="pointer-events:auto;height:56px;box-sizing:border-box;padding:8px;display:flex;gap:2px;align-items:center;background:#161811;border:1px solid #3C3F33;border-radius:999px">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+<sc-if value="{{ it.active }}"><div style="height:40px;display:flex;align-items:center;gap:8px;padding:0 14px 0 11px;border-radius:999px;background:#252C0F;color:#D9E3C0"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import><span style="font:600 14px/20px Inter;letter-spacing:.1px">{{ it.label }}</span></div></sc-if>
+<sc-if value="{{ it.idle }}"><div style="height:40px;width:40px;display:flex;align-items:center;justify-content:center;color:#A3A69C"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import></div></sc-if>
+</sc-for></div></div></sc-if>
+<sc-if value="{{ isDynLight }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;pointer-events:none">
+<div style="pointer-events:auto;height:56px;box-sizing:border-box;padding:8px;display:flex;gap:2px;align-items:center;background:#F7FAFF;border:1px solid #CFD6E3;border-radius:999px">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+<sc-if value="{{ it.active }}"><div style="height:40px;display:flex;align-items:center;gap:8px;padding:0 14px 0 11px;border-radius:999px;background:#D6E5FF;color:#203F7C"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import><span style="font:600 14px/20px Inter;letter-spacing:.1px">{{ it.label }}</span></div></sc-if>
+<sc-if value="{{ it.idle }}"><div style="height:40px;width:40px;display:flex;align-items:center;justify-content:center;color:#5D646F"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import></div></sc-if>
+</sc-for></div></div></sc-if>
+<sc-if value="{{ isDynDark }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;pointer-events:none">
+<div style="pointer-events:auto;height:56px;box-sizing:border-box;padding:8px;display:flex;gap:2px;align-items:center;background:#1C1514;border:1px solid #453A39;border-radius:999px">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+<sc-if value="{{ it.active }}"><div style="height:40px;display:flex;align-items:center;gap:8px;padding:0 14px 0 11px;border-radius:999px;background:#3B211F;color:#F8D4D0"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import><span style="font:600 14px/20px Inter;letter-spacing:.1px">{{ it.label }}</span></div></sc-if>
+<sc-if value="{{ it.idle }}"><div style="height:40px;width:40px;display:flex;align-items:center;justify-content:center;color:#ACA2A1"><x-import component-from-global-scope="sinew-nav-glyph" i="{{ it.i }}" hint-size="24px,24px"></x-import></div></sc-if>
+</sc-for></div></div></sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:100},&quot;tab&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:0,&quot;max&quot;:4},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;light&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;,&quot;dyn-light&quot;,&quot;dyn-dark&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const tab = +(this.props.tab ?? 0), theme = this.props.theme ?? 'light';
+    const labels = ['Today', 'Train', 'Timer', 'Body', 'More'];
+    return {
+      isLight: theme === 'light', isDark: theme === 'dark', isDynLight: theme === 'dyn-light', isDynDark: theme === 'dyn-dark',
+      items: labels.map((label, i) => ({ i, label, active: i === tab, idle: i !== tab }))
+    };
+  }
+}
+</script>
+</body>
+</html>

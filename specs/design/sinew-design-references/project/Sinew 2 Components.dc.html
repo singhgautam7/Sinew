@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<script src="./sinew-art.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0">
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Bold.ttf);font-weight:700}
+@font-face{font-family:JBM;src:url(fonts/JetBrainsMono-Medium.ttf)}
+body{margin:0;background:#F3F1EC}
+a{color:#617600}a:hover{color:#394B00}
+@keyframes skel{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
+</style>
+</helmet>
+<div style="font-family:Inter;color:#15180B;padding:56px;display:flex;flex-direction:column;gap:64px;width:2400px;box-sizing:border-box;font-variant-numeric:tabular-nums" data-comment-anchor="5ec71ad1a8-div">
+<header style="display:flex;flex-direction:column;gap:6px"><div style="font-size:40px;font-weight:700;letter-spacing:-.5px">Sinew · Components and signature visuals</div><div style="font-size:18px;color:#6B6A64">Every colour is a token from <a href="Sinew 1 Foundations.dc.html">Foundations</a>. The plate loader and silhouette scrubber below are live.</div></header>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="font-size:32px;font-weight:600">Barbell plate loading</div>
+<div style="display:grid;grid-template-columns:520px 1fr;gap:24px">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">LIVE · TAP ± TO WATCH PLATES SPRING ON</div>
+<div style="display:flex;border:1px solid #858878;border-radius:999px;overflow:hidden"><div style="padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;background:{{ kgBg }};color:#394B00" onClick="{{ setKg }}">kg</div><div style="padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;background:{{ lbBg }};color:#394B00;border-left:1px solid #858878" onClick="{{ setLb }}">lb</div></div></div>
+<div style="height:190px;display:flex;flex-direction:column;justify-content:center"><x-import component-from-global-scope="sinew-barbell" weight="{{ w }}" unit="{{ unit }}" hint-size="100%,170px"></x-import></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:16px">
+<div onClick="{{ dec }}" style="width:64px;height:64px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:28px">remove</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;width:150px"><div style="font-size:45px;font-weight:700;line-height:52px">{{ w }}</div><div style="font-size:14px;color:#626556">{{ unit }}</div></div>
+<div onClick="{{ inc }}" style="width:64px;height:64px;border-radius:50%;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:28px">add</span></div>
+</div>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><sc-for list="{{ presets }}" as="p" hint-placeholder-count="5"><div onClick="{{ p.go }}" style="height:32px;padding:0 12px;border:1px solid #D4D8C7;border-radius:8px;display:flex;align-items:center;font-size:14px;font-weight:600;color:#626556;cursor:pointer">{{ p.label }}</div></sc-for></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px">
+<sc-for list="{{ keyframes }}" as="k" hint-placeholder-count="4">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">{{ k.step }}</div><div style="font-family:JBM;font-size:12px;color:#626556">{{ k.t }}</div></div><x-import component-from-global-scope="sinew-barbell" weight="{{ k.w }}" width="300" hint-size="100%,150px"></x-import><div style="font-size:13px;line-height:18px;color:#626556">{{ k.note }}</div></div>
+</sc-for>
+</div>
+<div style="background:#fff;border-radius:20px;padding:20px;font-family:JBM;font-size:13px;line-height:22px;white-space:pre">plate.enter   translateX 46dp → 0, opacity 0 → 1   420ms  Curves.easeOutBack (spring, ~12% overshoot = the settle)
+              stagger 45ms per plate, inside → out
+              ≈ SpringDescription(mass 1, stiffness 380, damping 22)
+plate.exit    translateX 0 → 46dp, opacity 1 → 0      220ms  Curves.easeOutCubic, outermost first
+plate.swap    exit and enter run together; plates that stay never move
+caption       crossfade 150ms
+haptic        HapticFeedback.selectionClick per plate settled
+reduced       no slide: final state drawn at once, 90ms fade</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px">
+<sc-for list="{{ edges }}" as="e" hint-placeholder-count="6">
+<div style="background:{{ e.bg }};border:1px solid {{ e.bd }};border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;color:{{ e.fg }}"><div style="font-size:13px;font-weight:600;letter-spacing:.8px">{{ e.title }}</div><div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:150px"><div style="width:100%;max-width:{{ e.max }}"><x-import component-from-global-scope="sinew-barbell" weight="{{ e.w }}" unit="{{ e.unit }}" kind="{{ e.kind }}" theme="{{ e.theme }}" width="{{ e.width }}" stack-step="5" stack-count="16" hint-size="100%,150px"></x-import></div></div></div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="font-size:32px;font-weight:600">Body silhouette</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 1.3fr;gap:16px">
+<sc-for list="{{ silStates }}" as="s" hint-placeholder-count="3">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">{{ s.title }}</div><div style="height:380px"><x-import component-from-global-scope="sinew-silhouette" base="{{ s.base }}" data="{{ s.data }}" hint-size="100%,380px"></x-import></div><div style="font-size:14px;line-height:20px;color:#626556">{{ s.note }}</div></div>
+</sc-for>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">TWO DATES · DRAG TO MORPH</div><div style="font-size:12px;font-weight:600;color:#394B00;background:#E0EAC9;padding:4px 10px;border-radius:999px">Shape trend, not a body scan</div></div>
+<div style="display:flex;gap:16px"><div style="height:380px;flex:1"><x-import component-from-global-scope="sinew-silhouette" base="male" data="{{ silNow }}" compare="{{ silThen }}" t="{{ silT }}" hint-size="100%,380px"></x-import></div>
+<div style="width:150px;display:flex;flex-direction:column;gap:12px;justify-content:center">
+<div style="display:flex;align-items:center;gap:8px;font-size:13px"><div style="width:22px;border-top:2px dotted #858878"></div>12 Jan</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:13px"><div style="width:22px;border-top:2.5px solid #617600"></div>{{ silDate }}</div>
+<sc-for list="{{ silDiff }}" as="d" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;font-size:14px;border-top:1px solid #D4D8C7;padding-top:8px"><span style="color:#626556">{{ d.k }}</span><span style="font-weight:600">{{ d.v }}</span></div></sc-for>
+</div></div>
+<input type="range" min="0" max="100" value="{{ silTpct }}" onInput="{{ onScrub }}" style="width:100%;accent-color:#617600">
+<div style="display:flex;justify-content:space-between;font-size:12px;color:#626556"><span>12 Jan</span><span>18 Mar</span><span>27 Oct</span></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:900px">
+<sc-for list="{{ bases }}" as="b" hint-placeholder-count="3"><div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;align-items:center"><div style="height:240px;width:140px"><x-import component-from-global-scope="sinew-silhouette" base="{{ b.base }}" data="{{ b.data }}" hint-size="140px,240px"></x-import></div><div style="font-size:14px;font-weight:600">{{ b.label }}</div></div></sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="font-size:32px;font-weight:600">Muscle map</div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">BENCH PRESS · MALE</div><div style="height:260px"><x-import component-from-global-scope="sinew-muscles" primary="chest,triceps" secondary="shoulders" hint-size="100%,260px"></x-import></div><div style="display:flex;gap:16px;font-size:13px"><div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:4px;background:#617600"></div>Primary</div><div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:4px;background:#C4DE7A"></div>Secondary</div></div></div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">WARRIOR II · FEMALE</div><div style="height:260px"><x-import component-from-global-scope="sinew-muscles" sex="female" primary="quads,glutes" secondary="shoulders,adductors,obliques" hint-size="100%,260px"></x-import></div></div>
+<div style="background:#161811;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px;color:#F1F2EE"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#A3A69C">DEADLIFT · DARK</div><div style="height:260px"><x-import component-from-global-scope="sinew-muscles" theme="dark" primary="hamstrings,glutes,lower-back" secondary="traps,forearms,quads,lats" hint-size="100%,260px"></x-import></div></div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">THIS WEEK · HISTORY (HEAT)</div><div style="height:260px"><x-import component-from-global-scope="sinew-muscles" heat="chest:4,triceps:3,shoulders:3,quads:5,glutes:4,hamstrings:2,lats:2,biceps:1,abs:2,calves:1" hint-size="100%,260px"></x-import></div><div style="display:flex;gap:4px;align-items:center;font-size:12px;color:#626556">Fewer sets<div style="width:16px;height:10px;border-radius:3px;background:#E1FC97"></div><div style="width:16px;height:10px;border-radius:3px;background:#C4DE7A"></div><div style="width:16px;height:10px;border-radius:3px;background:#9CB450"></div><div style="width:16px;height:10px;border-radius:3px;background:#6C8213"></div><div style="width:16px;height:10px;border-radius:3px;background:#495C00"></div>More</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) 2fr;gap:16px">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">SQUAT · MALE BASE</div><div style="height:260px"><x-import component-from-global-scope="sinew-muscles" sex="male" primary="quads,glutes" secondary="adductors,hamstrings,lower-back" hint-size="100%,260px"></x-import></div></div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">SQUAT · FEMALE BASE</div><div style="height:260px"><x-import component-from-global-scope="sinew-muscles" sex="female" primary="quads,glutes" secondary="adductors,hamstrings,lower-back" hint-size="100%,260px"></x-import></div></div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">LIST TILES · ONE SIDE, CROPPED TO THE WORKED MUSCLES</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px"><div style="display:flex;align-items:center;gap:12px"><div style="width:56px;height:56px;border-radius:16px;background:#E6EADB;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" fit="crop" primary="chest,triceps" secondary="shoulders" hint-size="56px,56px"></x-import></div><div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">Bench press</div><div style="font-size:12px;color:#626556">Male base</div></div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:56px;height:56px;border-radius:16px;background:#E6EADB;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" fit="crop" primary="lats" secondary="biceps,forearms" hint-size="56px,56px"></x-import></div><div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">Pull-up</div><div style="font-size:12px;color:#626556">Male base</div></div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:56px;height:56px;border-radius:16px;background:#E6EADB;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" fit="crop" primary="quads,glutes" secondary="adductors,calves" hint-size="56px,56px"></x-import></div><div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">Squat</div><div style="font-size:12px;color:#626556">Male base</div></div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:56px;height:56px;border-radius:16px;background:#E6EADB;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" fit="crop" primary="hamstrings,glutes" secondary="lower-back" hint-size="56px,56px"></x-import></div><div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">Romanian deadlift</div><div style="font-size:12px;color:#626556">Male base</div></div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:56px;height:56px;border-radius:16px;background:#E6EADB;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" fit="crop" sex="female" primary="glutes" secondary="hamstrings" hint-size="56px,56px"></x-import></div><div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">Hip thrust</div><div style="font-size:12px;color:#626556">Female base</div></div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:56px;height:56px;border-radius:16px;background:#E6EADB;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" fit="crop" sex="female" primary="shoulders" secondary="traps" hint-size="56px,56px"></x-import></div><div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">Lateral raise</div><div style="font-size:12px;color:#626556">Female base</div></div></div></div>
+<div style="font-size:14px;line-height:20px;color:#626556;text-wrap:pretty">Tiles show the side with more primary muscles (front for chest and quads, back for lats, glutes and hamstrings) and zoom so the worked muscles fill the shape. The base follows Sex in Profile; it falls back to male when blank.</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="font-size:32px;font-weight:600">Set rows · one per tracking type</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{ setTypes }}" as="st" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.5px;color:#626556;padding:0 4px"><span>{{ st.type }}</span><span>{{ st.cols }}</span></div>
+<sc-if value="{{ st.done }}"><div style="display:flex;align-items:center;gap:8px;background:#E0EAC9;border-radius:16px;padding:6px 6px 6px 8px;height:64px;box-sizing:border-box">
+<div style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#394B00">{{ st.n }}</div>
+<div style="flex:1;display:flex;gap:6px;align-items:center;font-size:20px;font-weight:600;color:#394B00">{{ st.value }}</div>
+<div style="width:52px;height:52px;border-radius:50%;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1,'wght' 600">check</span></div></div></sc-if>
+<sc-if value="{{ st.open }}"><div style="display:flex;align-items:center;gap:8px;background:#EFF2E5;border:1px solid #D4D8C7;border-radius:16px;padding:6px 6px 6px 8px;height:64px;box-sizing:border-box">
+<div style="width:32px;height:32px;border-radius:8px;background:#E6EADB;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">{{ st.n }}</div>
+<div style="flex:1;display:flex;gap:6px;align-items:center;min-width:0">
+<sc-for list="{{ st.fields }}" as="f" hint-placeholder-count="2"><div style="flex:1;min-width:0;height:48px;border-radius:12px;background:#FFFFFF;display:flex;flex-direction:column;justify-content:center;padding:0 10px"><div style="font-size:18px;font-weight:600;line-height:22px;color:{{ f.c }}">{{ f.v }}</div><div style="font-size:11px;line-height:14px;color:#626556;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.l }}</div></div></sc-for>
+</div>
+<div style="width:52px;height:52px;border-radius:50%;border:2px solid #858878;box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:#626556"><span style="font-family:'Material Symbols Rounded';font-size:28px">check</span></div></div></sc-if>
+</div>
+</sc-for>
+<div style="font-size:13px;line-height:18px;color:#626556">Open row: grey value = last session's number shown as a hint. Tap ✓ to accept it as is, or type to override. Done row: tonal fill, filled check, values locked until tapped.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:24px">
+<div style="background:#161811;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:10px;color:#F1F2EE">
+<div style="font-size:12px;font-weight:600;letter-spacing:.5px;color:#A3A69C;padding:0 4px">WEIGHT × REPS · DARK · DONE / CURRENT / NEXT</div>
+<div style="display:flex;align-items:center;gap:8px;background:#252C0F;border-radius:16px;padding:6px 6px 6px 8px;height:64px;box-sizing:border-box"><div style="width:32px;font-size:14px;font-weight:600;text-align:center;color:#D9E3C0">1</div><div style="flex:1;font-size:20px;font-weight:600;color:#D9E3C0">80 kg × 8</div><div style="background:#A1B567;color:#090A05;font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px">PR</div><div style="width:52px;height:52px;border-radius:50%;background:#A1B567;color:#090A05;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'wght' 600">check</span></div></div>
+<div style="display:flex;align-items:center;gap:8px;background:#22241B;border:2px solid #A1B567;border-radius:16px;padding:6px 6px 6px 8px;height:64px;box-sizing:border-box"><div style="width:32px;height:32px;border-radius:8px;background:#2D2F24;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">2</div><div style="flex:1;height:48px;border-radius:12px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 10px"><div style="font-size:18px;font-weight:600">82.5</div><div style="font-size:11px;color:#A3A69C">kg · last 80</div></div><div style="flex:1;height:48px;border-radius:12px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 10px"><div style="font-size:18px;font-weight:600;color:#A3A69C">8</div><div style="font-size:11px;color:#A3A69C">reps · last 8</div></div><div style="width:52px;height:52px;border-radius:50%;border:2px solid #7F8178;box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:#A3A69C"><span style="font-family:'Material Symbols Rounded';font-size:28px">check</span></div></div>
+<div style="display:flex;align-items:center;gap:8px;border:1px solid #3C3F33;border-radius:16px;padding:6px 6px 6px 8px;height:64px;box-sizing:border-box;opacity:.8"><div style="width:32px;font-size:14px;font-weight:600;text-align:center;color:#A3A69C">3</div><div style="flex:1;font-size:16px;color:#A3A69C">82.5 kg × 8 planned</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">SET COMPLETE · KEYFRAMES</div>
+<div style="display:flex;gap:16px;align-items:center;justify-content:space-around">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:52px;height:52px;border-radius:50%;border:2px solid #858878;box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:#626556"><span style="font-family:'Material Symbols Rounded';font-size:28px">check</span></div><div style="font-family:JBM;font-size:11px">0ms</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:52px;height:52px;border-radius:50%;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;transform:scale(1.18)"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'wght' 600">check</span></div><div style="font-family:JBM;font-size:11px">120ms ×1.18</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:52px;height:52px;border-radius:50%;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'wght' 600">check</span></div><div style="font-family:JBM;font-size:11px">260ms ×1</div></div>
+</div>
+<div style="font-size:13px;line-height:18px;color:#626556">Light haptic (HapticFeedback.lightImpact) at 0ms. The row fill crossfades to secondaryContainer over 150ms. If the set is a PR, the row pulses to primaryContainer once (600ms) and a PR pill appears. No confetti.</div></div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">INLINE REST BAR</div>
+<div style="background:#191C0F;color:#F5F6F2;border-radius:20px;height:64px;display:flex;align-items:center;gap:12px;padding:0 8px 0 16px;position:relative;overflow:hidden"><div style="position:absolute;left:0;top:0;bottom:0;width:62%;background:#2A3310"></div><div style="position:relative;display:flex;flex-direction:column;flex:1"><div style="font-size:12px;color:#C9CCC0">Rest · next set 3 of 4</div><div style="font-size:24px;font-weight:700;line-height:28px">1:14</div></div><div style="position:relative;height:40px;padding:0 14px;border-radius:999px;background:#2D2F24;display:flex;align-items:center;font-size:14px;font-weight:600">+15s</div><div style="position:relative;height:40px;padding:0 14px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;font-size:14px;font-weight:600">Skip</div></div>
+<div style="font-size:13px;line-height:18px;color:#626556">inverseSurface bar docked above the thumb zone. Tap it to open the full-screen rest timer. It counts down even when the screen is off.</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+<div style="font-size:32px;font-weight:600">Lists, chips, cards, controls</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">EXERCISE LIST ROW · POPULATED / LOADING</div>
+<div style="border:1px solid #D4D8C7;border-radius:20px;overflow:hidden;background:#EFF2E5">
+<sc-for list="{{ exRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:14px;padding:10px 12px 10px 12px;min-height:72px;box-sizing:border-box;border-bottom:1px solid #D4D8C7">
+<div style="width:48px;height:48px;border-radius:14px;background:#F9FBF4;overflow:hidden;flex:none"><x-import component-from-global-scope="sinew-muscles" fit="crop" labels="false" primary="{{ r.p }}" secondary="{{ r.s }}" hint-size="48px,48px"></x-import></div>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;line-height:24px">{{ r.name }}</div><div style="font-size:14px;line-height:20px;color:#626556">{{ r.meta }}</div></div>
+<div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">add</span></div></div></sc-for>
+<sc-for list="{{ skel3 }}" as="x" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:14px;padding:10px 12px;min-height:72px;box-sizing:border-box;border-bottom:1px solid #D4D8C7;animation:skel 1.4s ease-in-out infinite"><div style="width:48px;height:52px;border-radius:12px;background:#E6EADB"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="height:14px;width:60%;border-radius:7px;background:#E6EADB"></div><div style="height:12px;width:40%;border-radius:6px;background:#E6EADB"></div></div></div></sc-for>
+</div></div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">FILTER CHIPS</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<div style="height:32px;padding:0 12px 0 8px;border-radius:8px;background:#E0EAC9;color:#394B00;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Strength</div>
+<div style="height:32px;padding:0 12px;border-radius:8px;border:1px solid #D4D8C7;color:#626556;display:flex;align-items:center;font-size:14px;font-weight:600">Yoga</div>
+<div style="height:32px;padding:0 12px;border-radius:8px;border:1px solid #D4D8C7;color:#626556;display:flex;align-items:center;font-size:14px;font-weight:600">Boxing</div>
+<div style="height:32px;padding:0 8px 0 12px;border-radius:8px;border:1px solid #D4D8C7;color:#626556;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600">Muscle<span style="font-family:'Material Symbols Rounded';font-size:18px">arrow_drop_down</span></div>
+<div style="height:32px;padding:0 8px 0 12px;border-radius:8px;background:#E0EAC9;color:#394B00;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600">Barbell, Dumbbell<span style="font-family:'Material Symbols Rounded';font-size:18px">arrow_drop_down</span></div>
+<div style="height:32px;padding:0 12px;border-radius:8px;border:1px solid #D4D8C7;color:#626556;opacity:.38;display:flex;align-items:center;font-size:14px;font-weight:600">Pilates</div>
+</div>
+<div style="font-size:13px;line-height:18px;color:#626556">Kuber chipTheme: 8dp radius, outlineVariant border, labelLarge. Selected = secondaryContainer + check. A chip with options opens a sheet; its label then lists what's picked.</div>
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556;padding-top:8px">SEGMENTED</div>
+<div style="display:flex;border:1px solid #858878;border-radius:999px;overflow:hidden;height:40px"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#E0EAC9;color:#394B00;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Routines</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #858878">History</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #858878">Library</div></div>
+</div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">STAT CARD · FILLED / LOCKED</div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:600">BMI</div><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#626556">info</span></div>
+<div style="display:flex;align-items:baseline;gap:8px"><div style="font-size:32px;font-weight:700;line-height:40px">23.4</div><div style="font-size:14px;color:#626556">Healthy weight</div></div>
+<div style="position:relative;height:28px"><div style="display:flex;gap:3px;height:8px;margin-top:6px"><div style="flex:18.5;background:#C4DE7A;border-radius:4px 0 0 4px"></div><div style="flex:6.5;background:#9CB450"></div><div style="flex:5;background:#6C8213"></div><div style="flex:10;background:#495C00;border-radius:0 4px 4px 0"></div></div><div style="position:absolute;left:58%;top:0;width:4px;height:20px;border-radius:2px;background:#15180B;box-shadow:0 0 0 2px #EFF2E5"></div></div>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#626556;margin-top:-8px"><span>18.5</span><span>25</span><span>30</span><span>WHO</span></div>
+</div>
+<div style="background:#F9FBF4;border:1px dashed #858878;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:600;color:#626556">Body fat % · estimate</div><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#626556">lock</span></div>
+<div style="font-size:14px;line-height:20px">Add neck and waist to see this.</div>
+<div style="align-self:flex-start;height:40px;padding:0 16px;border-radius:999px;background:#E0EAC9;color:#394B00;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">add</span>Add measurements</div>
+</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">MEASUREMENT FIELD ROW</div>
+<div style="border:1px solid #D4D8C7;border-radius:20px;overflow:hidden;background:#EFF2E5">
+<sc-for list="{{ fieldRows }}" as="f" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:12px;padding:12px 16px 12px 8px;min-height:72px;box-sizing:border-box;border-bottom:1px solid #D4D8C7">
+<span style="font-family:'Material Symbols Rounded';font-size:24px;color:#858878">drag_indicator</span>
+<div style="flex:1;min-width:0"><div style="display:flex;gap:8px;align-items:center"><div style="font-size:16px;font-weight:600">{{ f.name }}</div><sc-if value="{{ f.pair }}"><div style="font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px;background:#E6EADB;color:#626556">L / R</div></sc-if></div><div style="font-size:14px;color:#626556">{{ f.meta }}</div></div>
+<div style="width:52px;height:32px;border-radius:999px;background:{{ f.trk }};border:2px solid {{ f.bd }};box-sizing:border-box;position:relative"><div style="position:absolute;top:50%;transform:translateY(-50%);left:{{ f.kx }};width:{{ f.ks }};height:{{ f.ks }};border-radius:50%;background:{{ f.knob }}"></div></div></div></sc-for>
+</div></div>
+<div style="background:#C6E36B;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:16px;color:#1A2400">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px">TIMER CONTROLS · ON WORK FIELD</div>
+<div style="display:flex;align-items:center;justify-content:space-around">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:64px;height:64px;border-radius:50%;background:#1A24001F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px">lock_open</span></div><div style="font-size:12px;font-weight:600">Lock</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:64px;height:64px;border-radius:50%;background:#1A24001F;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">+10s</div><div style="font-size:12px;font-weight:600">Add</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:88px;height:88px;border-radius:32px;background:#1A2400;color:#C6E36B;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:44px;font-variation-settings:'FILL' 1">pause</span></div><div style="font-size:12px;font-weight:600">Pause</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:64px;height:64px;border-radius:50%;background:#1A24001F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">skip_next</span></div><div style="font-size:12px;font-weight:600">Skip</div></div>
+</div>
+<div style="font-size:13px;line-height:18px">Primary 88dp, secondary 64dp. Colours come from the phase's on-colour, so they work on any field. When paused, the primary morphs to a circle with ▶ (M3E shape morph, 220ms spring).</div>
+</div>
+<div style="background:#F9FBF4;border:1px solid #D4D8C7;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#626556">CHART CARD</div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between"><div><div style="font-size:14px;font-weight:600">Estimated 1RM</div><div style="font-size:12px;color:#626556">Bench press · 6 months</div></div><div style="text-align:right"><div style="font-size:22px;font-weight:700">101 kg</div><div style="font-size:12px;color:#394B00;font-weight:600">+8.5 since May</div></div></div>
+<svg viewBox="0 0 320 120" style="width:100%;display:block"><g stroke="#D4D8C7" stroke-width="1"><line x1="0" x2="320" y1="20" y2="20"/><line x1="0" x2="320" y1="60" y2="60"/><line x1="0" x2="320" y1="100" y2="100"/></g><path d="M0 92 L40 88 L80 80 L120 82 L160 66 L200 58 L240 50 L280 40 L320 30 L320 110 L0 110Z" fill="#E0EAC9"/><path d="M0 92 L40 88 L80 80 L120 82 L160 66 L200 58 L240 50 L280 40 L320 30" fill="none" stroke="#617600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="320" cy="30" r="0"/><circle cx="280" cy="40" r="5" fill="#617600" stroke="#EFF2E5" stroke-width="2"/></svg>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#626556"><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span></div>
+</div></div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { w: 60, unit: 'kg', t: 1 };
+  renderVals() {
+    const { w, unit, t } = this.state;
+    const step = unit === 'kg' ? 2.5 : 5;
+    const set = (w) => this.setState({ w });
+    const presetsKg = [20, 60, 100, 92.5, 140], presetsLb = [45, 95, 135, 225, 315];
+    const silThen = { height: 178, waist: 92, chest: 101, hips: 103, shoulders: 116, thigh: 60, bicep: 32, calf: 38, neck: 40, forearm: 28 };
+    const silNowO = { height: 178, waist: 84, chest: 103, hips: 98, shoulders: 120, thigh: 57, bicep: 34.5, calf: 38, neck: 39, forearm: 29 };
+    const mix = k => (silThen[k] + (silNowO[k] - silThen[k]) * t);
+    const months = ['12 Jan', 'Feb', '18 Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '27 Oct'];
+    const json = o => JSON.stringify(o);
+    const sw = (on) => on ? { trk: '#617600', bd: '#617600', knob: '#FFFFFF', kx: '22px', ks: '24px' } : { trk: '#E6EADB', bd: '#858878', knob: '#858878', kx: '6px', ks: '16px' };
+    return {
+      w, unit, kgBg: unit === 'kg' ? '#E0EAC9' : 'transparent', lbBg: unit === 'lb' ? '#E0EAC9' : 'transparent',
+      setKg: () => this.setState({ unit: 'kg', w: 60 }), setLb: () => this.setState({ unit: 'lb', w: 135 }),
+      inc: () => set(Math.min(unit === 'kg' ? 227.5 : 500, +(w + step).toFixed(2))), dec: () => set(Math.max(0, +(w - step).toFixed(2))),
+      presets: (unit === 'kg' ? presetsKg : presetsLb).map(p => ({ label: p + ' ' + unit, go: () => set(p) })),
+      keyframes: [
+        { step: '1 · EMPTY BAR', t: '0ms', w: 20, note: 'Bar only. The caption says so; no plates are drawn.' },
+        { step: '2 · LOADED 60', t: '+420ms', w: 60, note: 'Each 20 slides in from the sleeve end, overshoots ~4dp, then settles.' },
+        { step: '3 · CHANGED → 100', t: '+465ms', w: 100, note: 'The 20s exit. 25 + 15 enter inside to out, 45ms apart.' },
+        { step: '4 · CHANGED → 92.5', t: '+510ms', w: 92.5, note: 'Fine change: only the small plates swap. 25 + 10 + 1.25.' }
+      ],
+      edges: [
+        { title: 'NOT ACHIEVABLE', w: 101, unit: 'kg', kind: 'barbell', theme: 'light', width: 300, bg: '#F9FBF4', bd: '#D4D8C7', fg: '#626556', max: '300px' },
+        { title: 'BAR ONLY · LB', w: 45, unit: 'lb', kind: 'barbell', theme: 'light', width: 300, bg: '#F9FBF4', bd: '#D4D8C7', fg: '#626556', max: '300px' },
+        { title: '225 LB · DARK', w: 225, unit: 'lb', kind: 'barbell', theme: 'dark', width: 300, bg: '#161811', bd: '#161811', fg: '#A3A69C', max: '300px' },
+        { title: 'DUMBBELL 22 KG', w: 22, unit: 'kg', kind: 'dumbbell', theme: 'light', width: 240, bg: '#F9FBF4', bd: '#D4D8C7', fg: '#626556', max: '240px' },
+        { title: 'DUMBBELL · DARK', w: 14.5, unit: 'kg', kind: 'dumbbell', theme: 'dark', width: 240, bg: '#161811', bd: '#161811', fg: '#A3A69C', max: '240px' },
+        { title: 'CABLE STACK', w: 45, unit: 'kg', kind: 'stack', theme: 'light', width: 200, bg: '#F9FBF4', bd: '#D4D8C7', fg: '#626556', max: '150px' }
+      ],
+      silStates: [
+        { title: 'NO DATA', base: 'neutral', data: '', note: 'Every line dashed and grey. "Add your first measurements to draw your shape."' },
+        { title: 'PARTIAL · HEIGHT, WAIST, HIPS', base: 'male', data: json({ height: 180, waist: 88, hips: 100 }), note: 'Solid where measured. Dashed sections are estimated from the base.' },
+        { title: 'FULL · ALL FIELDS', base: 'female', data: json({ height: 165, neck: 32, shoulders: 101, chest: 89, waist: 70, hips: 98, bicep: 27, forearm: 23, thigh: 55, calf: 35 }), note: 'Fully solid with a tonal fill. Height sets the proportions.' }
+      ],
+      silNow: json(silNowO), silThen: json(silThen), silT: String(t), silTpct: Math.round(t * 100),
+      silDate: months[Math.round(t * 9)],
+      silDiff: [['Waist', mix('waist')], ['Hips', mix('hips')], ['Chest', mix('chest')], ['Shoulders', mix('shoulders')]].map(([k, v]) => ({ k, v: v.toFixed(1) + ' cm' })),
+      onScrub: e => this.setState({ t: +e.target.value / 100 }),
+      bases: [{ base: 'male', label: 'Male base', data: json({ height: 178 }) }, { base: 'female', label: 'Female base', data: json({ height: 165 }) }, { base: 'neutral', label: 'Neutral base', data: json({ height: 172 }) }],
+      setTypes: [
+        { type: 'WEIGHT × REPS', cols: 'KG · REPS', n: 2, open: true, fields: [{ v: '82.5', l: 'kg · last 80', c: '#15180B' }, { v: '8', l: 'reps · last 8', c: '#626556' }] },
+        { type: 'REPS ONLY', cols: 'REPS', n: 1, done: true, value: '15 reps' },
+        { type: 'TIME', cols: 'DURATION', n: 1, open: true, fields: [{ v: '0:45', l: 'plank · last 0:40', c: '#626556' }] },
+        { type: 'DISTANCE + TIME', cols: 'KM · TIME · PACE', n: 1, open: true, fields: [{ v: '5.0', l: 'km', c: '#15180B' }, { v: '27:40', l: 'last 28:15', c: '#626556' }, { v: '5:32', l: '/km', c: '#626556' }] },
+        { type: 'ROUNDS · BOXING', cols: 'ROUNDS · LENGTH', n: 1, open: true, fields: [{ v: '6', l: 'rounds', c: '#15180B' }, { v: '3:00', l: 'per round', c: '#626556' }, { v: 'Jab-cross-hook', l: 'combo', c: '#626556' }] },
+        { type: 'HOLD · YOGA', cols: 'HOLD · SIDE', n: 1, open: true, fields: [{ v: '0:30', l: 'hold · last 0:30', c: '#626556' }, { v: 'Left', l: 'then right', c: '#15180B' }] },
+        { type: 'FLOW · YOGA', cols: 'POSES · BREATHS', n: 1, done: true, value: 'Sun Salutation A · 5 rounds' }
+      ].map(s => ({ ...s, done: !!s.done, open: !!s.open })),
+      exRows: [
+        { name: 'Bench press', meta: 'Chest · Barbell · Intermediate', p: 'chest,triceps', s: 'shoulders' },
+        { name: 'Goblet squat', meta: 'Legs · Dumbbell · Beginner', p: 'quads,glutes', s: 'adductors,abs' },
+        { name: 'Downward dog · Adho Mukha Svanasana', meta: 'Yoga · Bodyweight · Beginner', p: 'hamstrings,shoulders', s: 'calves' }
+      ], skel3: [1, 2],
+      fieldRows: [
+        { name: 'Waist', meta: 'cm · Silhouette: waist', pair: false, ...sw(true) },
+        { name: 'Bicep', meta: 'cm · Silhouette: upper arm', pair: true, ...sw(true) },
+        { name: 'Wrist', meta: 'cm · custom · not drawn', pair: false, ...sw(false) }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

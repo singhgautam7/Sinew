@@ -1,0 +1,406 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sinew.fit/schema/exercise.schema.json",
+  "title": "SinewExerciseRecord",
+  "description": "Schema for Sinew offline exercise and movement database entries.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "aliases",
+    "sanskritName",
+    "category",
+    "subcategory",
+    "trackingType",
+    "primaryMuscles",
+    "secondaryMuscles",
+    "equipment",
+    "difficulty",
+    "unilateral",
+    "mechanic",
+    "force",
+    "steps",
+    "tips",
+    "commonMistakes",
+    "safetyNotes",
+    "contraindications",
+    "metValue",
+    "defaultRestSec",
+    "defaultHoldSec",
+    "variationOf",
+    "tags",
+    "source",
+    "sourceRef",
+    "license",
+    "verification"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Lowercase kebab-case permanent identifier."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100,
+      "description": "Canonical English movement name."
+    },
+    "aliases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true,
+      "description": "Alternate common names and synonyms."
+    },
+    "sanskritName": {
+      "type": ["string", "null"],
+      "description": "Romanized Sanskrit name without diacritics (yoga postures and flows)."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "strength",
+        "calisthenics",
+        "yoga",
+        "mobility",
+        "hiit",
+        "boxing",
+        "cardio",
+        "pilates"
+      ]
+    },
+    "subcategory": {
+      "type": "string",
+      "enum": [
+        "squat",
+        "hinge",
+        "benchPress",
+        "overheadPress",
+        "row",
+        "pullupPulldown",
+        "lungeSplitSquat",
+        "dip",
+        "curl",
+        "tricepsExtension",
+        "lateralRaise",
+        "calfRaise",
+        "coreStrength",
+        "carry",
+        "shrug",
+        "chestFly",
+        "legCurlExtension",
+        "olympic",
+        "push",
+        "pull",
+        "core",
+        "legs",
+        "handstand",
+        "planche",
+        "lever",
+        "muscleUp",
+        "rings",
+        "standing",
+        "forwardBend",
+        "backbend",
+        "twist",
+        "inversion",
+        "armBalance",
+        "hipOpener",
+        "seated",
+        "restorative",
+        "pranayama",
+        "staticStretching",
+        "dynamicStretching",
+        "foamRolling",
+        "jointMobility",
+        "jumpPlyometric",
+        "sprintInterval",
+        "burpeeVariation",
+        "conditioningBodyweight",
+        "kettlebellHiit",
+        "battleRopes",
+        "punches",
+        "defense",
+        "footwork",
+        "combinations",
+        "heavyBag",
+        "padWork",
+        "shadowboxing",
+        "skipping",
+        "running",
+        "cycling",
+        "rowing",
+        "swimming",
+        "elliptical",
+        "stairClimber",
+        "walking",
+        "matClassic",
+        "reformerClassic",
+        "cadillacTower",
+        "chair",
+        "barrelArc"
+      ]
+    },
+    "trackingType": {
+      "type": "string",
+      "enum": [
+        "weightReps",
+        "reps",
+        "time",
+        "distanceTime",
+        "rounds",
+        "hold",
+        "flow"
+      ]
+    },
+    "primaryMuscles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "chest",
+          "shoulders",
+          "rearDeltoids",
+          "biceps",
+          "triceps",
+          "forearms",
+          "trapezius",
+          "lats",
+          "rhomboids",
+          "lowerBack",
+          "core",
+          "obliques",
+          "hipFlexors",
+          "glutes",
+          "quadriceps",
+          "hamstrings",
+          "adductors",
+          "abductors",
+          "calves",
+          "tibialis",
+          "neck",
+          "fullBody"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "secondaryMuscles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "chest",
+          "shoulders",
+          "rearDeltoids",
+          "biceps",
+          "triceps",
+          "forearms",
+          "trapezius",
+          "lats",
+          "rhomboids",
+          "lowerBack",
+          "core",
+          "obliques",
+          "hipFlexors",
+          "glutes",
+          "quadriceps",
+          "hamstrings",
+          "adductors",
+          "abductors",
+          "calves",
+          "tibialis",
+          "neck",
+          "fullBody"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "bodyweight",
+          "barbell",
+          "dumbbell",
+          "kettlebell",
+          "cable",
+          "machine",
+          "smithMachine",
+          "ezBar",
+          "trapBar",
+          "squatRack",
+          "bench",
+          "inclineBench",
+          "declineBench",
+          "pullupBar",
+          "dipStation",
+          "parallelBars",
+          "gymnasticRings",
+          "resistanceBand",
+          "miniBand",
+          "suspensionTrainer",
+          "weightPlate",
+          "medicineBall",
+          "slamBall",
+          "stabilityBall",
+          "foamRoller",
+          "lacrosseBall",
+          "massageStick",
+          "yogaMat",
+          "yogaBlock",
+          "yogaStrap",
+          "yogaBolster",
+          "yogaBlanket",
+          "jumpRope",
+          "heavyBag",
+          "speedBag",
+          "doubleEndBag",
+          "focusMitts",
+          "boxingGloves",
+          "handWraps",
+          "treadmill",
+          "stationaryBike",
+          "airBike",
+          "rower",
+          "skiErg",
+          "elliptical",
+          "stairClimber",
+          "pool",
+          "pilatesReformer",
+          "pilatesCadillac",
+          "pilatesWundaChair",
+          "pilatesMagicCircle",
+          "pilatesSpineCorrector",
+          "pilatesLadderBarrel",
+          "plyoBox",
+          "agilityLadder",
+          "landmine",
+          "weightVest",
+          "abWheel",
+          "slantBoard"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced"]
+    },
+    "unilateral": {
+      "type": "boolean"
+    },
+    "mechanic": {
+      "type": ["string", "null"],
+      "enum": ["compound", "isolation", null]
+    },
+    "force": {
+      "type": ["string", "null"],
+      "enum": ["push", "pull", "static", "hinge", null]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 200
+      },
+      "minItems": 3,
+      "maxItems": 8
+    },
+    "tips": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 200
+      },
+      "minItems": 1,
+      "maxItems": 4
+    },
+    "commonMistakes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 200
+      },
+      "minItems": 1,
+      "maxItems": 4
+    },
+    "safetyNotes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "contraindications": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "metValue": {
+      "type": "number",
+      "minimum": 1.0,
+      "maximum": 25.0
+    },
+    "defaultRestSec": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 600
+    },
+    "defaultHoldSec": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 600
+    },
+    "variationOf": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "source": {
+      "type": "string",
+      "enum": ["seed", "generated", "curated", "manual"]
+    },
+    "sourceRef": {
+      "type": ["string", "null"]
+    },
+    "license": {
+      "type": "string",
+      "enum": ["own", "MIT", "Unlicense", "CC0-1.0"]
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "passes", "notes"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["unverified", "verified", "flagged"]
+        },
+        "passes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "trackingType": { "const": "hold" } }
+      },
+      "then": {
+        "properties": { "defaultHoldSec": { "type": "integer", "minimum": 1 } },
+        "required": ["defaultHoldSec"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+libraryVersion: "1.0.0"
+schemaVersion: "2020-12"
+
+models:
+  generation:
+    name: "gemini-2.5-flash"
+    temperature: 0.2
+    topP: 0.95
+    maxOutputTokens: 8192
+    promptVersion: "gen-v1.0"
+  verification:
+    name: "gemini-2.5-pro"
+    temperature: 0.1
+    topP: 0.9
+    maxOutputTokens: 8192
+    promptVersion: "verify-v1.0"
+
+targets:
+  strength: 1400
+  calisthenics: 300
+  yoga: 300
+  mobility: 300
+  hiit: 200
+  boxing: 150
+  cardio: 120
+  pilates: 120
+  flows: 30
+
+batchSize: 30
+maxValidationRetries: 2
+
+paths:
+  schema: "schema/exercise.schema.json"
+  flowSchema: "schema/flow.schema.json"
+  vocab: "schema/vocab.json"
+  muscleRegions: "schema/muscle_regions.json"
+  stage: "stage"
+  dist: "dist"
+  appSpecsData: "../specs/data"

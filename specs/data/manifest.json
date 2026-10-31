@@ -1,0 +1,28 @@
+{
+  "libraryVersion": "1.0.0",
+  "schemaVersion": "2020-12",
+  "builtAt": "2026-10-31T20:56:44.239539+00:00",
+  "totalExercises": 50,
+  "counts": {
+    "strength": 8,
+    "hiit": 5,
+    "boxing": 5,
+    "mobility": 6,
+    "yoga": 8,
+    "cardio": 5,
+    "calisthenics": 8,
+    "pilates": 5
+  },
+  "sha256": {
+    "ATTRIBUTIONS.md": "8cc27a9b8508c4cb58ab2722c4a90bdf0c730a424c33b360fc5617696cfa57d5",
+    "CHANGELOG.md": "5ba53681e40c272d37aa6ddec8147b412495784ea61d144940885d177360e4a9",
+    "SOURCES.md": "66887460d99ea3774e04451f5e3adc3b2e8786e54b353ce2665267df82604312",
+    "exercise.schema.json": "80ce1c6b96082e0a54e958665f09b0c25be3fd5f49714ac5a264c190a4f5f595",
+    "exercises.json": "fa4504bc02f3ef6e800a9e1e1205de4183f754d61e5215f424fdbf0c372cf1c1",
+    "exercises.sample.json": "fa4504bc02f3ef6e800a9e1e1205de4183f754d61e5215f424fdbf0c372cf1c1",
+    "flow.schema.json": "1263adfc61016dca36c9f662eafc4a723a2979d874f88cc7014f9f41c0098692",
+    "flows.json": "810d3b58834f2f8e0c7a8c0c73b4d0e0bd08e9cdf48e54d05c79bfb2dea1ef07",
+    "muscle_regions.json": "ee41a45f0b7a018b6d0df04fd0de0dba19a618698e278108cd8e70de3a6f03cf",
+    "vocab.json": "de8012e693972f746cec3cef9eec5617c8c1e7d467beef0d53524de49368b19e"
+  }
+}

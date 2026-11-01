@@ -748,3 +748,48 @@ abstract final class BodySpec {
   static const int ratioDecimals = 2;
   static const int valueDecimals = 1;
 }
+// ──────────────────────────────────────────────────────────────────────────
+// TRAIN FEATURE (append-only section owned by lib/features/train)
+// ──────────────────────────────────────────────────────────────────────────
+
+/// Metrics and defaults for the Train feature.
+abstract final class TrainSpec {
+  // Routine cards and tiles.
+  static const double routineTile = 56;
+  static const double routinePlay = 48;
+  static const double routinePlayGlyph = 26;
+  static const double routineEditorTile = 48;
+
+  /// Rough work time per set, in seconds, for "about N min" estimates.
+  static const int estimatedWorkSecPerSet = 40;
+
+  // Defaults.
+  static const int defaultRestSec = 90;
+  static const int defaultSetCount = 3;
+  static const int restStepSec = 10;
+  static const int maxSets = 20;
+  static const int maxRestSec = 600;
+
+  // Active workout.
+  static const double progressSegment = 4;
+  static const double headerGlyph = 24;
+  static const double exerciseBarGap = 6;
+  static const double restBarProgress = 4;
+  static const double restRing = 280;
+  static const double restRingStroke = 12;
+  static const double setGap = 8;
+
+  // History.
+  static const int historyPage = 40;
+  static const double dateBlock = 48;
+  static const double dateBlockRadius = 12;
+
+  // Summary.
+  static const double summaryBadge = 72;
+  static const double summaryBadgeGlyph = 40;
+  static const double mapPreview = 96;
+  static const double mapPreviewHeight = 100;
+
+  // Exercise history.
+  static const int recentSessions = 20;
+}

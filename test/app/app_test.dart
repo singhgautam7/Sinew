@@ -42,12 +42,16 @@ Future<void> _pumpApp(
   await tester.pumpAndSettle();
 }
 
-/// Body watches database streams; unmounting lets their clean-up timers fire
+/// Takes the app down inside the test. Tabs that watch the database cancel
+/// their streams then, and drift closes those on a timer, which has to fire
 /// before the framework checks for stray timers.
 Future<void> _unmount(WidgetTester tester) async {
-  await tester.pumpWidget(const SizedBox());
+  await tester.pumpWidget(const SizedBox.shrink());
   await tester.pump(const Duration(milliseconds: 50));
 }
+
+/// Tabs whose landing page uses `SinewPageHeader` rather than `SinewAppBar`.
+const Set<String> kPageHeaderTabs = <String>{'Train', 'Body'};
 
 void _usePhone(WidgetTester tester, {double textScale = 1}) {
   tester.view.physicalSize = const Size(360, 780);
@@ -68,8 +72,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.descendant(
-          // The Body tab opens with a page header, not an app bar.
-          of: tab.label == 'Body'
+          // Tabs that use the large page header instead of the app bar.
+          of: kPageHeaderTabs.contains(tab.label)
               ? find.byType(SinewPageHeader)
               : find.byType(SinewAppBar),
           matching: find.text(tab.label),

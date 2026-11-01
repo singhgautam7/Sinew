@@ -10,7 +10,7 @@ fat, ratios) with a silhouette that changes as the numbers do.
 It belongs to the family of Material 3 Expressive apps; **Mull** is the house-style
 reference and **Kuber** is the source for shared widgets and backup.
 
-**Package:** `com.grs.sinew` (proposed in Phase 1, pending confirmation). Android only,
+**Package:** `com.grs.sinew` (confirmed). Android only,
 minSdk 24.
 
 ## Commands
@@ -58,15 +58,12 @@ Added together with their native configuration (see `lib/features/timer/`):
   While a run is paused it slows its tick, drops the wake lock, and after 20 minutes stops
   (the run stays saved and restores on the next open).
 
-Deliberately not added yet:
-- **Timer and cue plugins** (`flutter_foreground_task`, `flutter_local_notifications`,
-  `wakelock_plus`, an audio player, TTS) arrive in Phase 6 together with their native
-  configuration, so they are added and verified as one unit.
-- **`flutter_tts`**: Mull dropped it because it applies the Kotlin Gradle Plugin, which
-  Flutter is deprecating, and speaks through a small `TextToSpeech` method channel instead.
-  Sinew should do the same in Phase 6 (needs sign-off, it departs from the contract's list).
-- **`flutter_launcher_icons`**: Mull and Kuber both keep the icon as adaptive vector
-  drawables with a monochrome layer, which this tool would rasterise. Phase 9 follows them.
+Deliberately not used:
+- **`flutter_tts`**: it applies the Kotlin Gradle Plugin, which Flutter is deprecating (Mull's
+  finding). Voice cues go through `CueChannel.kt` instead.
+- **`flutter_launcher_icons`**: Mull and Kuber keep the icon as adaptive vector drawables with
+  a monochrome layer, which this tool would rasterise. See `docs/ICON.md` and
+  `tool/generate_icons_test.dart` (legacy PNGs, Play Store icon and splash art).
 - **`uuid`**: ids are 16 bytes from `Random.secure` (`core/db/ids.dart`); no package needed.
 
 ### Database decision
@@ -117,13 +114,14 @@ How it is enforced:
 - Read colours as `context.colors.<role>` (`SinewColors`, a `ThemeExtension`), type as
   `context.text.<style>`, everything else from `Space`, `Radii`, `IconSpec`, `Strokes`,
   `Motion`, `Elevations`, `Opacities`.
-- Phase 1 values are placeholders (Mull's scale, roles derived from the seed with Material's
-  tonal-spot scheme). Phase 3 replaces them from the design handoff; role names stay.
+- The palette is Kuber's family system (`theme_families.dart`, OKLCh) with the Sinew family
+  first, plus `SinewAccents` (plates, timer phases, muscle map, heat, chart series) and the
+  handoff's token additions. Theme modes: system, light, dark, AMOLED.
 - Seed: `#6E8A16`. Dynamic colour takes one wallpaper seed and derives every role exactly as
   the brand seed does. The seed is cached in prefs (`theme.wallpaperSeed`) so a cold start
   never flashes from green to the wallpaper colour.
-- `AppTheme.of(tone, seed:)` builds one `ThemeData` (and its `ColorScheme`) per
-  (seed, tone) and caches it. Settings are read synchronously from prefs before `runApp`.
+- `AppTheme.of(tone, familyId:, seed:)` builds one `ThemeData` (and its `ColorScheme`) per
+  (family or seed, tone) and caches it. Settings are read synchronously from prefs before `runApp`.
 - Motion: spring for anything the finger caused, decelerate for anything the system caused.
   Honour reduced motion through `Motion.of` / `Motion.curveOf`.
 - Fonts are bundled under `assets/fonts/` (Phase 3). Never fetched.
@@ -141,8 +139,8 @@ How it is enforced:
   (`specs/design/sinew-design-references/project/HANDOFF.md`) was itself drawn from
   Kuber's code and decides where it differs. Mull is the reference for motion and folder
   conventions only.
-- Phase 1 has only `PhasePlaceholder` (removed screen by screen) and a stock
-  `NavigationBar` in `core/routing/app_shell.dart` (replaced by the pill in Phase 3).
+- `docs/COMPONENTS.md` catalogues every shared and domain widget, engine, repository and
+  cross-feature contract. Read it before building a screen; update it when adding to it.
 
 ## Folder structure
 
@@ -233,3 +231,29 @@ Riverpod 3 retries failed providers by default; the root `ProviderScope` sets
 `retry: noRetry` because offline failures are deterministic. Tests must do the same.
 
 ## Known gotchas
+
+- **Drift streams in widget tests** close on a timer after their widget is gone. Unmount the
+  app at the end of every widget test that watches the DB (`closeApp` in
+  `test/helpers/phase8_harness.dart`), or the framework reports a pending timer.
+- **Test fonts are wider than Inter.** Widget tests render with the fallback font, so text
+  that fits on a device can overflow at 200% in a test. Fix the layout, not the test.
+- **Riverpod family keys must be `==`-comparable.** A `List` key rebuilds forever; use a
+  record, a string, or an immutable class with equality.
+- **The timer services are real plugins.** Widget tests that open a workout or a timer must
+  override them with `FakeTimerServices` (`test/helpers/fake_timer_services.dart`).
+- **`tokens.dart` is append-only per section.** Each feature owns one marked section; parallel
+  work conflicts at the end of the file and a merge can drop a class's closing brace.
+- **First Android build** (not yet done anywhere): `sqlite3`'s build hook downloads a prebuilt
+  `libsqlite3.so` from GitHub once; `jni` needs NDK 28.2 and CMake.
+  `android_file_picker` calls `kotlinOptions`, which Kotlin 2.4 may reject while
+  `android.builtInKotlin=false`; if it does, move Kotlin to 2.3.x or set
+  `android.builtInKotlin=true`.
+- **Release signing** still uses the debug key (`android/app/build.gradle.kts`). Add a real
+  keystore before any Play upload. The `specialUse` foreground service needs the Play
+  Console declaration.
+- **Android Auto Backup** includes only `app_flutter/sinew_user.sqlite` and the prefs file,
+  never the library and never the `-wal`/`-shm` files (`res/xml/*backup*`).
+- **Asian BMI cut-offs** follow the contract (obese from 25). The Body frame's info sheet
+  said 27.5; the contract wins.
+- **Seeding** runs on every launch and is idempotent (`MeasurementSeed`, timer presets): a
+  row the user deleted stays deleted, an unreadable newer row is never overwritten.

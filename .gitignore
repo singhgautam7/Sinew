@@ -34,3 +34,6 @@ android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
 android/key.properties
 **/*.keystore
 **/*.jks
+
+# Agent worktrees (temporary, per session)
+.claude/worktrees/

@@ -14,13 +14,18 @@ import 'package:sinew/core/widgets/sinew_app_bar.dart';
 import 'package:sinew/core/widgets/sinew_nav_pill.dart';
 import 'package:sinew/core/theme/wallpaper_seed.dart';
 
+import '../helpers/phase8_harness.dart' show closeApp;
 import '../helpers/test_db.dart';
 
 Future<void> _pumpApp(
   WidgetTester tester, {
   Map<String, Object> prefs = const <String, Object>{},
 }) async {
-  SharedPreferences.setMockInitialValues(prefs);
+  // Everything except the first-run tests assumes an onboarded user.
+  SharedPreferences.setMockInitialValues(<String, Object>{
+    AppSettings.kOnboarded: true,
+    ...prefs,
+  });
   final SharedPreferences p = await SharedPreferences.getInstance();
   final UserDatabase db = memoryUserDb();
   addTearDown(db.close);
@@ -58,8 +63,16 @@ void _usePhone(WidgetTester tester, {double textScale = 1}) {
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 }
 
+/// A widget test that unmounts the app at the end, so Drift's stream cleanup
+/// timers (Today and More read streams) do not outlive the test.
+void testApp(String name, Future<void> Function(WidgetTester tester) body) =>
+    testWidgets(name, (WidgetTester tester) async {
+      await body(tester);
+      await closeApp(tester);
+    });
+
 void main() {
-  testWidgets('boots on Today and switches tabs', (WidgetTester tester) async {
+  testApp('boots on Today and switches tabs', (WidgetTester tester) async {
     _usePhone(tester);
     await _pumpApp(tester);
     expect(find.text('Today'), findsWidgets);
@@ -70,10 +83,11 @@ void main() {
       expect(
         find.descendant(
           // A tab's landing page uses the app bar or the large page header.
+          // Today carries the brand in its header; the others carry a title.
           of: find.byWidgetPredicate(
             (Widget w) => w is SinewAppBar || w is SinewPageHeader,
           ),
-          matching: find.text(tab.label),
+          matching: find.text(tab.label == 'Today' ? 'Sinew' : tab.label),
         ),
         findsOneWidget,
       );
@@ -81,7 +95,7 @@ void main() {
     await _unmount(tester);
   });
 
-  testWidgets('every tab lays out at 200% text on a 360dp phone', (
+  testApp('every tab lays out at 200% text on a 360dp phone', (
     WidgetTester tester,
   ) async {
     _usePhone(tester, textScale: 2);
@@ -95,20 +109,35 @@ void main() {
     await _unmount(tester);
   });
 
-  testWidgets('debug screen reports the library as not bundled yet', (
+  testApp('debug screen reports the library as not bundled yet', (
     WidgetTester tester,
   ) async {
     _usePhone(tester);
     await _pumpApp(tester);
     await tester.tap(find.byKey(const ValueKey<String>('nav-More')));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Debug'), 100);
+    await tester.drag(find.byType(ListView).first, const Offset(0, -200));
+    await tester.pump();
     await tester.tap(find.text('Debug'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Arrives in Phase 2'), findsOneWidget);
     expect(find.text('v${UserDatabase.currentSchemaVersion}'), findsWidgets);
   });
 
-  testWidgets('a stored dark theme applies on the first frame', (
+  testApp('a first run starts on Welcome, not Today', (
+    WidgetTester tester,
+  ) async {
+    _usePhone(tester);
+    await _pumpApp(
+      tester,
+      prefs: <String, Object>{AppSettings.kOnboarded: false},
+    );
+    expect(find.text('Get started'), findsOneWidget);
+    expect(find.byType(SinewNavPill), findsNothing);
+  });
+
+  testApp('a stored dark theme applies on the first frame', (
     WidgetTester tester,
   ) async {
     _usePhone(tester);
@@ -120,7 +149,7 @@ void main() {
     expect(Theme.of(ctx).brightness, Brightness.dark);
   });
 
-  testWidgets('the pill shows the selected label and hides on demand', (
+  testApp('the pill shows the selected label and hides on demand', (
     WidgetTester tester,
   ) async {
     _usePhone(tester);
@@ -158,7 +187,7 @@ void main() {
     expect(find.byType(SinewNavPill), findsOneWidget);
   });
 
-  testWidgets('back on another tab returns to the first tab', (
+  testApp('back on another tab returns to the first tab', (
     WidgetTester tester,
   ) async {
     _usePhone(tester);
@@ -178,14 +207,14 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(SinewAppBar),
-        matching: find.text('Today'),
+        matching: find.text('Sinew'),
       ),
       findsOneWidget,
     );
     await _unmount(tester);
   });
 
-  testWidgets('re-tapping the current tab keeps it on screen', (
+  testApp('re-tapping the current tab keeps it on screen', (
     WidgetTester tester,
   ) async {
     _usePhone(tester);
@@ -195,14 +224,14 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(SinewAppBar),
-        matching: find.text('Today'),
+        matching: find.text('Sinew'),
       ),
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('the pill drops its label at 200% text but keeps five tabs', (
+  testApp('the pill drops its label at 200% text but keeps five tabs', (
     WidgetTester tester,
   ) async {
     _usePhone(tester, textScale: 2);
@@ -219,13 +248,16 @@ void main() {
     }
   });
 
-  testWidgets('the debug screen lays out at 200% text', (
+  testApp('the debug screen lays out at 200% text', (
     WidgetTester tester,
   ) async {
     _usePhone(tester, textScale: 2);
     await _pumpApp(tester);
     await tester.tap(find.byKey(const ValueKey<String>('nav-More')));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Debug'), 100);
+    await tester.drag(find.byType(ListView).first, const Offset(0, -200));
+    await tester.pump();
     await tester.tap(find.text('Debug'));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);

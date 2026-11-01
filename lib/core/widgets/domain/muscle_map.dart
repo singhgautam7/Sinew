@@ -358,7 +358,8 @@ class _Figure extends StatelessWidget {
             fit: fit,
             regionSemantics: tap == null
                 ? null
-                : (Size s) => _regionSemantics(s, t, tap),
+                : (Size s) =>
+                      _regionSemantics(s, t, tap, Directionality.of(context)),
           ),
         );
         if (tap == null) return ExcludeSemantics(child: paint);
@@ -399,6 +400,7 @@ class _Figure extends StatelessWidget {
     Size size,
     _FigureTransform t,
     ValueChanged<String> tap,
+    TextDirection direction,
   ) {
     final Rect box = Offset.zero & size;
     final List<CustomPainterSemantics> out = <CustomPainterSemantics>[];
@@ -418,6 +420,7 @@ class _Figure extends StatelessWidget {
           key: ValueKey<MuscleRegion>(e.key),
           rect: r,
           properties: SemanticsProperties(
+            textDirection: direction,
             label: e.key.label,
             button: true,
             onTap: () => tap(e.key.muscleId),

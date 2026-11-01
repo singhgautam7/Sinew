@@ -214,7 +214,13 @@ class _SilhouetteViewState extends State<SilhouetteView>
                     labelStyle: labelStyle,
                     levelSemantics: tap == null
                         ? null
-                        : (Size s) => _levelSemantics(s, fit, g, tap),
+                        : (Size s) => _levelSemantics(
+                            s,
+                            fit,
+                            g,
+                            tap,
+                            Directionality.of(context),
+                          ),
                   ),
                 );
                 if (tap == null) return ExcludeSemantics(child: paint);
@@ -280,6 +286,7 @@ class _SilhouetteViewState extends State<SilhouetteView>
     _CanvasFit fit,
     SilhouetteGeometry g,
     ValueChanged<BodyAnchor> tap,
+    TextDirection direction,
   ) {
     final List<CustomPainterSemantics> out = <CustomPainterSemantics>[];
     for (final SilhouetteLevel l in g.levels) {
@@ -303,6 +310,7 @@ class _SilhouetteViewState extends State<SilhouetteView>
             y + IconSpec.tapTarget / 2,
           ).intersect(Offset.zero & size),
           properties: SemanticsProperties(
+            textDirection: direction,
             label: value.isEmpty
                 ? '${bodyAnchorLabel(l.anchor)}, $status'
                 : '${bodyAnchorLabel(l.anchor)}, $value, $status',

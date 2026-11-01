@@ -240,7 +240,7 @@ class StatCard<T> extends StatelessWidget {
       container: true,
       child: SinewCard(
         onTap: onTap,
-        padding: EdgeInsets.all(compact ? Space.md : Space.cardPadding),
+        padding: _cardPadding(compact: compact, info: onInfo != null),
         child: SizedBox(width: double.infinity, child: body),
       ),
     );
@@ -255,24 +255,28 @@ class _InfoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The 48dp button hangs into the card padding so the row stays tight.
-    return Transform.translate(
-      offset: const Offset(Space.md, 0),
-      child: SizedBox(
-        height: Sizes.glyphSlot,
-        child: OverflowBox(
-          maxHeight: IconSpec.tapTarget,
-          child: AppIconButton(
-            icon: Icons.info_outline_rounded,
-            kind: AppIconButtonKind.plain,
-            semanticLabel: 'About $label',
-            glyphSize: Sizes.infoGlyph,
-            onPressed: onTap,
-          ),
-        ),
-      ),
+    return AppIconButton(
+      icon: Icons.info_outline_rounded,
+      kind: AppIconButtonKind.plain,
+      semanticLabel: 'About $label',
+      glyphSize: Sizes.infoGlyph,
+      onPressed: onTap,
     );
   }
+}
+
+/// Card padding. With an info button the 48dp button sits in the top right
+/// corner, so the card gives up its own padding there and the label row
+/// stays level with the button's glyph.
+EdgeInsets _cardPadding({required bool compact, required bool info}) {
+  if (compact) return const EdgeInsets.all(Space.md);
+  if (!info) return const EdgeInsets.all(Space.cardPadding);
+  return const EdgeInsets.fromLTRB(
+    Space.cardPadding,
+    Space.xs,
+    Space.xs,
+    Space.cardPadding,
+  );
 }
 
 class _DeltaText extends StatelessWidget {
@@ -351,8 +355,6 @@ class _Locked extends StatelessWidget {
                 ),
               ),
             ),
-            if (onInfo != null && !compact)
-              _InfoButton(label: label, onTap: onInfo!),
             Semantics(
               label: 'Locked',
               child: Icon(
@@ -361,6 +363,8 @@ class _Locked extends StatelessWidget {
                 color: cs.onSurfaceVariant,
               ),
             ),
+            if (onInfo != null && !compact)
+              _InfoButton(label: label, onTap: onInfo!),
           ],
         ),
         SizedBox(height: compact ? Space.xs : StatSpec.gap),
@@ -391,7 +395,7 @@ class _Locked extends StatelessWidget {
       foregroundPainter: _DashedCardPainter(color: cs.outline),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(compact ? Space.md : Space.cardPadding),
+        padding: _cardPadding(compact: compact, info: onInfo != null),
         decoration: BoxDecoration(color: cs.surface, borderRadius: Radii.cardR),
         child: content,
       ),

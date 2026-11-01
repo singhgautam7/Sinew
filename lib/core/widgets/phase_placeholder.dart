@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
-import '../theme/tokens.dart';
+import 'sinew_app_bar.dart';
 
 /// Stands in for a screen that a later phase builds. Removed as each screen
 /// lands; nothing ships with one.
@@ -20,10 +20,15 @@ class PhasePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: SinewAppBar(title: title),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(Space.screen),
+          padding: const EdgeInsets.fromLTRB(
+            Space.screen,
+            Space.screen,
+            Space.screen,
+            Space.bottomSafe,
+          ),
           children: <Widget>[
             Text(
               'Arrives in Phase $phase.',

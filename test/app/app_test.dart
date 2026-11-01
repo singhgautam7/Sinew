@@ -8,7 +8,10 @@ import 'package:sinew/core/db/library/library_installer.dart';
 import 'package:sinew/core/db/user/user_db.dart';
 import 'package:sinew/core/providers.dart';
 import 'package:sinew/core/routing/router.dart';
+import 'package:sinew/core/routing/nav_visibility.dart';
 import 'package:sinew/core/settings/app_settings.dart';
+import 'package:sinew/core/widgets/sinew_app_bar.dart';
+import 'package:sinew/core/widgets/sinew_nav_pill.dart';
 import 'package:sinew/core/theme/wallpaper_seed.dart';
 
 import '../helpers/test_db.dart';
@@ -54,11 +57,11 @@ void main() {
     expect(find.text('Today'), findsWidgets);
 
     for (final TabSpec tab in kTabs) {
-      await tester.tap(find.widgetWithText(NavigationDestination, tab.label));
+      await tester.tap(find.byKey(ValueKey<String>('nav-${tab.label}')));
       await tester.pumpAndSettle();
       expect(
         find.descendant(
-          of: find.byType(AppBar),
+          of: find.byType(SinewAppBar),
           matching: find.text(tab.label),
         ),
         findsOneWidget,
@@ -73,7 +76,7 @@ void main() {
     await _pumpApp(tester);
     for (int i = 0; i < kTabs.length; i++) {
       final TabSpec tab = kTabs[i];
-      await tester.tap(find.byType(NavigationDestination).at(i));
+      await tester.tap(find.byKey(ValueKey<String>('nav-${tab.label}')));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: tab.label);
     }
@@ -84,7 +87,7 @@ void main() {
   ) async {
     _usePhone(tester);
     await _pumpApp(tester);
-    await tester.tap(find.widgetWithText(NavigationDestination, 'More'));
+    await tester.tap(find.byKey(const ValueKey<String>('nav-More')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Debug'));
     await tester.pumpAndSettle();
@@ -98,9 +101,119 @@ void main() {
     _usePhone(tester);
     await _pumpApp(
       tester,
-      prefs: <String, Object>{AppSettings.kMode: ThemeMode.dark.name},
+      prefs: <String, Object>{AppSettings.kMode: AppThemeMode.dark.name},
     );
     final BuildContext ctx = tester.element(find.byType(Scaffold).first);
     expect(Theme.of(ctx).brightness, Brightness.dark);
+  });
+
+  testWidgets('the pill shows the selected label and hides on demand', (
+    WidgetTester tester,
+  ) async {
+    _usePhone(tester);
+    await _pumpApp(tester);
+    expect(find.byType(SinewNavPill), findsOneWidget);
+    // Only the selected tab shows its label inside the pill.
+    expect(
+      find.descendant(
+        of: find.byType(SinewNavPill),
+        matching: find.text('Today'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(SinewNavPill),
+        matching: find.text('Train'),
+      ),
+      findsNothing,
+    );
+
+    final ProviderContainer container = ProviderScope.containerOf(
+      tester.element(find.byType(SinewApp)),
+    );
+    container
+        .read(navHideReasonsProvider.notifier)
+        .hide(NavHideReason.activeWorkout);
+    await tester.pumpAndSettle();
+    expect(find.byType(SinewNavPill), findsNothing);
+
+    container
+        .read(navHideReasonsProvider.notifier)
+        .show(NavHideReason.activeWorkout);
+    await tester.pumpAndSettle();
+    expect(find.byType(SinewNavPill), findsOneWidget);
+  });
+
+  testWidgets('back on another tab returns to the first tab', (
+    WidgetTester tester,
+  ) async {
+    _usePhone(tester);
+    await _pumpApp(tester);
+    await tester.tap(find.byKey(const ValueKey<String>('nav-Body')));
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byType(SinewAppBar),
+        matching: find.text('Body'),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byType(SinewAppBar),
+        matching: find.text('Today'),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('re-tapping the current tab keeps it on screen', (
+    WidgetTester tester,
+  ) async {
+    _usePhone(tester);
+    await _pumpApp(tester);
+    await tester.tap(find.byKey(const ValueKey<String>('nav-Today')));
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byType(SinewAppBar),
+        matching: find.text('Today'),
+      ),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the pill drops its label at 200% text but keeps five tabs', (
+    WidgetTester tester,
+  ) async {
+    _usePhone(tester, textScale: 2);
+    await _pumpApp(tester);
+    expect(
+      find.descendant(
+        of: find.byType(SinewNavPill),
+        matching: find.byType(Text),
+      ),
+      findsNothing,
+    );
+    for (final TabSpec tab in kTabs) {
+      expect(find.byKey(ValueKey<String>('nav-${tab.label}')), findsOneWidget);
+    }
+  });
+
+  testWidgets('the debug screen lays out at 200% text', (
+    WidgetTester tester,
+  ) async {
+    _usePhone(tester, textScale: 2);
+    await _pumpApp(tester);
+    await tester.tap(find.byKey(const ValueKey<String>('nav-More')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Debug'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
   });
 }

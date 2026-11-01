@@ -359,6 +359,9 @@ abstract final class PlateSpec {
   static const double plateStroke = 1.5;
   static const double plateRadius = 3;
 
+  /// How far a plate slides when it enters or leaves.
+  static const double slideTravel = 46;
+
   // Barbell.
   static const double shaftHalfHeight = 3.5;
   static const double sleeveHalfHeight = 6;

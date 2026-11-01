@@ -10,7 +10,7 @@ enum AppButtonType {
   /// Tonal (secondaryContainer).
   normal,
 
-  /// Outlined (1dp outlineVariant).
+  /// Outlined (1dp outline).
   outline,
 
   /// Danger tonal (errorContainer); [AppButton.filled] makes it solid error.
@@ -82,7 +82,7 @@ class AppButton extends StatelessWidget {
       AppButtonType.outline => (
         Colors.transparent,
         cs.onSurface,
-        BorderSide(color: cs.outlineVariant),
+        BorderSide(color: cs.outline),
       ),
       AppButtonType.danger =>
         filled
@@ -134,7 +134,8 @@ class AppButton extends StatelessWidget {
             label,
             style: textStyle,
             overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+            textAlign: TextAlign.center,
+            maxLines: 2,
           ),
         ),
         if (!isLoading && icon != null && iconAfterLabel) ...<Widget>[
@@ -156,6 +157,7 @@ class AppButton extends StatelessWidget {
             // 24 side padding for 56 buttons, unless a caller fixed a narrow
             // width.
             padding: EdgeInsets.symmetric(
+              vertical: Space.xs,
               horizontal:
                   horizontalPadding ??
                   (large &&
@@ -176,10 +178,13 @@ class AppButton extends StatelessWidget {
       );
     }
 
-    Widget sized = SizedBox(
-      width: fullWidth ? double.infinity : width,
-      height: h,
-      child: button,
+    // The design height is a minimum: large text grows the button.
+    Widget sized = ConstrainedBox(
+      constraints: BoxConstraints(minHeight: h),
+      child: SizedBox(
+        width: fullWidth ? double.infinity : width,
+        child: button,
+      ),
     );
     if (!large) {
       sized = MinTapTarget(onTap: disabled ? null : onPressed, child: sized);

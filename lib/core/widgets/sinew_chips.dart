@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
+import 'min_tap_target.dart';
 import 'sinew_menu.dart';
 
-/// Filter / choice chip: 32 high, radius 8. Unselected = 1dp outlineVariant;
+/// Filter / choice chip: 32 high, radius 8. Unselected = 1dp outline;
 /// selected = secondaryContainer (+ an 18 check unless [showCheck] is false).
 /// Optional leading [icon], trailing close ([onDeleted]) or drop-down arrow
 /// ([dropdown]) and a count [badge]. A chip that opens a sheet shows what was
@@ -64,7 +65,6 @@ class SinewChip extends StatelessWidget {
                       iconColor ??
                       (selected ? cs.onSecondaryContainer : cs.primary),
                 ));
-    final bool hasTrail = dropdown || onDeleted != null;
 
     final Text text = Text(
       label,
@@ -73,31 +73,30 @@ class SinewChip extends StatelessWidget {
       style: tt.labelLarge!.copyWith(color: fg),
     );
 
-    return Opacity(
-      opacity: enabled ? 1 : Opacities.disabled,
-      child: Semantics(
-        button: true,
-        selected: selected,
-        enabled: enabled,
-        label: badge == null ? label : '$label, $badge',
-        excludeSemantics: true,
-        onTap: enabled ? onTap : null,
-        child: Material(
-          color: selected ? cs.secondaryContainer : Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: pill ? Radii.fullR : Radii.chipR,
-            side: selected
-                ? BorderSide.none
-                : BorderSide(color: cs.outlineVariant),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: enabled ? onTap : null,
-            child: Container(
-              height: Sizes.chip,
-              padding: EdgeInsets.only(
-                left: lead != null ? Space.sm : Space.lg,
-                right: hasTrail ? Space.sm : Space.lg,
+    // The delete target is a separate 48dp square laid over the chip's end,
+    // so the chip body reserves room for it instead of a small icon.
+    final Widget body = Semantics(
+      button: true,
+      selected: selected,
+      enabled: enabled,
+      label: badge == null ? label : '$label, $badge',
+      excludeSemantics: true,
+      onTap: enabled ? onTap : null,
+      child: Material(
+        color: selected ? cs.secondaryContainer : Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: pill ? Radii.fullR : Radii.chipR,
+          side: selected ? BorderSide.none : BorderSide(color: cs.outline),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: enabled ? onTap : null,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: Sizes.chip),
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: lead != null ? Space.sm : Space.lg,
+                end: onDeleted != null ? 0 : (dropdown ? Space.sm : Space.lg),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -133,28 +132,58 @@ class SinewChip extends StatelessWidget {
                       color: fg,
                     ),
                   ],
-                  if (onDeleted != null) ...<Widget>[
-                    const SizedBox(width: Space.sm),
-                    GestureDetector(
-                      onTap: onDeleted,
-                      behavior: HitTestBehavior.opaque,
-                      child: Semantics(
-                        button: true,
-                        label: 'Remove $label',
-                        child: Icon(
-                          Icons.close_rounded,
-                          size: IconSpec.small,
-                          color: fg,
-                        ),
-                      ),
-                    ),
-                  ],
+                  if (onDeleted != null)
+                    const SizedBox(width: IconSpec.tapTarget),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+
+    final Widget framed = onDeleted == null
+        ? body
+        : Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minHeight: IconSpec.tapTarget,
+                ),
+                child: Center(widthFactor: 1, heightFactor: 1, child: body),
+              ),
+              PositionedDirectional(
+                end: 0,
+                top: 0,
+                bottom: 0,
+                width: IconSpec.tapTarget,
+                child: Semantics(
+                  button: true,
+                  enabled: enabled,
+                  label: 'Remove $label',
+                  excludeSemantics: true,
+                  onTap: enabled ? onDeleted : null,
+                  child: GestureDetector(
+                    onTap: enabled ? onDeleted : null,
+                    behavior: HitTestBehavior.opaque,
+                    child: Center(
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: IconSpec.small,
+                        color: fg,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+
+    // Drawn 32 high (or taller for large text), hit area at least 48 high.
+    return Opacity(
+      opacity: enabled ? 1 : Opacities.disabled,
+      child: MinTapTarget(onTap: enabled ? onTap : null, child: framed),
     );
   }
 }

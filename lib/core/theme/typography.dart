@@ -29,6 +29,17 @@ abstract final class SinewType {
     fontFeatures: tabular,
   );
 
+  /// labelLarge at w700, for emphasis labels (replaces ad hoc weight
+  /// overrides at call sites).
+  static const TextStyle labelBold = TextStyle(
+    fontFamily: family,
+    fontSize: 14,
+    height: 20 / 14,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.1,
+    fontFeatures: tabular,
+  );
+
   /// Numeric readouts that want fixed-width glyphs (plate maths, set logs).
   static const TextStyle mono = TextStyle(
     fontFamily: monoFamily,

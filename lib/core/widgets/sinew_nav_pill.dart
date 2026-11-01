@@ -117,8 +117,9 @@ class SinewNavPill extends StatelessWidget {
   /// False on narrow screens / large text where the label would not fit.
   final bool showLabels;
 
-  /// Width of the pill: border 2, padding 16, items 40 (24 glyph + 8 + 8), 2
-  /// between items; the selected one adds 11 + 8 + label + 14 - 16.
+  /// Width of the pill: border 2, padding 8 less the 4 of hit slop each item
+  /// carries per side, items 40 (24 glyph + 8 + 8) plus that slop (a 48 wide
+  /// hit area, the drawn indicator unchanged); the selected one adds 11 + 8 + label + 14 - 16.
   static double widthFor(
     BuildContext context,
     List<String> labels, {
@@ -127,9 +128,8 @@ class SinewNavPill extends StatelessWidget {
     final int n = labels.length;
     final double w =
         Sizes.hairlineBorders +
-        Sizes.navPadding * 2 +
-        n * Sizes.navItem +
-        (n - 1) * Sizes.navItemGap;
+        (Sizes.navPadding - Sizes.navHitInset) * 2 +
+        n * (Sizes.navItem + Sizes.navHitInset * 2);
     if (!withLabel) return w;
     final TextStyle style = context.text.labelLarge!;
     double label = 0;
@@ -143,7 +143,9 @@ class SinewNavPill extends StatelessWidget {
       if (tp.width > label) label = tp.width;
       tp.dispose();
     }
-    return w +
+    // The selected item is wide enough to need no hit slop.
+    return w -
+        Sizes.navHitInset * 2 +
         Sizes.navLabelPadLeft +
         Sizes.navLabelGap +
         Sizes.navLabelPadRight -
@@ -163,7 +165,7 @@ class SinewNavPill extends StatelessWidget {
         child: Container(
           height: Sizes.navPillHeight,
           padding: const EdgeInsets.symmetric(
-            horizontal: Sizes.navPadding,
+            horizontal: Sizes.navPadding - Sizes.navHitInset,
             vertical: Sizes.navPillInsetV,
           ),
           decoration: BoxDecoration(
@@ -173,7 +175,6 @@ class SinewNavPill extends StatelessWidget {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            spacing: Sizes.navItemGap,
             children: <Widget>[
               for (int i = 0; i < labels.length; i++)
                 _PillItem(
@@ -233,40 +234,48 @@ class _PillItem extends StatelessWidget {
       child: InkResponse(
         onTap: onTap,
         customBorder: const StadiumBorder(),
-        child: SizedBox(
-          // The 48dp hit area; the indicator inside is 40 tall.
-          height: IconSpec.tapTarget,
-          child: Center(
-            child: AnimatedContainer(
-              duration: Motion.of(context, Motion.navIndicator),
-              curve: Motion.curveOf(context, Motion.spring),
-              height: Sizes.navItem,
-              padding: EdgeInsets.only(
-                left: withLabel ? Sizes.navLabelPadLeft : Space.sm,
-                right: withLabel ? Sizes.navLabelPadRight : Space.sm,
-              ),
-              decoration: BoxDecoration(
-                color: selected ? cs.secondaryContainer : Colors.transparent,
-                borderRadius: Radii.fullR,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: withLabel ? Sizes.navLabelGap : 0,
-                children: <Widget>[
-                  SinewNavGlyph(index: index, color: fg),
-                  AnimatedSize(
-                    duration: Motion.of(context, Motion.navIndicator),
-                    curve: Motion.curveOf(context, Motion.spring),
-                    child: withLabel
-                        ? Text(
-                            label,
-                            maxLines: 1,
-                            softWrap: false,
-                            style: context.text.labelLarge!.copyWith(color: fg),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ],
+        child: Padding(
+          // The 48dp hit area (48 wide even unselected); the indicator inside
+          // is 40 tall and keeps its own width.
+          padding: EdgeInsets.symmetric(
+            horizontal: withLabel ? 0 : Sizes.navHitInset,
+          ),
+          child: SizedBox(
+            height: IconSpec.tapTarget,
+            child: Center(
+              child: AnimatedContainer(
+                duration: Motion.of(context, Motion.navIndicator),
+                curve: Motion.curveOf(context, Motion.spring),
+                height: Sizes.navItem,
+                padding: EdgeInsets.only(
+                  left: withLabel ? Sizes.navLabelPadLeft : Space.sm,
+                  right: withLabel ? Sizes.navLabelPadRight : Space.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: selected ? cs.secondaryContainer : Colors.transparent,
+                  borderRadius: Radii.fullR,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: withLabel ? Sizes.navLabelGap : 0,
+                  children: <Widget>[
+                    SinewNavGlyph(index: index, color: fg),
+                    AnimatedSize(
+                      duration: Motion.of(context, Motion.navIndicator),
+                      curve: Motion.curveOf(context, Motion.spring),
+                      child: withLabel
+                          ? Text(
+                              label,
+                              maxLines: 1,
+                              softWrap: false,
+                              style: context.text.labelLarge!.copyWith(
+                                color: fg,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -347,8 +356,8 @@ class SinewNavBar extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: Space.lg,
-              right: Space.lg,
+              left: Space.md,
+              right: Space.md,
               bottom: bottom,
               // Default look whenever it fits; on a narrow screen or with a
               // large OS font the label goes first, and if even that is too

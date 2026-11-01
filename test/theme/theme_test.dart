@@ -110,6 +110,19 @@ void main() {
       expect(roles, hasLength(18));
     });
 
+    test('interactive control borders use outline, not outlineVariant', () {
+      for (final Tone t in Tone.values) {
+        final ThemeData th = AppTheme.of(t);
+        final ColorScheme cs = th.colorScheme;
+        final BorderSide? outlined = th.outlinedButtonTheme.style?.side
+            ?.resolve(<WidgetState>{});
+        expect(outlined?.color, cs.outline, reason: '$t outlined button');
+        final BorderSide? chip = (th.chipTheme.side as WidgetStateBorderSide?)
+            ?.resolve(<WidgetState>{});
+        expect(chip?.color, cs.outline, reason: '$t unselected chip');
+      }
+    });
+
     test('AMOLED surface is #000000; dark and light are not', () {
       expect(
         AppTheme.of(Tone.amoled).colorScheme.surface,

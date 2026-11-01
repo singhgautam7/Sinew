@@ -324,7 +324,7 @@ class SinewPickerRow extends StatelessWidget {
         color: cs.surfaceContainer,
         shape: RoundedRectangleBorder(
           borderRadius: Radii.cardR,
-          side: BorderSide(color: cs.outlineVariant),
+          side: BorderSide(color: cs.outline),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(

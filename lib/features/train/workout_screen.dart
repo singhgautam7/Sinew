@@ -12,6 +12,9 @@ import '../../core/models/training.dart';
 import '../../core/routing/nav_visibility.dart';
 import '../../core/routing/router.dart';
 import '../../core/providers.dart';
+import '../../core/settings/app_settings.dart';
+import '../../core/settings/haptics.dart';
+import '../../core/widgets/sinew_snackbar.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_icon_button.dart';
@@ -62,7 +65,10 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     _wake = ref.read(screenWakeProvider);
     holdNavHidden(_nav, const <NavHideReason>[NavHideReason.activeWorkout]);
     Future<void>.microtask(() {
-      unawaited(_wake.keepOn(on: true));
+      if (!mounted) return;
+      if (ref.read(settingsProvider).keepScreenOn) {
+        unawaited(_wake.keepOn(on: true));
+      }
       unawaited(ref.read(trainRestProvider.notifier).restore());
     });
     final String? routineId = widget.startRoutineId;
@@ -86,6 +92,7 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
 
   Future<void> _startRoutine(String id) async {
     final Routine? routine = await ref.read(routineRepositoryProvider).byId(id);
+    if (!mounted) return;
     if (routine != null) {
       await ref.read(workoutLauncherProvider).start(routine: routine);
     }
@@ -93,6 +100,22 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
   }
 
   WorkoutController get _ctrl => ref.read(workoutProvider.notifier);
+
+  /// Runs a write. When it fails the screen says so and reloads what is
+  /// really stored, so what is shown is never ahead of the database.
+  Future<void> _guard(Future<void> Function() write) async {
+    try {
+      await write();
+    } on Object {
+      if (!mounted) return;
+      showSinewSnackBar(
+        context,
+        'Could not save that. Your workout was reloaded.',
+        isError: true,
+      );
+      ref.invalidate(workoutProvider);
+    }
+  }
 
   void _leave() {
     if (context.canPop()) {
@@ -150,8 +173,19 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     SetEntry set, {
     required bool done,
   }) async {
-    await _ctrl.setCompleted(e.id, set.id, done: done);
-    if (!done || !mounted) return;
+    final WorkoutController ctrl = _ctrl;
+    await _guard(() => ctrl.setCompleted(e.id, set.id, done: done));
+    if (!mounted) return;
+    if (!done) {
+      showSinewUndoSnackBar(
+        context,
+        'Set ${set.position + 1} reopened',
+        onUndo: () => unawaited(
+          _guard(() => ctrl.setCompleted(e.id, set.id, done: true)),
+        ),
+      );
+      return;
+    }
     setState(() => _focusSetId = null);
     final WorkoutState? ws = ref.read(workoutProvider).value;
     if (ws == null) return;
@@ -183,7 +217,10 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
 
     final ({String label, String detail})? upNext = _nextUp(ws);
     if (upNext == null) return; // nothing left to rest for
-    final int restSec = ws.restSecFor(list[at].exerciseId);
+    final int restSec = ws.restSecFor(
+      list[at].exerciseId,
+      ref.read(settingsProvider).restSeconds,
+    );
     if (restSec <= 0) return;
     await ref
         .read(trainRestProvider.notifier)
@@ -262,31 +299,12 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
   }
 
   Future<void> _editNote(SessionExercise e) async {
-    final TextEditingController c = TextEditingController(text: e.notes ?? '');
     final String? result = await showDialog<String>(
       context: context,
-      builder: (BuildContext ctx) => AlertDialog(
-        title: const Text('Exercise note'),
-        content: SinewTextField(
-          label: 'Note',
-          controller: c,
-          maxLines: 4,
-          textCapitalization: TextCapitalization.sentences,
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(c.text),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+      builder: (BuildContext ctx) => _NoteDialog(initial: e.notes ?? ''),
     );
-    c.dispose();
-    if (result != null) await _ctrl.setNotes(e.id, result);
+    if (result == null || !mounted) return;
+    await _guard(() => _ctrl.setNotes(e.id, result));
   }
 
   Future<void> _finish(WorkoutState ws) async {
@@ -315,8 +333,24 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     );
     if (!yes || !mounted) return;
     setState(() => _busy = true);
-    final FinishOutcome out = await _ctrl.finish();
+    final FinishOutcome? out;
+    try {
+      out = await _ctrl.finish();
+    } on Object {
+      if (!mounted) return;
+      setState(() => _busy = false);
+      showSinewSnackBar(
+        context,
+        'Could not finish the workout. Nothing was lost, try again.',
+        isError: true,
+      );
+      return;
+    }
     if (!mounted) return;
+    if (out == null) {
+      _leave(); // it was already finished
+      return;
+    }
     context.pushReplacement(Routes.workoutSummary(out.sessionId));
   }
 
@@ -330,7 +364,18 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     );
     if (!yes || !mounted) return;
     setState(() => _busy = true);
-    await _ctrl.discard();
+    try {
+      await _ctrl.discard();
+    } on Object {
+      if (!mounted) return;
+      setState(() => _busy = false);
+      showSinewSnackBar(
+        context,
+        'Could not discard the workout.',
+        isError: true,
+      );
+      return;
+    }
     if (mounted) _leave();
   }
 
@@ -378,18 +423,29 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
         ),
       ],
     );
-    if (pick == null) return;
+    if (pick == null || !mounted) return;
+    final WorkoutController ctrl = _ctrl;
     switch (pick) {
       case 'warmup':
-        await _ctrl.updateSet(e.id, set.copyWith(isWarmup: !set.isWarmup));
+        await _guard(
+          () => ctrl.updateSet(e.id, set.copyWith(isWarmup: !set.isWarmup)),
+        );
       case 'delete':
-        await _ctrl.removeSet(e.id, set.id);
+        final int index = e.sets.indexWhere((SetEntry x) => x.id == set.id);
+        await _guard(() => ctrl.removeSet(e.id, set.id));
+        if (!mounted) return;
+        showSinewUndoSnackBar(
+          context,
+          'Set ${set.position + 1} deleted',
+          onUndo: () =>
+              unawaited(_guard(() => ctrl.restoreSet(e.id, set, index))),
+        );
       default:
         final SetType type = SetType.values.firstWhere(
           (SetType t) => t.name == pick,
           orElse: () => SetType.normal,
         );
-        await _ctrl.updateSet(e.id, set.copyWith(type: type));
+        await _guard(() => ctrl.updateSet(e.id, set.copyWith(type: type)));
     }
   }
 
@@ -432,16 +488,25 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
       case 'note':
         await _editNote(e);
       case 'superset':
-        await _ctrl.toggleSupersetWithNext(e.id);
+        await _guard(() => _ctrl.toggleSupersetWithNext(e.id));
       case 'remove':
+        final String name = ws.exerciseOf(e.exerciseId).name;
         final bool yes = await showSinewConfirmDialog(
           context: context,
-          title: 'Remove ${ws.exerciseOf(e.exerciseId).name}?',
+          title: 'Remove $name?',
           message: 'Its sets in this workout are deleted.',
           confirmLabel: 'Remove',
           destructive: true,
         );
-        if (yes) await _ctrl.removeExercise(e.id);
+        if (!yes || !mounted) return;
+        final WorkoutController ctrl = _ctrl;
+        await _guard(() => ctrl.removeExercise(e.id));
+        if (!mounted) return;
+        showSinewUndoSnackBar(
+          context,
+          '$name removed',
+          onUndo: () => unawaited(_guard(() => ctrl.restoreExercise(e, index))),
+        );
     }
   }
 
@@ -479,6 +544,10 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
   Widget build(BuildContext context) {
     final AsyncValue<WorkoutState?> async = ref.watch(workoutProvider);
     final bool resting = ref.watch(trainRestProvider) != null;
+    ref.listen<bool>(
+      settingsProvider.select((AppSettings x) => x.keepScreenOn),
+      (bool? _, bool on) => unawaited(_wake.keepOn(on: on)),
+    );
     final Widget body = async.when(
       loading: () => const TrainLoading(),
       error: (Object e, StackTrace _) =>
@@ -560,7 +629,9 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                       s,
                       _previousFor(ws, e, s),
                     );
-                    if (filled != s) unawaited(_ctrl.updateSet(e.id, filled));
+                    if (filled != s) {
+                      unawaited(_guard(() => _ctrl.updateSet(e.id, filled)));
+                    }
                     unawaited(_complete(e, s, done: true));
                   },
                   onNext: () => setState(() {
@@ -588,6 +659,7 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     final TextTheme tt = context.text;
     final ColorScheme cs = context.cs;
     final SetEntry? focused = _focusedSet(e);
+    final bool haptics = ref.watch(hapticsEnabledProvider);
     final List<String> partners = <String>[
       if (e.supersetGroup != null)
         for (final SessionExercise x in ws.session.exercises)
@@ -708,10 +780,13 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
             weightUnit: profile.weightUnit,
             barChoice: _barChoice[ex.id] ?? 0,
             onBarChoice: (int i) => setState(() => _barChoice[ex.id] = i),
+            haptics: haptics,
             onPickWeight: (double kg) {
               final SetEntry? f = focused;
               if (f != null) {
-                unawaited(_ctrl.updateSet(e.id, f.copyWith(weightKg: kg)));
+                unawaited(
+                  _guard(() => _ctrl.updateSet(e.id, f.copyWith(weightKg: kg))),
+                );
               }
             },
           ),
@@ -746,8 +821,9 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                   onTap: planned
                       ? () => setState(() => _focusSetId = set.id)
                       : null,
+                  haptics: haptics,
                   onChanged: (SetEntry next) {
-                    unawaited(_ctrl.updateSet(e.id, next));
+                    unawaited(_guard(() => _ctrl.updateSet(e.id, next)));
                   },
                   onComplete: (bool done) =>
                       unawaited(_complete(e, set, done: done)),
@@ -771,8 +847,8 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                 label: 'Add set',
                 icon: Icons.add_rounded,
                 type: AppButtonType.normal,
-                height: Sizes.buttonSmall,
-                onPressed: () => _ctrl.addSet(e.id),
+                height: SinewSpace.gloveTarget,
+                onPressed: () => unawaited(_guard(() => _ctrl.addSet(e.id))),
               ),
             ),
           ),
@@ -812,9 +888,8 @@ class _NoWorkout extends ConsumerWidget {
                   'tab.',
               actionLabel: 'Start workout',
               actionIcon: Icons.play_arrow_rounded,
-              onAction: () async {
-                await ref.read(workoutLauncherProvider).start();
-              },
+              onAction: () =>
+                  unawaited(ref.read(workoutLauncherProvider).start()),
             ),
           ),
         ],
@@ -871,22 +946,27 @@ class _Header extends ConsumerWidget {
           ),
           const SizedBox(width: Space.xs),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  ws.session.name ?? 'Workout',
-                  style: tt.titleMedium,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                ElapsedClock(
-                  startedAt: ws.session.startedAt,
-                  style: tt.bodyMedium!.copyWith(
-                    color: context.cs.onSurfaceVariant,
+            // Large text scales the name and clock down together instead of
+            // pushing Finish off the screen.
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: AlignmentDirectional.centerStart,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    ws.session.name ?? 'Workout',
+                    style: tt.titleMedium,
+                    maxLines: 1,
                   ),
-                ),
-              ],
+                  ElapsedClock(
+                    startedAt: ws.session.startedAt,
+                    style: tt.bodyMedium!.copyWith(
+                      color: context.cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Builder(
@@ -1108,13 +1188,14 @@ class _ActionRow extends StatelessWidget {
         ),
         const SizedBox(width: Space.md),
         Expanded(
-          child: SizedBox(
-            height: SinewSpace.gloveTarget,
-            child: FilledButton.icon(
-              onPressed: action,
-              icon: Icon(icon),
-              label: Text(label, maxLines: 2, textAlign: TextAlign.center),
+          // A minimum, not a fixed height: two lines of large text grow it.
+          child: FilledButton.icon(
+            onPressed: action,
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(0, SinewSpace.gloveTarget),
             ),
+            icon: Icon(icon),
+            label: Text(label, maxLines: 2, textAlign: TextAlign.center),
           ),
         ),
       ],
@@ -1133,7 +1214,10 @@ class _PlateStage extends ConsumerWidget {
     required this.barChoice,
     required this.onBarChoice,
     required this.onPickWeight,
+    required this.haptics,
   });
+
+  final bool haptics;
 
   final Exercise exercise;
   final SetEntry? set;
@@ -1171,6 +1255,7 @@ class _PlateStage extends ConsumerWidget {
         stepKg: inv.machineStepKg,
         unit: weightUnit,
         onPickNearest: onPickWeight,
+        haptics: haptics,
       );
     } else {
       final List<Bar> bars = <Bar>[
@@ -1192,6 +1277,7 @@ class _PlateStage extends ConsumerWidget {
         bar: bar,
         unit: weightUnit,
         onPickNearest: onPickWeight,
+        haptics: haptics,
       );
       if (bars.length > 1) {
         chips = Wrap(
@@ -1228,4 +1314,48 @@ class _PlateStage extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// The exercise note dialog. It owns its text controller, so the controller
+/// outlives the dialog's exit animation.
+class _NoteDialog extends StatefulWidget {
+  const _NoteDialog({required this.initial});
+
+  final String initial;
+
+  @override
+  State<_NoteDialog> createState() => _NoteDialogState();
+}
+
+class _NoteDialogState extends State<_NoteDialog> {
+  late final TextEditingController _c = TextEditingController(
+    text: widget.initial,
+  );
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Exercise note'),
+    content: SinewTextField(
+      label: 'Note',
+      controller: _c,
+      maxLines: 4,
+      textCapitalization: TextCapitalization.sentences,
+    ),
+    actions: <Widget>[
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Cancel'),
+      ),
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(_c.text),
+        child: const Text('Save'),
+      ),
+    ],
+  );
 }

@@ -124,6 +124,76 @@ void main() {
     await check(tester, Routes.history);
   });
 
+  testWidgets('Train History tab with the calendar and muscles card', (
+    WidgetTester tester,
+  ) async {
+    await check(
+      tester,
+      Routes.train,
+      then: () async {
+        await tester.tap(find.text('History'));
+        await env.settle(tester, 12);
+        await tester.dragUntilVisible(
+          find.text('Muscles this week'),
+          find.byType(CustomScrollView),
+          const Offset(0, -200),
+        );
+        expect(find.text('Muscles this week'), findsOneWidget);
+      },
+    );
+  });
+
+  testWidgets('Train History tab, dark', (WidgetTester tester) async {
+    await check(
+      tester,
+      Routes.train,
+      tone: Tone.dark,
+      then: () async {
+        await tester.tap(find.text('History'));
+        await env.settle(tester, 12);
+      },
+    );
+  });
+
+  testWidgets('starter routines sheet and the empty Train tab', (
+    WidgetTester tester,
+  ) async {
+    await env.routines.delete('r1');
+    await check(
+      tester,
+      Routes.train,
+      then: () async {
+        await tester.drag(find.byType(CustomScrollView), const Offset(0, -700));
+        await env.settle(tester);
+        await tester.tap(find.text('Browse starter routines'));
+        await env.settle(tester);
+        expect(find.text('Full body A'), findsOneWidget);
+      },
+    );
+  });
+
+  testWidgets('the last action row and header grow instead of clipping', (
+    WidgetTester tester,
+  ) async {
+    await check(
+      tester,
+      '${Routes.workout}?routine=r1',
+      then: () async {
+        for (int i = 1; i <= 3; i++) {
+          await tester.tap(find.text('Complete set $i'));
+          await env.settle(tester);
+        }
+        expect(find.text('Finish workout'), findsOneWidget);
+        // The button is at least the glove target, and taller when it wraps.
+        expect(
+          tester.getSize(find.byType(FilledButton).last).height,
+          greaterThanOrEqualTo(64),
+        );
+        expect(find.text('Finish'), findsOneWidget);
+      },
+    );
+  });
+
   testWidgets('session detail', (WidgetTester tester) async {
     await check(tester, Routes.session('recent'));
   });

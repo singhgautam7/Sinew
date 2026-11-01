@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/db/repositories/session_repository.dart';
 import '../../core/models/exercise.dart';
 import '../../core/models/plate_inventory.dart';
 import '../../core/models/profile.dart';
@@ -78,15 +79,51 @@ final trainExercisesProvider = FutureProvider.autoDispose
       return resolver.resolve(key.split(','));
     });
 
-/// Finished sessions with their full trees: history lists, exercise history.
-final FutureProvider<List<WorkoutSession>> trainFinishedTreesProvider =
-    FutureProvider.autoDispose<List<WorkoutSession>>((Ref ref) async {
-      // Re-read whenever the history changes.
+/// One exercise's finished sessions (each reduced to that exercise), oldest
+/// first, read through the exercise index. Refreshes when history changes.
+final trainExerciseSessionsProvider = FutureProvider.autoDispose
+    .family<List<WorkoutSession>, String>((Ref ref, String exerciseId) {
       ref.watch(trainHistoryTickProvider);
-      final List<WorkoutSession> all = await ref
+      return ref
           .watch(sessionRepositoryProvider)
-          .allWithTree();
-      return all.where((WorkoutSession s) => s.endedAt != null).toList();
+          .sessionsForExercise(exerciseId);
+    });
+
+/// Personal-record counts of the sessions on screen (ids joined by commas),
+/// keyed by session id.
+final trainPrCountsProvider = FutureProvider.autoDispose
+    .family<Map<String, int>, String>((Ref ref, String sessionKey) {
+      ref.watch(trainHistoryTickProvider);
+      return ref
+          .watch(sessionRepositoryProvider)
+          .prCounts(
+            sessionKey.isEmpty ? const <String>[] : sessionKey.split(','),
+          );
+    });
+
+/// Finished sessions of one calendar month, without their sets (the History
+/// heatmap and its totals).
+final trainMonthSessionsProvider = FutureProvider.autoDispose
+    .family<List<SessionHeader>, DateTime>((Ref ref, DateTime month) {
+      ref.watch(trainHistoryTickProvider);
+      return ref
+          .watch(sessionRepositoryProvider)
+          .sessionHeaders(
+            from: DateTime(month.year, month.month),
+            to: DateTime(month.year, month.month + 1),
+          );
+    });
+
+/// Completed sets per exercise in the week starting [weekStart].
+final trainWeekSetCountsProvider = FutureProvider.autoDispose
+    .family<Map<String, int>, DateTime>((Ref ref, DateTime weekStart) {
+      ref.watch(trainHistoryTickProvider);
+      return ref
+          .watch(sessionRepositoryProvider)
+          .completedSetCounts(
+            from: weekStart,
+            to: DateTime(weekStart.year, weekStart.month, weekStart.day + 7),
+          );
     });
 
 /// Counts every change to the sessions table, so cached reads refresh.

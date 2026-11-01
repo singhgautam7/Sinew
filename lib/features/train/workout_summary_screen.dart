@@ -24,10 +24,12 @@ import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_snackbar.dart';
 import '../../core/widgets/sinew_stat_tile.dart';
 import '../../engines/records/records.dart';
+import '../../engines/records/train_stats.dart';
 import 'routine_style.dart';
 import 'train_format.dart';
 import 'train_providers.dart';
 import 'train_widgets.dart';
+import 'workout_controller.dart' show FinishedPrs, lastFinishedPrsProvider;
 
 /// A personal record set, ready to show.
 class PrLine {
@@ -81,44 +83,38 @@ final summaryProvider = FutureProvider.autoDispose.family<SummaryData?, String>(
       // No library: names fall back to ids.
     }
     final Profile profile = await ref.watch(profileRepositoryProvider).get();
-    final List<WorkoutSession> others = <WorkoutSession>[
-      for (final WorkoutSession s in await repo.allWithTree())
-        if (s.id != id && s.endedAt != null) s,
-    ];
-    final RecordBook before = Records.computeRecords(others);
-    final List<PrLine> prs = <PrLine>[];
-    for (final SessionExercise e in session.exercises) {
-      final Exercise ex =
-          exercises[e.exerciseId] ??
-          Exercise(
-            id: e.exerciseId,
-            name: e.exerciseId.replaceAll('-', ' '),
-            category: 'unknown',
-            trackingType: TrackingType.reps,
-          );
-      for (final SetEntry s in e.sets) {
-        if (!s.isPR) continue;
-        final double? e1 = (s.weightKg != null && s.reps != null)
-            ? Records.epley1rm(s.weightKg!, s.reps!)
-            : null;
-        final double? prev = before[e.exerciseId]?.bestE1rm?.value;
-        prs.add(
-          PrLine(
-            exerciseName: ex.name,
-            setText: SetRow.summary(
-              s,
-              ex.trackingType,
-              weightUnit: profile.weightUnit,
-              distanceUnit: profile.distanceUnit,
-            ),
-            e1rmKg: e1,
-            e1rmDeltaKg: (e1 != null && prev != null && e1 > prev)
-                ? e1 - prev
-                : null,
-          ),
-        );
-      }
+    // The records come with the finish that just happened; a summary opened
+    // later works them out from the history of these exercises only.
+    final FinishedPrs? fresh = ref.read(lastFinishedPrsProvider);
+    final List<PrDetail> details;
+    if (fresh != null && fresh.sessionId == id) {
+      details = fresh.prs;
+    } else {
+      final List<WorkoutSession> before = <WorkoutSession>[
+        for (final WorkoutSession s in await repo.sessionsForExercises(
+          session.exercises.map((SessionExercise e) => e.exerciseId),
+          excludeSessionId: id,
+        ))
+          if (s.startedAt.isBefore(session.startedAt)) s,
+      ];
+      details = prDetails(session, Records.computeRecords(before));
     }
+    final List<PrLine> prs = <PrLine>[
+      for (final PrDetail d in details)
+        PrLine(
+          exerciseName:
+              (exercises[d.exerciseId]?.name) ??
+              d.exerciseId.replaceAll('-', ' '),
+          setText: SetRow.summary(
+            d.set,
+            exercises[d.exerciseId]?.trackingType ?? TrackingType.reps,
+            weightUnit: profile.weightUnit,
+            distanceUnit: profile.distanceUnit,
+          ),
+          e1rmKg: d.e1rmKg,
+          e1rmDeltaKg: d.e1rmDeltaKg,
+        ),
+    ];
     final latest = await ref
         .watch(measurementRepositoryProvider)
         .latestValues();
@@ -167,18 +163,13 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen> {
 
   Future<void> _persist() async {
     final WorkoutSession? s = _session;
-    final DateTime? end = s?.endedAt;
-    if (s == null || end == null) return;
+    if (s == null || s.endedAt == null) return;
     _dirty = false;
-    final String note = _notes.text.trim();
-    await _repo.finish(
+    // A blank note clears the field (stored as null).
+    await _repo.updateSummary(
       s.id,
-      endedAt: end,
-      durationSec: s.durationSec,
-      volumeKg: s.volumeKg,
-      caloriesKcal: s.caloriesKcal,
       perceivedEffort: _effort,
-      notes: note,
+      notes: _notes.text,
     );
   }
 

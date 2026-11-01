@@ -82,8 +82,7 @@ void main() {
 
     // Time comes from the clock, not from counted ticks.
     env.clock.advance(const Duration(seconds: 45));
-    await tester.pump(const Duration(milliseconds: 16));
-    await tester.pump(const Duration(milliseconds: 16));
+    await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('1:15'), findsOneWidget);
 
     // +10 s and -10 s.
@@ -95,8 +94,7 @@ void main() {
     expect(find.text('1:15'), findsOneWidget);
 
     env.clock.advance(const Duration(seconds: 80));
-    await tester.pump(const Duration(milliseconds: 16));
-    await tester.pump(const Duration(milliseconds: 16));
+    await tester.pump(const Duration(milliseconds: 300));
     expect(container.read(trainRestProvider), isNull);
     expect(
       await container.read(runtimeStateRepositoryProvider).read('train.rest'),

@@ -12,6 +12,7 @@ import '../../core/providers.dart';
 import '../../core/theme/tokens.dart';
 import '../../engines/body_stats/body_stats.dart';
 import '../../engines/records/records.dart';
+import '../../engines/records/train_stats.dart';
 import 'rest_timer.dart';
 import 'train_providers.dart';
 import 'train_records.dart';
@@ -60,11 +61,11 @@ class WorkoutState {
       );
 
   /// Rest after a set of [exerciseId]: the routine's, else the exercise's
-  /// default, else 90 s.
-  int restSecFor(String exerciseId) =>
+  /// default, else [fallbackSec] (the user's default rest from Settings).
+  int restSecFor(String exerciseId, int fallbackSec) =>
       routineItems[exerciseId]?.restSec ??
       exercises[exerciseId]?.defaultRestSec ??
-      TrainSpec.defaultRestSec;
+      fallbackSec;
 
   SessionExercise? exerciseById(String sessionExerciseId) {
     for (final SessionExercise e in session.exercises) {
@@ -91,6 +92,7 @@ class FinishOutcome {
     required this.sessionId,
     required this.caloriesSkipped,
     required this.prCount,
+    this.prs = const <PrDetail>[],
   });
 
   final String sessionId;
@@ -98,7 +100,29 @@ class FinishOutcome {
   /// True when there was no body weight to estimate calories from.
   final bool caloriesSkipped;
   final int prCount;
+
+  /// The record sets with their gains, for the summary.
+  final List<PrDetail> prs;
 }
+
+/// The records of the workout just finished, handed to the summary so it
+/// does not work them out again.
+class FinishedPrs {
+  const FinishedPrs(this.sessionId, this.prs);
+
+  final String sessionId;
+  final List<PrDetail> prs;
+}
+
+class LastFinishedPrs extends Notifier<FinishedPrs?> {
+  @override
+  FinishedPrs? build() => null;
+
+  void put(FinishedPrs value) => state = value;
+}
+
+final NotifierProvider<LastFinishedPrs, FinishedPrs?> lastFinishedPrsProvider =
+    NotifierProvider<LastFinishedPrs, FinishedPrs?>(LastFinishedPrs.new);
 
 /// A set filled from a routine item's targets, shaped by the tracking type.
 SetEntry setFromTarget(
@@ -153,34 +177,49 @@ int defaultSetCount(TrackingType type, int previousCount) {
 }
 
 /// Owns the one active workout. Not auto-disposed, so a minimised workout
-/// keeps its state; a cold start rebuilds it from `SessionRepository.active()`.
+/// keeps its state; it follows the active session id, so a workout started
+/// from anywhere (Train, Today) loads, and a finished one clears.
+///
+/// Every change updates the in-memory state at once and is written through a
+/// single queue, so writes land in the order they were made and a failed one
+/// surfaces to the caller instead of being lost.
 class WorkoutController extends AsyncNotifier<WorkoutState?> {
-  /// Finished sessions, for live PR detection.
-  List<WorkoutSession> _history = const <WorkoutSession>[];
+  /// Finished sessions per exercise, each reduced to that exercise and oldest
+  /// first: the hints and live PR detection read only these.
+  final Map<String, List<WorkoutSession>> _history =
+      <String, List<WorkoutSession>>{};
+
+  Future<void> _writes = Future<void>.value();
+  bool _closing = false;
 
   SessionRepository get _repo => ref.read(sessionRepositoryProvider);
 
   @override
   Future<WorkoutState?> build() async {
-    final WorkoutSession? session = await _repo.active();
-    if (session == null) return null;
-    final List<WorkoutSession> all = await _repo.allWithTree();
-    _history = <WorkoutSession>[
-      for (final WorkoutSession s in all)
-        if (s.endedAt != null) s,
-    ];
+    _history.clear();
+    _closing = false;
+    // The active id drives this provider: starting a workout anywhere makes
+    // it load, finishing or discarding one clears it.
+    final String? id = await ref.watch(
+      trainActiveIdProvider.selectAsync((String? v) => v),
+    );
+    if (id == null) return null;
+    final WorkoutSession? session = await _repo.byId(id);
+    if (session == null || session.endedAt != null) return null;
     final Set<String> ids = <String>{
       for (final SessionExercise e in session.exercises) e.exerciseId,
     };
+    await _loadHistory(ids, session.id);
     final Map<String, Exercise> exercises = await _resolve(ids);
     final Map<String, List<SetEntry>> previous = <String, List<SetEntry>>{
-      for (final String id in ids)
-        id: await _repo.previousSets(id, excludeSessionId: session.id),
+      for (final String id in ids) id: _previousOf(id),
     };
     final Map<String, RoutineItem> items = <String, RoutineItem>{};
     final String? routineId = session.routineId;
     if (routineId != null) {
-      final routine = await ref.read(routineRepositoryProvider).byId(routineId);
+      final Routine? routine = await ref
+          .read(routineRepositoryProvider)
+          .byId(routineId);
       for (final RoutineItem i in routine?.items ?? const <RoutineItem>[]) {
         items.putIfAbsent(i.exerciseId, () => i);
       }
@@ -207,12 +246,51 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
     }
   }
 
-  WorkoutState get _s => state.requireValue!;
+  /// Reads the finished sessions of [ids] not loaded yet, through the
+  /// exercise index (never the whole history).
+  Future<void> _loadHistory(Iterable<String> ids, String sessionId) async {
+    final List<String> missing = <String>[
+      for (final String id in ids)
+        if (!_history.containsKey(id)) id,
+    ];
+    if (missing.isEmpty) return;
+    final List<WorkoutSession> found = await _repo.sessionsForExercises(
+      missing,
+      excludeSessionId: sessionId,
+    );
+    for (final String id in missing) {
+      _history[id] = <WorkoutSession>[
+        for (final WorkoutSession s in found)
+          if (s.exercises.any((SessionExercise e) => e.exerciseId == id))
+            onlyExercises(s, <String>{id}),
+      ];
+    }
+  }
+
+  /// The sets of [exerciseId] in its latest finished session (the hints).
+  List<SetEntry> _previousOf(String exerciseId) {
+    final List<WorkoutSession>? list = _history[exerciseId];
+    if (list == null || list.isEmpty || list.last.exercises.isEmpty) {
+      return const <SetEntry>[];
+    }
+    return list.last.exercises.first.sets;
+  }
+
+  WorkoutState? get _cur => state.value;
 
   DateTime _now() => ref.read(trainNowProvider)();
 
-  void _replaceSession(WorkoutSession s) {
-    state = AsyncData<WorkoutState?>(_s.copyWith(session: s));
+  /// Runs [job] after every write queued before it. The queue survives a
+  /// failed job; the failure goes to the caller.
+  Future<void> _enqueue(Future<void> Function() job) {
+    if (_closing) return Future<void>.value();
+    final Future<void> run = _writes.then((_) => job());
+    _writes = run.then<void>((_) {}, onError: (Object _, StackTrace _) {});
+    return run;
+  }
+
+  void _setSession(WorkoutState cur, WorkoutSession s) {
+    state = AsyncData<WorkoutState?>(cur.copyWith(session: s));
   }
 
   WorkoutSession _mapSets(
@@ -226,26 +304,70 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
     ],
   );
 
+  /// [s] with the record flags of [exerciseIds] recomputed against their
+  /// finished history.
+  WorkoutSession _flag(WorkoutSession s, Iterable<String> exerciseIds) {
+    WorkoutSession out = s;
+    for (final String id in exerciseIds.toSet()) {
+      final WorkoutSession reduced = onlyExercises(out, <String>{id});
+      final Set<String> own = <String>{
+        for (final SessionExercise e in reduced.exercises)
+          for (final SetEntry set in e.sets) set.id,
+      };
+      final Map<String, bool> changes = prFlagChanges(<WorkoutSession>[
+        ...?_history[id],
+        reduced,
+      ])..removeWhere((String k, bool _) => !own.contains(k));
+      out = applyPrChanges(out, changes);
+    }
+    return out;
+  }
+
+  /// Queues the write of every set that differs between [before] and
+  /// [after], in one transaction.
+  Future<void> _writeChanged(WorkoutSession before, WorkoutSession after) {
+    final Map<String, SetEntry> old = <String, SetEntry>{
+      for (final SessionExercise e in before.exercises)
+        for (final SetEntry s in e.sets) s.id: s,
+    };
+    final List<(String, SetEntry)> changed = <(String, SetEntry)>[
+      for (final SessionExercise e in after.exercises)
+        for (final SetEntry s in e.sets)
+          if (old[s.id] != s) (e.id, s),
+    ];
+    if (changed.isEmpty) return Future<void>.value();
+    return _enqueue(() => _repo.upsertSets(after.id, changed));
+  }
+
   // ── Sets ──────────────────────────────────────────────────────────────────
 
   /// Edits one set (typed values, set type): in memory first, then written.
+  /// A completed set's record flags are worked out again.
   Future<void> updateSet(String seId, SetEntry entry) {
-    final WorkoutSession next = _mapSets(
-      _s.session,
+    final WorkoutState? cur = _cur;
+    final SessionExercise? e = cur?.exerciseById(seId);
+    if (cur == null || e == null) return Future<void>.value();
+    final WorkoutSession before = cur.session;
+    WorkoutSession next = _mapSets(
+      before,
       seId,
       (List<SetEntry> sets) => <SetEntry>[
         for (final SetEntry x in sets) x.id == entry.id ? entry : x,
       ],
     );
-    _replaceSession(next);
-    return _repo.upsertSet(next.id, seId, entry);
+    if (entry.completed) next = _flag(next, <String>[e.exerciseId]);
+    _setSession(cur, next);
+    return _writeChanged(before, next);
   }
 
   /// Marks a set done (or open again) and recomputes PR flags against the
   /// history. Written at once, so the workout survives an app kill.
   Future<void> setCompleted(String seId, String setId, {required bool done}) {
+    final WorkoutState? cur = _cur;
+    final SessionExercise? e = cur?.exerciseById(seId);
+    if (cur == null || e == null) return Future<void>.value();
     final DateTime now = _now();
-    final WorkoutSession before = _s.session;
+    final WorkoutSession before = cur.session;
     WorkoutSession next = _mapSets(
       before,
       seId,
@@ -261,35 +383,19 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
             x,
       ],
     );
-    final Set<String> pr = Records.prSetIds(<WorkoutSession>[
-      ..._history,
-      next,
-    ]);
-    next = withPrFlags(next, pr);
-    _replaceSession(next);
+    next = _flag(next, <String>[e.exerciseId]);
+    _setSession(cur, next);
     return _writeChanged(before, next);
-  }
-
-  Future<void> _writeChanged(
-    WorkoutSession before,
-    WorkoutSession after,
-  ) async {
-    final Map<String, SetEntry> old = <String, SetEntry>{
-      for (final SessionExercise e in before.exercises)
-        for (final SetEntry s in e.sets) s.id: s,
-    };
-    for (final SessionExercise e in after.exercises) {
-      for (final SetEntry s in e.sets) {
-        if (old[s.id] != s) await _repo.upsertSet(after.id, e.id, s);
-      }
-    }
   }
 
   /// Adds a set after the last one, with the last one's numbers.
   Future<void> addSet(String seId) {
-    final SessionExercise e = _s.exerciseById(seId)!;
-    if (e.sets.length >= TrainSpec.maxSets) return Future<void>.value();
-    final TrackingType type = _s.exerciseOf(e.exerciseId).trackingType;
+    final WorkoutState? cur = _cur;
+    final SessionExercise? e = cur?.exerciseById(seId);
+    if (cur == null || e == null || e.sets.length >= TrainSpec.maxSets) {
+      return Future<void>.value();
+    }
+    final TrackingType type = cur.exerciseOf(e.exerciseId).trackingType;
     final SetEntry fresh = setFromTarget(
       type,
       e.sets.length,
@@ -297,18 +403,21 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
       like: e.sets.isEmpty ? null : e.sets.last,
     );
     final WorkoutSession next = _mapSets(
-      _s.session,
+      cur.session,
       seId,
       (List<SetEntry> sets) => <SetEntry>[...sets, fresh],
     );
-    _replaceSession(next);
-    return _repo.upsertSet(next.id, seId, fresh);
+    _setSession(cur, next);
+    return _enqueue(() => _repo.upsertSet(next.id, seId, fresh));
   }
 
   /// Removes a set and renumbers the ones after it.
-  Future<void> removeSet(String seId, String setId) async {
-    final WorkoutSession before = _s.session;
-    final WorkoutSession next = _mapSets(before, seId, (List<SetEntry> sets) {
+  Future<void> removeSet(String seId, String setId) {
+    final WorkoutState? cur = _cur;
+    final SessionExercise? e = cur?.exerciseById(seId);
+    if (cur == null || e == null) return Future<void>.value();
+    final WorkoutSession before = cur.session;
+    WorkoutSession next = _mapSets(before, seId, (List<SetEntry> sets) {
       final List<SetEntry> kept = <SetEntry>[
         for (final SetEntry x in sets)
           if (x.id != setId) x,
@@ -317,79 +426,127 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
         for (int i = 0; i < kept.length; i++) kept[i].copyWith(position: i),
       ];
     });
-    _replaceSession(next);
-    await _repo.deleteSet(next.id, setId);
-    await _writeChanged(before, next);
+    next = _flag(next, <String>[e.exerciseId]);
+    _setSession(cur, next);
+    return _enqueue(
+      () => _repo.deleteSetWith(
+        next.id,
+        setId,
+        _changedSets(before, next, except: setId),
+      ),
+    );
+  }
+
+  /// Puts a removed set back at [index] (Undo), renumbering the others.
+  Future<void> restoreSet(String seId, SetEntry set, int index) {
+    final WorkoutState? cur = _cur;
+    final SessionExercise? e = cur?.exerciseById(seId);
+    if (cur == null ||
+        e == null ||
+        e.sets.any((SetEntry s) => s.id == set.id)) {
+      return Future<void>.value();
+    }
+    final WorkoutSession before = cur.session;
+    WorkoutSession next = _mapSets(before, seId, (List<SetEntry> sets) {
+      final List<SetEntry> list = <SetEntry>[...sets]
+        ..insert(index.clamp(0, sets.length), set);
+      return <SetEntry>[
+        for (int i = 0; i < list.length; i++) list[i].copyWith(position: i),
+      ];
+    });
+    next = _flag(next, <String>[e.exerciseId]);
+    _setSession(cur, next);
+    return _writeChanged(before, next);
+  }
+
+  List<(String, SetEntry)> _changedSets(
+    WorkoutSession before,
+    WorkoutSession after, {
+    String? except,
+  }) {
+    final Map<String, SetEntry> old = <String, SetEntry>{
+      for (final SessionExercise e in before.exercises)
+        for (final SetEntry s in e.sets) s.id: s,
+    };
+    return <(String, SetEntry)>[
+      for (final SessionExercise e in after.exercises)
+        for (final SetEntry s in e.sets)
+          if (s.id != except && old[s.id] != s) (e.id, s),
+    ];
   }
 
   // ── Exercises ─────────────────────────────────────────────────────────────
 
-  /// Adds exercises to the end of the workout, each with its starting sets.
+  /// Adds exercises to the end of the workout, each with its starting sets,
+  /// in one write.
   Future<void> addExercises(List<String> ids) async {
+    final WorkoutState? start = _cur;
+    if (start == null) return;
     final Map<String, Exercise> resolved = await _resolve(ids);
-    final Map<String, List<SetEntry>> previous = <String, List<SetEntry>>{};
+    await _loadHistory(ids, start.session.id);
+    final WorkoutState? cur = _cur;
+    if (cur == null) return;
+    final Map<String, List<SetEntry>> previous = <String, List<SetEntry>>{
+      for (final String id in ids) id: _previousOf(id),
+    };
     final List<SessionExercise> added = <SessionExercise>[];
     for (final String id in ids) {
-      final String sessionId = _s.session.id;
-      final SessionExercise se = await _repo.addExercise(sessionId, id);
-      final List<SetEntry> prev = await _repo.previousSets(
-        id,
-        excludeSessionId: sessionId,
-      );
-      previous[id] = prev;
       final TrackingType type =
-          (resolved[id] ?? _s.exercises[id])?.trackingType ?? TrackingType.reps;
-      final List<SetEntry> sets = <SetEntry>[
-        for (int i = 0; i < defaultSetCount(type, prev.length); i++)
-          setFromTarget(type, i, null),
-      ];
-      for (final SetEntry set in sets) {
-        await _repo.upsertSet(sessionId, se.id, set);
-      }
-      added.add(se.copyWith(sets: sets));
-    }
-    final WorkoutState cur = _s;
-    state = AsyncData<WorkoutState?>(
-      cur.copyWith(
-        session: cur.session.copyWith(
-          exercises: <SessionExercise>[...cur.session.exercises, ...added],
+          (resolved[id] ?? cur.exercises[id])?.trackingType ??
+          TrackingType.reps;
+      final int count = defaultSetCount(type, previous[id]!.length);
+      added.add(
+        SessionExercise(
+          id: newId(),
+          exerciseId: id,
+          position: cur.session.exercises.length + added.length,
+          sets: <SetEntry>[
+            for (int i = 0; i < count; i++) setFromTarget(type, i, null),
+          ],
         ),
-        exercises: <String, Exercise>{...cur.exercises, ...resolved},
-        previous: <String, List<SetEntry>>{...cur.previous, ...previous},
-      ),
+      );
+    }
+    await _saveStructure(
+      <SessionExercise>[...cur.session.exercises, ...added],
+      exercises: <String, Exercise>{...cur.exercises, ...resolved},
+      previous: <String, List<SetEntry>>{...cur.previous, ...previous},
     );
   }
 
   /// Swaps an exercise for another. Sets already done stay logged under the
   /// old exercise; the open ones move to the new one, targets kept.
   Future<void> swapExercise(String seId, String newExerciseId) async {
-    final SessionExercise? old = _s.exerciseById(seId);
-    if (old == null || old.exerciseId == newExerciseId) return;
+    final WorkoutState? start = _cur;
+    final SessionExercise? old = start?.exerciseById(seId);
+    if (start == null || old == null || old.exerciseId == newExerciseId) {
+      return;
+    }
     final Map<String, Exercise> resolved = await _resolve(<String>[
       newExerciseId,
     ]);
-    final List<SetEntry> prev = await _repo.previousSets(
-      newExerciseId,
-      excludeSessionId: _s.session.id,
-    );
+    await _loadHistory(<String>[newExerciseId], start.session.id);
+    final WorkoutState? cur = _cur;
+    final SessionExercise? now = cur?.exerciseById(seId);
+    if (cur == null || now == null) return;
+    final List<SetEntry> prev = _previousOf(newExerciseId);
     final List<SetEntry> done = <SetEntry>[
-      for (final SetEntry s in old.sets)
+      for (final SetEntry s in now.sets)
         if (s.completed) s,
     ];
     final List<SetEntry> open = <SetEntry>[
-      for (final SetEntry s in old.sets)
+      for (final SetEntry s in now.sets)
         if (!s.completed) s,
     ];
     final TrackingType type =
-        (resolved[newExerciseId] ?? _s.exercises[newExerciseId])
+        (resolved[newExerciseId] ?? cur.exercises[newExerciseId])
             ?.trackingType ??
         TrackingType.reps;
     final SessionExercise replacement = SessionExercise(
       id: newId(),
       exerciseId: newExerciseId,
-      position: old.position,
-      supersetGroup: old.supersetGroup,
-      notes: old.notes,
+      position: now.position,
+      supersetGroup: now.supersetGroup,
+      notes: now.notes,
       sets: open.isEmpty
           ? <SetEntry>[
               for (int i = 0; i < defaultSetCount(type, prev.length); i++)
@@ -401,7 +558,7 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
             ],
     );
     final List<SessionExercise> list = <SessionExercise>[];
-    for (final SessionExercise e in _s.session.exercises) {
+    for (final SessionExercise e in cur.session.exercises) {
       if (e.id != seId) {
         list.add(e);
         continue;
@@ -423,36 +580,58 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
     }
     await _saveStructure(
       list,
-      exercises: <String, Exercise>{..._s.exercises, ...resolved},
-      previous: <String, List<SetEntry>>{..._s.previous, newExerciseId: prev},
+      exercises: <String, Exercise>{...cur.exercises, ...resolved},
+      previous: <String, List<SetEntry>>{...cur.previous, newExerciseId: prev},
     );
   }
 
-  Future<void> removeExercise(String seId) async {
-    final String sessionId = _s.session.id;
-    final WorkoutSession next = _s.session.copyWith(
-      exercises: <SessionExercise>[
-        for (final SessionExercise e in _s.session.exercises)
-          if (e.id != seId) e,
-      ],
+  Future<void> removeExercise(String seId) {
+    final WorkoutState? cur = _cur;
+    if (cur == null || cur.exerciseById(seId) == null) {
+      return Future<void>.value();
+    }
+    final String sessionId = cur.session.id;
+    _setSession(
+      cur,
+      cur.session.copyWith(
+        exercises: <SessionExercise>[
+          for (final SessionExercise e in cur.session.exercises)
+            if (e.id != seId) e,
+        ],
+      ),
     );
-    _replaceSession(next);
-    await _repo.removeExercise(sessionId, seId);
+    return _enqueue(() => _repo.removeExercise(sessionId, seId));
+  }
+
+  /// Puts a removed exercise (with its sets) back at [index] (Undo).
+  Future<void> restoreExercise(SessionExercise exercise, int index) {
+    final WorkoutState? cur = _cur;
+    if (cur == null || cur.exerciseById(exercise.id) != null) {
+      return Future<void>.value();
+    }
+    final List<SessionExercise> list = <SessionExercise>[
+      ...cur.session.exercises,
+    ]..insert(index.clamp(0, cur.session.exercises.length), exercise);
+    return _saveStructure(list);
   }
 
   Future<void> setNotes(String seId, String? notes) {
+    final WorkoutState? cur = _cur;
+    if (cur == null) return Future<void>.value();
     final String? clean = (notes == null || notes.trim().isEmpty)
         ? null
         : notes.trim();
     return _saveStructure(<SessionExercise>[
-      for (final SessionExercise e in _s.session.exercises)
+      for (final SessionExercise e in cur.session.exercises)
         if (e.id == seId) e.copyWith(notes: clean) else e,
     ]);
   }
 
   /// Links the exercise to the next one as a superset, or unlinks it.
   Future<void> toggleSupersetWithNext(String seId) {
-    final List<SessionExercise> list = _s.session.exercises;
+    final WorkoutState? cur = _cur;
+    if (cur == null) return Future<void>.value();
+    final List<SessionExercise> list = cur.session.exercises;
     final int i = list.indexWhere((SessionExercise e) => e.id == seId);
     if (i < 0 || i + 1 >= list.length) return Future<void>.value();
     final SessionExercise a = list[i];
@@ -486,116 +665,159 @@ class WorkoutController extends AsyncNotifier<WorkoutState?> {
     ]);
   }
 
-  /// Writes the whole exercise list (positions renumbered) in one go.
+  /// Writes the whole exercise list (positions renumbered) in one go. The
+  /// in-memory state changes at once; the write is queued.
   Future<void> _saveStructure(
     List<SessionExercise> list, {
     Map<String, Exercise>? exercises,
     Map<String, List<SetEntry>>? previous,
-  }) async {
-    final WorkoutSession next = _s.session.copyWith(
+  }) {
+    final WorkoutState? cur = _cur;
+    if (cur == null) return Future<void>.value();
+    final WorkoutSession next = cur.session.copyWith(
       exercises: <SessionExercise>[
         for (int i = 0; i < list.length; i++) list[i].copyWith(position: i),
       ],
       updatedAt: _now(),
     );
     state = AsyncData<WorkoutState?>(
-      _s.copyWith(session: next, exercises: exercises, previous: previous),
+      cur.copyWith(session: next, exercises: exercises, previous: previous),
     );
-    await _repo.saveTree(next);
+    return _enqueue(() => _repo.saveTree(next));
   }
 
   // ── Ending ────────────────────────────────────────────────────────────────
 
-  /// Deletes the workout and everything in it.
+  /// Deletes the workout and everything in it. A no-op when none is running.
   Future<void> discard() async {
-    final String id = _s.session.id;
-    await ref.read(trainRestProvider.notifier).end();
-    await _repo.delete(id);
+    final WorkoutState? cur = _cur;
+    if (cur == null) return;
+    await _writes;
+    _closing = true;
+    try {
+      await ref.read(trainRestProvider.notifier).end();
+      await _repo.delete(cur.session.id);
+    } on Object {
+      _closing = false;
+      rethrow;
+    }
     state = const AsyncData<WorkoutState?>(null);
   }
 
-  /// Ends the workout: drops unfinished sets, computes duration, volume, PR
-  /// flags (over all sessions, writing the ones that changed) and calories,
-  /// then closes the session.
-  Future<FinishOutcome> finish() async {
-    final WorkoutState cur = _s;
-    final DateTime end = _now();
-    // Only what was done is kept.
-    final List<SessionExercise> kept = <SessionExercise>[];
-    for (final SessionExercise e in cur.session.exercises) {
-      final List<SetEntry> done = <SetEntry>[
-        for (final SetEntry s in e.sets)
-          if (s.completed) s,
-      ];
-      if (done.isEmpty) continue;
-      kept.add(
-        e.copyWith(
-          position: kept.length,
-          sets: <SetEntry>[
-            for (int i = 0; i < done.length; i++) done[i].copyWith(position: i),
-          ],
-        ),
+  /// Ends the workout: drops unfinished sets, computes duration, volume,
+  /// calories and PR flags (from the history of the exercises done only), and
+  /// closes the session in one transaction. Null when no workout is running.
+  Future<FinishOutcome?> finish() async {
+    final WorkoutState? cur = _cur;
+    if (cur == null) return null;
+    await _writes; // everything typed so far is stored
+    _closing = true;
+    try {
+      final DateTime end = _now();
+      // Only what was done is kept.
+      final List<SessionExercise> kept = <SessionExercise>[];
+      for (final SessionExercise e in cur.session.exercises) {
+        final List<SetEntry> done = <SetEntry>[
+          for (final SetEntry s in e.sets)
+            if (s.completed) s,
+        ];
+        if (done.isEmpty) continue;
+        kept.add(
+          e.copyWith(
+            position: kept.length,
+            sets: <SetEntry>[
+              for (int i = 0; i < done.length; i++)
+                done[i].copyWith(position: i),
+            ],
+          ),
+        );
+      }
+      final WorkoutSession cleaned = cur.session.copyWith(
+        exercises: kept,
+        endedAt: end,
       );
-    }
-    final WorkoutSession cleaned = cur.session.copyWith(
-      exercises: kept,
-      endedAt: end,
-    );
 
-    // PR flags over every session including this one.
-    final List<WorkoutSession> stored = await _repo.allWithTree();
-    final List<WorkoutSession> all = <WorkoutSession>[
-      for (final WorkoutSession s in stored)
-        if (s.id != cleaned.id) s,
-      cleaned,
-    ];
-    final Set<String> pr = Records.prSetIds(all);
-    for (final WorkoutSession s in all) {
-      if (s.id == cleaned.id) continue;
-      final WorkoutSession flagged = withPrFlags(s, pr);
-      if (!identical(flagged, s)) await _repo.saveTree(flagged);
-    }
-    final WorkoutSession flagged = withPrFlags(cleaned, pr);
-    await _repo.saveTree(flagged);
-    final int prCount = <SetEntry>[
-      for (final SessionExercise e in flagged.exercises)
-        for (final SetEntry s in e.sets)
-          if (s.isPR) s,
-    ].length;
-
-    final double volume = Records.sessionVolumeKg(flagged);
-    final int duration = end.difference(flagged.startedAt).inSeconds;
-
-    // Calories need a body weight and MET values; without them skip.
-    double? calories;
-    final latest = await ref.read(measurementRepositoryProvider).latestValues();
-    final double? weightKg = latest['weight']?.value;
-    if (weightKg != null) {
-      final Map<String, Exercise> resolved = await _resolve(<String>{
-        for (final SessionExercise e in flagged.exercises) e.exerciseId,
-      });
-      final Map<String, double?> met = <String, double?>{
-        for (final MapEntry<String, Exercise> e in resolved.entries)
-          e.key: e.value.metValue,
+      // Record flags over the history of the exercises done: this workout's
+      // own, and any other session they move (a backdated one).
+      final Set<String> ids = <String>{
+        for (final SessionExercise e in kept) e.exerciseId,
       };
-      final result = BodyStats.estimateSessionCalories(flagged, met, weightKg);
-      if (result is StatValue<double>) calories = result.value;
-    }
+      await _loadHistory(ids, cleaned.id);
+      final List<WorkoutSession> history = <WorkoutSession>[
+        for (final String id in ids) ...?_history[id],
+      ];
+      final Map<String, bool> changes = prFlagChanges(<WorkoutSession>[
+        ...history,
+        cleaned,
+      ]);
+      final WorkoutSession flagged = applyPrChanges(cleaned, changes);
+      final Set<String> own = <String>{
+        for (final SessionExercise e in flagged.exercises)
+          for (final SetEntry s in e.sets) s.id,
+      };
+      final Map<String, bool> others = <String, bool>{
+        for (final MapEntry<String, bool> c in changes.entries)
+          if (!own.contains(c.key)) c.key: c.value,
+      };
 
-    await _repo.finish(
-      flagged.id,
-      endedAt: end,
-      durationSec: duration < 0 ? 0 : duration,
-      volumeKg: volume,
-      caloriesKcal: calories,
-    );
-    await ref.read(trainRestProvider.notifier).end();
-    state = const AsyncData<WorkoutState?>(null);
-    return FinishOutcome(
-      sessionId: flagged.id,
-      caloriesSkipped: weightKg == null,
-      prCount: prCount,
-    );
+      final double volume = Records.sessionVolumeKg(flagged);
+      final int duration = end.difference(flagged.startedAt).inSeconds;
+
+      // Calories need a body weight and MET values; without them skip. All
+      // computed before anything is written.
+      double? calories;
+      final latest = await ref
+          .read(measurementRepositoryProvider)
+          .latestValues();
+      final double? weightKg = latest['weight']?.value;
+      if (weightKg != null) {
+        final Map<String, Exercise> resolved = <String, Exercise>{
+          ...await _resolve(<String>[
+            for (final String id in ids)
+              if (!cur.exercises.containsKey(id)) id,
+          ]),
+          for (final MapEntry<String, Exercise> e in cur.exercises.entries)
+            if (ids.contains(e.key)) e.key: e.value,
+        };
+        final Map<String, double?> met = <String, double?>{
+          for (final MapEntry<String, Exercise> e in resolved.entries)
+            e.key: e.value.metValue,
+        };
+        final result = BodyStats.estimateSessionCalories(
+          flagged,
+          met,
+          weightKg,
+        );
+        if (result is StatValue<double>) calories = result.value;
+      }
+
+      final WorkoutSession finished = flagged.copyWith(
+        durationSec: duration < 0 ? 0 : duration,
+        volumeKg: volume,
+        caloriesKcal: calories,
+      );
+      await _repo.finishWithFlags(finished, prChanges: others);
+
+      // The records before this workout, for the gains on the summary.
+      final List<PrDetail> prs = prDetails(
+        finished,
+        Records.computeRecords(history),
+      );
+      ref
+          .read(lastFinishedPrsProvider.notifier)
+          .put(FinishedPrs(finished.id, prs));
+      await ref.read(trainRestProvider.notifier).end();
+      state = const AsyncData<WorkoutState?>(null);
+      return FinishOutcome(
+        sessionId: finished.id,
+        caloriesSkipped: weightKg == null,
+        prCount: prs.length,
+        prs: prs,
+      );
+    } on Object {
+      _closing = false;
+      rethrow;
+    }
   }
 }
 
@@ -612,29 +834,30 @@ class WorkoutLauncher {
 
   /// Starts an empty workout, or one from [routine]. When a workout is
   /// already running its id comes back with `resumed: true` and nothing is
-  /// created.
+  /// created. A routine's exercises and sets are written with the session in
+  /// one transaction. The workout screen follows the active session id, so
+  /// nothing else needs refreshing.
   Future<({String id, bool resumed})> start({Routine? routine}) async {
     final SessionRepository repo = _ref.read(sessionRepositoryProvider);
+    final List<SessionExercise> exercises = routine == null
+        ? const <SessionExercise>[]
+        : await _seed(routine);
     try {
       final WorkoutSession s = await repo.start(
         name: routine?.name,
         routineId: routine?.id,
         source: routine == null ? SessionSource.manual : SessionSource.routine,
         startedAt: _ref.read(trainNowProvider)(),
+        exercises: exercises,
       );
-      if (routine != null) await _seed(repo, s.id, routine);
-      _ref.invalidate(workoutProvider);
       return (id: s.id, resumed: false);
     } on ActiveSessionExists catch (e) {
       return (id: e.activeId, resumed: true);
     }
   }
 
-  Future<void> _seed(
-    SessionRepository repo,
-    String sessionId,
-    Routine r,
-  ) async {
+  /// The routine's items as session exercises with their target sets.
+  Future<List<SessionExercise>> _seed(Routine r) async {
     Map<String, Exercise> exercises = <String, Exercise>{};
     try {
       final ExerciseResolver resolver = await _ref.read(
@@ -648,20 +871,28 @@ class WorkoutLauncher {
     }
     final List<RoutineItem> items = <RoutineItem>[...r.items]
       ..sort((RoutineItem a, RoutineItem b) => a.position - b.position);
-    for (int p = 0; p < items.length; p++) {
-      final RoutineItem item = items[p];
-      final SessionExercise se = await repo.addExercise(
-        sessionId,
-        item.exerciseId,
-        position: p,
-        supersetGroup: item.supersetGroup,
-      );
-      final TrackingType type =
-          exercises[item.exerciseId]?.trackingType ?? TrackingType.reps;
-      for (int i = 0; i < item.targetSets.clamp(1, TrainSpec.maxSets); i++) {
-        await repo.upsertSet(sessionId, se.id, setFromTarget(type, i, item));
-      }
-    }
+    return <SessionExercise>[
+      for (int p = 0; p < items.length; p++)
+        SessionExercise(
+          id: newId(),
+          exerciseId: items[p].exerciseId,
+          position: p,
+          supersetGroup: items[p].supersetGroup,
+          sets: <SetEntry>[
+            for (
+              int i = 0;
+              i < items[p].targetSets.clamp(1, TrainSpec.maxSets);
+              i++
+            )
+              setFromTarget(
+                exercises[items[p].exerciseId]?.trackingType ??
+                    TrackingType.reps,
+                i,
+                items[p],
+              ),
+          ],
+        ),
+    ];
   }
 }
 

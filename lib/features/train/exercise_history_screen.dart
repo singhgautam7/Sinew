@@ -67,7 +67,7 @@ class ExerciseHistoryData {
 final exerciseHistoryProvider = FutureProvider.autoDispose
     .family<ExerciseHistoryData, String>((Ref ref, String id) async {
       final List<WorkoutSession> sessions = await ref.watch(
-        trainFinishedTreesProvider.future,
+        trainExerciseSessionsProvider(id).future,
       );
       Exercise exercise = Exercise(
         id: id,

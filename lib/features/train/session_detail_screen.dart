@@ -11,6 +11,8 @@ import '../../core/models/profile.dart';
 import '../../core/models/training.dart';
 import '../../core/providers.dart';
 import '../../core/routing/router.dart';
+import '../../core/settings/app_settings.dart';
+import '../../core/settings/haptics.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/units/units.dart';
 import '../../core/widgets/app_button.dart';
@@ -95,17 +97,17 @@ class SessionDetailScreen extends ConsumerWidget {
     );
     if (!yes || !context.mounted) return;
     final SessionRepository repo = ref.read(sessionRepositoryProvider);
-    // The screen is gone by the time Undo is tapped: keep the container.
-    final ProviderContainer container = ProviderScope.containerOf(context);
     final OverlayState? overlay = Navigator.of(
       context,
       rootNavigator: true,
     ).overlay;
     // Keep the whole session, to put it back on Undo.
     final WorkoutSession full = await repo.byId(s.id) ?? s;
+    final List<String> exerciseIds = <String>[
+      for (final SessionExercise e in full.exercises) e.exerciseId,
+    ];
     await repo.delete(s.id);
-    await recomputePrFlags(repo);
-    container.invalidate(trainFinishedTreesProvider);
+    await recomputePrFlags(repo, exerciseIds: exerciseIds);
     if (!context.mounted) return;
     context.pop();
     if (overlay != null && overlay.mounted) {
@@ -116,8 +118,7 @@ class SessionDetailScreen extends ConsumerWidget {
         actionLabel: 'Undo',
         onAction: () async {
           await repo.saveTree(full);
-          await recomputePrFlags(repo);
-          container.invalidate(trainFinishedTreesProvider);
+          await recomputePrFlags(repo, exerciseIds: exerciseIds);
         },
       );
     }
@@ -340,6 +341,10 @@ class _ExerciseBlock extends ConsumerWidget {
         type: exercise.trackingType,
         title: '${exercise.name}, set ${set.position + 1}',
         profile: profile,
+        weightStep: profile.weightUnit == WeightUnit.kg
+            ? ref.read(settingsProvider).incrementKg
+            : ref.read(settingsProvider).incrementLb,
+        haptics: ref.read(hapticsEnabledProvider),
       ),
     );
     if (result == null) return;
@@ -376,10 +381,9 @@ class _ExerciseBlock extends ConsumerWidget {
     await recomputePrFlags(
       ref.read(sessionRepositoryProvider),
       replace: edited,
+      exerciseIds: session.exercises.map((SessionExercise e) => e.exerciseId),
     );
-    ref
-      ..invalidate(trainSessionProvider(session.id))
-      ..invalidate(trainFinishedTreesProvider);
+    ref.invalidate(trainSessionProvider(session.id));
   }
 }
 
@@ -398,7 +402,13 @@ class _SetEditorSheet extends StatefulWidget {
     required this.type,
     required this.title,
     required this.profile,
+    required this.weightStep,
+    required this.haptics,
   });
+
+  /// The weight stepper's step, in the profile's weight unit (Settings).
+  final double weightStep;
+  final bool haptics;
 
   final SetEntry set;
   final TrackingType type;
@@ -438,6 +448,7 @@ class _SetEditorSheetState extends State<_SetEditorSheet> {
     NumericStepper(
       value: (value ?? 0).toDouble(),
       step: 5,
+      haptics: widget.haptics,
       max: 36000,
       maxDecimals: 0,
       semanticLabel: label,
@@ -456,6 +467,7 @@ class _SetEditorSheetState extends State<_SetEditorSheet> {
     NumericStepper(
       value: (value ?? 0).toDouble(),
       max: 1000,
+      haptics: widget.haptics,
       maxDecimals: 0,
       semanticLabel: label,
       onChanged: (double v) =>
@@ -470,7 +482,8 @@ class _SetEditorSheetState extends State<_SetEditorSheet> {
       'Weight',
       NumericStepper(
         value: Units.fromKg(_set.weightKg ?? 0, wu),
-        step: wu == WeightUnit.kg ? 2.5 : 5,
+        step: widget.weightStep,
+        haptics: widget.haptics,
         max: 2000,
         unit: Units.weightLabel(wu),
         semanticLabel: 'Weight',
@@ -507,6 +520,7 @@ class _SetEditorSheetState extends State<_SetEditorSheet> {
           NumericStepper(
             value: Units.fromMetres(_set.distanceM ?? 0, du),
             step: 0.5,
+            haptics: widget.haptics,
             max: 1000,
             unit: Units.distanceLabel(du),
             semanticLabel: 'Distance',

@@ -91,6 +91,24 @@ class RoutineRepository {
     });
   }
 
+  /// The position a new routine takes: after the last one.
+  Future<int> nextPosition() async {
+    final Expression<int> maxPos = _db.routines.position.max();
+    final TypedResult row = await (_db.selectOnly(
+      _db.routines,
+    )..addColumns(<Expression<Object>>[maxPos])).getSingle();
+    final int? m = row.read(maxPos);
+    return m == null ? 0 : m + 1;
+  }
+
+  /// Writes several routines in one transaction (starter routines): all or
+  /// none.
+  Future<void> saveMany(List<Routine> routines) => _db.transaction(() async {
+    for (final Routine r in routines) {
+      await save(r);
+    }
+  });
+
   Future<void> delete(String id) => (_db.delete(
     _db.routines,
   )..where(($RoutinesTable t) => t.id.equals(id))).go();

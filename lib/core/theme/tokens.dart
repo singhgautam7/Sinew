@@ -774,11 +774,7 @@ abstract final class TrainSpec {
   static const double routinePlayGlyph = 26;
   static const double routineEditorTile = 48;
 
-  /// Rough work time per set, in seconds, for "about N min" estimates.
-  static const int estimatedWorkSecPerSet = 40;
-
   // Defaults.
-  static const int defaultRestSec = 90;
   static const int defaultSetCount = 3;
   static const int restStepSec = 10;
   static const int maxSets = 20;
@@ -794,6 +790,9 @@ abstract final class TrainSpec {
   static const double setGap = 8;
 
   // History.
+  static const double calendarGap = 4;
+  static const double calendarCellRadius = 10;
+  static const double legendSwatch = 12;
   static const int historyPage = 40;
   static const double dateBlock = 48;
   static const double dateBlockRadius = 12;

@@ -110,3 +110,26 @@ String formatAgo(DateTime then, DateTime now) {
 
 String plural(int n, String one, [String? many]) =>
     '$n ${n == 1 ? one : (many ?? '${one}s')}';
+
+const List<String> _monthsLong = <String>[
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+/// "October".
+String monthLong(DateTime d) => _monthsLong[d.month - 1];
+
+/// A muscle id read aloud: "rearDeltoids" is "rear deltoids".
+String muscleName(String id) => id
+    .replaceAllMapped(RegExp(r'(?<=[a-z])(?=[A-Z])'), (Match _) => ' ')
+    .toLowerCase();

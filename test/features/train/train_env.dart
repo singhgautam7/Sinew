@@ -154,6 +154,11 @@ class TrainEnv {
       ),
       ...trainRootRoutes,
       GoRoute(
+        path: Routes.search,
+        builder: (BuildContext c, GoRouterState s) =>
+            const Scaffold(body: Text('Search stub')),
+      ),
+      GoRoute(
         path: Routes.library,
         builder: (BuildContext c, GoRouterState s) =>
             const Scaffold(body: Text('Library stub')),

@@ -355,28 +355,20 @@ class _Preview extends StatelessWidget {
           ),
         ],
         const SizedBox(height: Space.xl),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: AppButton(
-                label: 'Choose another',
-                type: AppButtonType.outline,
-                fullWidth: true,
-                onPressed: onPickOther,
-              ),
-            ),
-            const SizedBox(width: Space.md),
-            Expanded(
-              child: AppButton(
-                label: mode == RestoreMode.replace ? 'Replace' : 'Merge',
-                type: mode == RestoreMode.replace
-                    ? AppButtonType.danger
-                    : AppButtonType.primary,
-                fullWidth: true,
-                onPressed: onRestore,
-              ),
-            ),
-          ],
+        AppButton(
+          label: mode == RestoreMode.replace ? 'Replace' : 'Merge',
+          type: mode == RestoreMode.replace
+              ? AppButtonType.danger
+              : AppButtonType.primary,
+          fullWidth: true,
+          onPressed: onRestore,
+        ),
+        const SizedBox(height: Space.sm),
+        AppButton(
+          label: 'Choose another',
+          type: AppButtonType.outline,
+          fullWidth: true,
+          onPressed: onPickOther,
         ),
       ],
     );

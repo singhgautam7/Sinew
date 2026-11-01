@@ -60,9 +60,8 @@ void main() {
       expect(p.weightUnit, WeightUnit.lb);
       expect(p.heightCm, closeTo(70 * 2.54, 1e-9));
 
-      final List<MeasurementEntry> entries = await MeasurementRepository(
-        h.db,
-      ).entries();
+      final List<MeasurementEntry> entries = await MeasurementRepository(h.db)
+          .entries();
       expect(entries, hasLength(1));
       expect(entries.single.values['weight'], closeTo(176 * 0.45359237, 1e-9));
       await closeApp(tester);

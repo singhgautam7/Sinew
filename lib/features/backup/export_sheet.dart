@@ -8,7 +8,8 @@ import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/sinew_bottom_sheet.dart';
-import '../../core/widgets/sinew_chips.dart';
+import '../../core/widgets/sinew_list.dart';
+import '../../core/widgets/sinew_settings.dart';
 import '../../core/widgets/sinew_segmented_control.dart';
 import '../../core/widgets/sinew_snackbar.dart';
 import 'backup_io.dart';
@@ -144,27 +145,25 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
     return SinewBottomSheet(
       title: 'Export',
       description: 'You pick where the file goes. Sinew never uploads it.',
-      actions: Row(
+      actions: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Expanded(
-            child: AppButton(
-              label: 'Share',
-              icon: Icons.ios_share_rounded,
-              type: AppButtonType.outline,
-              fullWidth: true,
-              onPressed: _busy || !_canExport ? null : () => _run(share: true),
-            ),
+          AppButton(
+            label: 'Save',
+            icon: Icons.save_alt_rounded,
+            type: AppButtonType.primary,
+            fullWidth: true,
+            isLoading: _busy,
+            onPressed: _busy || !_canExport ? null : () => _run(share: false),
           ),
-          const SizedBox(width: Space.md),
-          Expanded(
-            child: AppButton(
-              label: 'Save',
-              icon: Icons.save_alt_rounded,
-              type: AppButtonType.primary,
-              fullWidth: true,
-              isLoading: _busy,
-              onPressed: _busy || !_canExport ? null : () => _run(share: false),
-            ),
+          const SizedBox(height: Space.sm),
+          AppButton(
+            label: 'Share',
+            icon: Icons.ios_share_rounded,
+            type: AppButtonType.outline,
+            fullWidth: true,
+            onPressed: _busy || !_canExport ? null : () => _run(share: true),
           ),
         ],
       ),
@@ -173,7 +172,7 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
         children: <Widget>[
           SinewSegmentedControl<ExportFormat>(
             values: ExportFormat.values,
-            labels: const <String>['JSON backup', 'CSV'],
+            labels: const <String>['JSON', 'CSV'],
             selected: _format,
             onSelected: (ExportFormat f) => setState(() => _format = f),
           ),
@@ -192,19 +191,21 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
               style: tt.bodyMedium!.copyWith(color: cs.onSurfaceVariant),
             ),
             const SizedBox(height: Space.md),
-            Wrap(
-              spacing: Space.sm,
-              runSpacing: Space.sm,
+            SinewGroup(
               children: <Widget>[
-                SinewChip(
+                SinewSwitchRow(
+                  icon: Icons.straighten_rounded,
                   label: CsvExportService.measurementsFileName,
-                  selected: _measurements,
-                  onTap: () => setState(() => _measurements = !_measurements),
+                  subtitle: 'Every body measurement entry',
+                  value: _measurements,
+                  onChanged: (bool v) => setState(() => _measurements = v),
                 ),
-                SinewChip(
+                SinewSwitchRow(
+                  icon: Icons.fitness_center_rounded,
                   label: CsvExportService.setsFileName,
-                  selected: _sets,
-                  onTap: () => setState(() => _sets = !_sets),
+                  subtitle: 'Every logged set',
+                  value: _sets,
+                  onChanged: (bool v) => setState(() => _sets = v),
                 ),
               ],
             ),

@@ -91,10 +91,7 @@ void main() {
       );
       expect(nextRoutine(routines, <WorkoutSession>[]), routines.first);
       expect(nextRoutine(routines, <WorkoutSession>[s('a')])!.id, 'b');
-      expect(
-        nextRoutine(routines, <WorkoutSession>[s(null), s('c')])!.id,
-        'a',
-      );
+      expect(nextRoutine(routines, <WorkoutSession>[s(null), s('c')])!.id, 'a');
       expect(nextRoutine(const <Routine>[], <WorkoutSession>[s('a')]), isNull);
     });
   });
@@ -121,7 +118,8 @@ void main() {
       clock: _now,
       seed: (UserDatabase db) async {
         await populate(db, sessions: 3);
-        await RoutineRepository(db).save(_routine('routine-pull', 'Pull day', 2));
+        await RoutineRepository(db)
+            .save(_routine('routine-pull', 'Pull day', 2));
         // The routine Push day was last used on 3 January: Pull is next.
         await _finished(
           db,
@@ -226,7 +224,10 @@ void main() {
         );
       },
     );
-    await tester.scrollUntilVisible(find.text('Body · latest'.toUpperCase()), 200);
+    await tester.scrollUntilVisible(
+      find.text('Body · latest'.toUpperCase()),
+      200,
+    );
     expect(find.byType(StatCard<double>), findsNWidgets(2));
     expect(find.text('80'), findsOneWidget);
     // BMI needs a height: its card offers to add one on the profile.
@@ -275,7 +276,8 @@ void main() {
       clock: _now,
       seed: (UserDatabase db) async {
         await populate(db, sessions: 3);
-        await RoutineRepository(db).save(_routine('routine-pull', 'Pull day', 2));
+        await RoutineRepository(db)
+            .save(_routine('routine-pull', 'Pull day', 2));
       },
     );
     expect(tester.takeException(), isNull);

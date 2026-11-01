@@ -464,36 +464,34 @@ class _BarSheetState extends State<_BarSheet> {
   Widget build(BuildContext context) {
     return SinewBottomSheet(
       title: widget.existing == null ? 'Add bar' : 'Edit bar',
-      actions: Row(
+      actions: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          if (widget.existing != null) ...<Widget>[
-            Expanded(
-              child: AppButton(
-                label: 'Delete',
-                type: AppButtonType.outline,
-                fullWidth: true,
-                onPressed: () =>
-                    Navigator.of(context).pop(_BarSheet.deleteResult),
-              ),
-            ),
-            const SizedBox(width: Space.md),
-          ],
-          Expanded(
-            child: AppButton(
-              label: 'Save',
-              type: AppButtonType.primary,
-              fullWidth: true,
-              onPressed: _valid
-                  ? () => Navigator.of(context).pop(
-                      Bar(
-                        name: _name.text.trim(),
-                        weightKg: _kg!,
-                        isDumbbell: _dumbbell,
-                      ),
-                    )
-                  : null,
-            ),
+          AppButton(
+            label: 'Save',
+            type: AppButtonType.primary,
+            fullWidth: true,
+            onPressed: _valid
+                ? () => Navigator.of(context).pop(
+                    Bar(
+                      name: _name.text.trim(),
+                      weightKg: _kg!,
+                      isDumbbell: _dumbbell,
+                    ),
+                  )
+                : null,
           ),
+          if (widget.existing != null) ...<Widget>[
+            const SizedBox(height: Space.sm),
+            AppButton(
+              label: 'Delete',
+              type: AppButtonType.outline,
+              fullWidth: true,
+              onPressed: () =>
+                  Navigator.of(context).pop(_BarSheet.deleteResult),
+            ),
+          ],
         ],
       ),
       child: Column(

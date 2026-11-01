@@ -15,6 +15,29 @@ class ActiveSessionExists implements Exception {
   String toString() => 'ActiveSessionExists($activeId)';
 }
 
+/// A session without its sets: enough for lists, search and calendars.
+class SessionHeader {
+  const SessionHeader({
+    required this.id,
+    required this.startedAt,
+    required this.exerciseIds,
+    this.name,
+    this.endedAt,
+    this.routineId,
+    this.durationSec,
+  });
+
+  final String id;
+  final String? name;
+  final DateTime startedAt;
+  final DateTime? endedAt;
+  final String? routineId;
+  final int? durationSec;
+
+  /// The exercises done in it, in order, without repeats.
+  final List<String> exerciseIds;
+}
+
 /// Workout sessions, their exercises and sets.
 ///
 /// The active workout survives app kill: every set change is written
@@ -36,11 +59,15 @@ class SessionRepository {
       _activeQuery().watchSingleOrNull().map((WorkoutSessionRow? r) => r?.id);
 
   /// Starts a session. Throws [ActiveSessionExists] if one is running.
+  ///
+  /// [exercises] (with their sets) are written in the same transaction, so a
+  /// workout started from a routine is never half built.
   Future<WorkoutSession> start({
     String? name,
     String? routineId,
     SessionSource source = SessionSource.manual,
     DateTime? startedAt,
+    List<SessionExercise> exercises = const <SessionExercise>[],
   }) => _db.transaction(() async {
     final WorkoutSessionRow? running = await _activeQuery().getSingleOrNull();
     if (running != null) throw ActiveSessionExists(running.id);
@@ -52,8 +79,10 @@ class SessionRepository {
       routineId: routineId,
       source: source,
       updatedAt: now,
+      exercises: exercises,
     );
     await _db.into(_db.workoutSessions).insert(_sessionRow(s));
+    if (exercises.isNotEmpty) await _insertChildren(s);
     return s;
   });
 
@@ -78,10 +107,89 @@ class SessionRepository {
           perceivedEffort: Value<int?>(perceivedEffort),
           notes: notes == null
               ? const Value<String?>.absent()
-              : Value<String?>(notes),
+              : Value<String?>(_cleanNote(notes)),
           updatedAt: Value<DateTime>(_clock()),
         ),
       );
+
+  /// Ends the session in one transaction: writes the finished tree (only the
+  /// sets that were done, with their summary) and the `is_pr` flags that
+  /// changed in other sessions, or none of it.
+  Future<void> finishWithFlags(
+    WorkoutSession finished, {
+    Map<String, bool> prChanges = const <String, bool>{},
+  }) => saveTreeWithFlags(finished.copyWith(updatedAt: _clock()), prChanges);
+
+  /// [saveTree] and [setPrFlags] in one transaction (an edited past session
+  /// and the record flags it moved), so watchers see one consistent change.
+  Future<void> saveTreeWithFlags(
+    WorkoutSession s,
+    Map<String, bool> prChanges,
+  ) => _db.transaction(() async {
+    await saveTree(s);
+    await setPrFlags(prChanges);
+  });
+
+  /// Deletes one set and writes the [upserts] (renumbered siblings, moved
+  /// record flags) in one transaction.
+  Future<void> deleteSetWith(
+    String sessionId,
+    String setId,
+    List<(String, SetEntry)> upserts,
+  ) => _db.transaction(() async {
+    await (_db.delete(
+      _db.setEntries,
+    )..where(($SetEntriesTable t) => t.id.equals(setId))).go();
+    for (final (String seId, SetEntry set) in upserts) {
+      await _db.into(_db.setEntries).insertOnConflictUpdate(_setRow(seId, set));
+    }
+    await _touch(sessionId);
+  });
+
+  /// Inserts or updates several sets of one session in one transaction (a
+  /// completed set and the record flags it moved), then bumps `updatedAt`.
+  /// Each change is the owning session exercise id and the set.
+  Future<void> upsertSets(String sessionId, List<(String, SetEntry)> changes) =>
+      _db.transaction(() async {
+        for (final (String seId, SetEntry set) in changes) {
+          await _db
+              .into(_db.setEntries)
+              .insertOnConflictUpdate(_setRow(seId, set));
+        }
+        await _touch(sessionId);
+      });
+
+  /// Sets the summary fields (effort and note) of a finished session. A null
+  /// value clears the field; a blank note is stored as null.
+  Future<void> updateSummary(
+    String id, {
+    int? perceivedEffort,
+    String? notes,
+  }) =>
+      (_db.update(
+        _db.workoutSessions,
+      )..where(($WorkoutSessionsTable t) => t.id.equals(id))).write(
+        WorkoutSessionsCompanion(
+          perceivedEffort: Value<int?>(perceivedEffort),
+          notes: Value<String?>(_cleanNote(notes)),
+          updatedAt: Value<DateTime>(_clock()),
+        ),
+      );
+
+  /// Writes only the `is_pr` column of the given sets (set id to flag), in
+  /// one batch. Derived data: the sessions' `updatedAt` is left alone.
+  Future<void> setPrFlags(Map<String, bool> flags) async {
+    if (flags.isEmpty) return;
+    await _db.batch((Batch b) {
+      for (final MapEntry<String, bool> e in flags.entries) {
+        b.update(
+          _db.setEntries,
+          SetEntriesCompanion(isPr: Value<bool>(e.value)),
+          where: ($SetEntriesTable t) => t.id.equals(e.key),
+        );
+      }
+    });
+  }
 
   // ── Writes during a workout ───────────────────────────────────────────────
 
@@ -208,6 +316,223 @@ class SessionRepository {
     return sets.map(_mapSet).toList();
   }
 
+  /// Sessions that include any of [exerciseIds], each reduced to just those
+  /// exercises (with all their sets), oldest first. Backed by the
+  /// `session_exercises_exercise` index, so it reads only what the exercises
+  /// touch. [finishedOnly] drops the running workout; [excludeSessionId]
+  /// drops one more.
+  Future<List<WorkoutSession>> sessionsForExercises(
+    Iterable<String> exerciseIds, {
+    bool finishedOnly = true,
+    String? excludeSessionId,
+  }) async {
+    final List<String> ids = exerciseIds.toSet().toList();
+    if (ids.isEmpty) return const <WorkoutSession>[];
+    final List<SessionExerciseRow> exRows = <SessionExerciseRow>[];
+    for (final List<String> chunk in _chunks(ids)) {
+      exRows.addAll(
+        await (_db.select(
+          _db.sessionExercises,
+        )..where(($SessionExercisesTable t) => t.exerciseId.isIn(chunk))).get(),
+      );
+    }
+    if (exRows.isEmpty) return const <WorkoutSession>[];
+    final List<String> sessionIds = exRows
+        .map((SessionExerciseRow e) => e.sessionId)
+        .toSet()
+        .toList();
+    final List<WorkoutSessionRow> sessionRows = <WorkoutSessionRow>[];
+    for (final List<String> chunk in _chunks(sessionIds)) {
+      sessionRows.addAll(
+        await (_db.select(_db.workoutSessions)..where(
+              ($WorkoutSessionsTable t) =>
+                  t.id.isIn(chunk) &
+                  (finishedOnly
+                      ? t.endedAt.isNotNull()
+                      : const Constant<bool>(true)),
+            ))
+            .get(),
+      );
+    }
+    final Set<String> keep = <String>{
+      for (final WorkoutSessionRow r in sessionRows)
+        if (r.id != excludeSessionId) r.id,
+    };
+    final List<SessionExerciseRow> used = <SessionExerciseRow>[
+      for (final SessionExerciseRow e in exRows)
+        if (keep.contains(e.sessionId)) e,
+    ];
+    final Map<String, List<SetEntry>> setsBy = <String, List<SetEntry>>{};
+    for (final List<String> chunk in _chunks(<String>[
+      for (final SessionExerciseRow e in used) e.id,
+    ])) {
+      final List<SetEntryRow> sets = await (_db.select(
+        _db.setEntries,
+      )..where(($SetEntriesTable t) => t.sessionExerciseId.isIn(chunk))).get();
+      for (final SetEntryRow s in sets) {
+        (setsBy[s.sessionExerciseId] ??= <SetEntry>[]).add(_mapSet(s));
+      }
+    }
+    final Map<String, List<SessionExercise>> exBy =
+        <String, List<SessionExercise>>{};
+    for (final SessionExerciseRow e in used) {
+      (exBy[e.sessionId] ??= <SessionExercise>[]).add(
+        _mapExercise(e, _sorted(setsBy[e.id])),
+      );
+    }
+    return <WorkoutSession>[
+      for (final WorkoutSessionRow r in sessionRows)
+        if (keep.contains(r.id))
+          _map(
+            r,
+            (exBy[r.id] ?? <SessionExercise>[])..sort(
+              (SessionExercise a, SessionExercise b) => a.position - b.position,
+            ),
+          ),
+    ]..sort(
+      (WorkoutSession a, WorkoutSession b) =>
+          a.startedAt.compareTo(b.startedAt),
+    );
+  }
+
+  /// [sessionsForExercises] for one exercise (its history).
+  Future<List<WorkoutSession>> sessionsForExercise(
+    String exerciseId, {
+    bool finishedOnly = true,
+    String? excludeSessionId,
+  }) => sessionsForExercises(
+    <String>[exerciseId],
+    finishedOnly: finishedOnly,
+    excludeSessionId: excludeSessionId,
+  );
+
+  /// Sessions without their sets, oldest first: id, name, dates, routine and
+  /// the exercise ids. For search and calendars. [from] (inclusive) and [to]
+  /// (exclusive) bound `started_at`.
+  Future<List<SessionHeader>> sessionHeaders({
+    DateTime? from,
+    DateTime? to,
+    bool finishedOnly = true,
+  }) async {
+    final List<WorkoutSessionRow> rows =
+        await (_db.select(_db.workoutSessions)
+              ..where(
+                ($WorkoutSessionsTable t) =>
+                    (finishedOnly
+                        ? t.endedAt.isNotNull()
+                        : const Constant<bool>(true)) &
+                    (from == null
+                        ? const Constant<bool>(true)
+                        : t.startedAt.isBiggerOrEqualValue(from)) &
+                    (to == null
+                        ? const Constant<bool>(true)
+                        : t.startedAt.isSmallerThanValue(to)),
+              )
+              ..orderBy(<OrderClauseGenerator<$WorkoutSessionsTable>>[
+                ($WorkoutSessionsTable t) => OrderingTerm.asc(t.startedAt),
+              ]))
+            .get();
+    if (rows.isEmpty) return const <SessionHeader>[];
+    final Map<String, List<String>> exBy = <String, List<String>>{};
+    final List<SessionExerciseRow> ex = <SessionExerciseRow>[];
+    if (from == null && to == null) {
+      ex.addAll(await _exerciseIdRows(null));
+    } else {
+      for (final List<String> chunk in _chunks(<String>[
+        for (final WorkoutSessionRow r in rows) r.id,
+      ])) {
+        ex.addAll(await _exerciseIdRows(chunk));
+      }
+    }
+    ex.sort(
+      (SessionExerciseRow a, SessionExerciseRow b) => a.position - b.position,
+    );
+    for (final SessionExerciseRow e in ex) {
+      final List<String> list = exBy[e.sessionId] ??= <String>[];
+      if (!list.contains(e.exerciseId)) list.add(e.exerciseId);
+    }
+    return <SessionHeader>[
+      for (final WorkoutSessionRow r in rows)
+        SessionHeader(
+          id: r.id,
+          name: r.name,
+          startedAt: r.startedAt,
+          endedAt: r.endedAt,
+          routineId: r.routineId,
+          durationSec: r.durationSec,
+          exerciseIds: exBy[r.id] ?? const <String>[],
+        ),
+    ];
+  }
+
+  /// Completed, non-warm-up sets per exercise id in finished sessions that
+  /// started in [from] (inclusive) to [to] (exclusive): the weekly muscle
+  /// load, without reading the sets themselves.
+  Future<Map<String, int>> completedSetCounts({
+    required DateTime from,
+    required DateTime to,
+  }) async {
+    final Expression<int> n = _db.setEntries.id.count();
+    final JoinedSelectStatement<HasResultSet, dynamic> q =
+        _db.selectOnly(_db.setEntries).join(<Join<HasResultSet, dynamic>>[
+            innerJoin(
+              _db.sessionExercises,
+              _db.sessionExercises.id.equalsExp(
+                _db.setEntries.sessionExerciseId,
+              ),
+            ),
+            innerJoin(
+              _db.workoutSessions,
+              _db.workoutSessions.id.equalsExp(_db.sessionExercises.sessionId),
+            ),
+          ])
+          ..addColumns(<Expression<Object>>[_db.sessionExercises.exerciseId, n])
+          ..where(
+            _db.setEntries.completed.equals(true) &
+                _db.setEntries.isWarmup.equals(false) &
+                _db.workoutSessions.endedAt.isNotNull() &
+                _db.workoutSessions.startedAt.isBiggerOrEqualValue(from) &
+                _db.workoutSessions.startedAt.isSmallerThanValue(to),
+          )
+          ..groupBy(<Expression<Object>>[_db.sessionExercises.exerciseId]);
+    final List<TypedResult> rows = await q.get();
+    return <String, int>{
+      for (final TypedResult r in rows)
+        r.read(_db.sessionExercises.exerciseId)!: r.read(n) ?? 0,
+    };
+  }
+
+  /// How many personal-record sets each of [sessionIds] holds (sessions with
+  /// none are left out).
+  Future<Map<String, int>> prCounts(Iterable<String> sessionIds) async {
+    final Map<String, int> out = <String, int>{};
+    final Expression<int> n = _db.setEntries.id.count();
+    for (final List<String> chunk in _chunks(sessionIds.toSet().toList())) {
+      final JoinedSelectStatement<HasResultSet, dynamic> q =
+          _db.selectOnly(_db.setEntries).join(<Join<HasResultSet, dynamic>>[
+              innerJoin(
+                _db.sessionExercises,
+                _db.sessionExercises.id.equalsExp(
+                  _db.setEntries.sessionExerciseId,
+                ),
+              ),
+            ])
+            ..addColumns(<Expression<Object>>[
+              _db.sessionExercises.sessionId,
+              n,
+            ])
+            ..where(
+              _db.setEntries.isPr.equals(true) &
+                  _db.sessionExercises.sessionId.isIn(chunk),
+            )
+            ..groupBy(<Expression<Object>>[_db.sessionExercises.sessionId]);
+      for (final TypedResult r in await q.get()) {
+        out[r.read(_db.sessionExercises.sessionId)!] = r.read(n) ?? 0;
+      }
+    }
+    return out;
+  }
+
   /// Every session with its full tree, for backup and record recomputation.
   Future<List<WorkoutSession>> allWithTree() async {
     final List<WorkoutSessionRow> sessions = await _db
@@ -246,14 +571,7 @@ class SessionRepository {
     await (_db.delete(
       _db.sessionExercises,
     )..where(($SessionExercisesTable t) => t.sessionId.equals(s.id))).go();
-    await _db.batch((Batch b) {
-      for (final SessionExercise e in s.exercises) {
-        b.insert(_db.sessionExercises, _exerciseRow(s.id, e));
-        b.insertAll(_db.setEntries, <SetEntriesCompanion>[
-          for (final SetEntry set in e.sets) _setRow(e.id, set),
-        ]);
-      }
-    });
+    await _insertChildren(s);
   });
 
   Future<void> delete(String id) => (_db.delete(
@@ -261,6 +579,35 @@ class SessionRepository {
   )..where(($WorkoutSessionsTable t) => t.id.equals(id))).go();
 
   // ── Internals ─────────────────────────────────────────────────────────────
+
+  Future<void> _insertChildren(WorkoutSession s) => _db.batch((Batch b) {
+    for (final SessionExercise e in s.exercises) {
+      b.insert(_db.sessionExercises, _exerciseRow(s.id, e));
+      b.insertAll(_db.setEntries, <SetEntriesCompanion>[
+        for (final SetEntry set in e.sets) _setRow(e.id, set),
+      ]);
+    }
+  });
+
+  Future<List<SessionExerciseRow>> _exerciseIdRows(List<String>? sessionIds) =>
+      (_db.select(_db.sessionExercises)..where(
+            ($SessionExercisesTable t) => sessionIds == null
+                ? const Constant<bool>(true)
+                : t.sessionId.isIn(sessionIds),
+          ))
+          .get();
+
+  /// SQLite caps the number of variables in one statement.
+  static Iterable<List<String>> _chunks(List<String> ids, [int size = 400]) =>
+      <List<String>>[
+        for (int i = 0; i < ids.length; i += size)
+          ids.sublist(i, i + size > ids.length ? ids.length : i + size),
+      ];
+
+  static String? _cleanNote(String? note) {
+    final String? t = note?.trim();
+    return (t == null || t.isEmpty) ? null : t;
+  }
 
   SimpleSelectStatement<$WorkoutSessionsTable, WorkoutSessionRow>
   _activeQuery() =>

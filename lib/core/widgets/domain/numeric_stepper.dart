@@ -67,6 +67,16 @@ class _NumericStepperState extends State<NumericStepper> {
   Timer? _repeat;
   int _repeats = 0;
 
+  /// The value as of the last step. A held button can step several times
+  /// between two frames, before the parent has passed the new value down.
+  late double _value = widget.value;
+
+  @override
+  void didUpdateWidget(NumericStepper old) {
+    super.didUpdateWidget(old);
+    _value = widget.value;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -97,11 +107,12 @@ class _NumericStepperState extends State<NumericStepper> {
   bool get _canIncrease => widget.value < widget.max;
 
   void _bump(int direction) {
-    final double next = _clamp(widget.value + direction * widget.step);
-    if (next == widget.value) {
+    final double next = _clamp(_value + direction * widget.step);
+    if (next == _value) {
       _repeat?.cancel();
       return;
     }
+    _value = next;
     if (widget.haptics) HapticFeedback.selectionClick();
     widget.onChanged(next);
   }

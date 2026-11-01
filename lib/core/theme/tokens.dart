@@ -326,3 +326,199 @@ abstract final class SinewMotion {
   static const Duration silhouetteMorph = Duration(milliseconds: 480);
   static const Duration phaseSweep = Duration(milliseconds: 360);
 }
+
+// ──────────────────────────────────────────────────────────────────────────
+// Sinew components: plate loader, set rows, timer controls and ring, numeric
+// stepper. Append-only; every number below comes from the design source
+// (`sinew-art.js`, Components, Train and Timer frames).
+// ──────────────────────────────────────────────────────────────────────────
+
+/// Plate loader geometry, in the design's own coordinate space (the art is
+/// drawn at these sizes and scaled to the available width, like an SVG
+/// viewBox).
+abstract final class PlateSpec {
+  static const double barbellWidth = 340;
+  static const double barbellHeight = 120;
+  static const double dumbbellWidth = 260;
+  static const double dumbbellHeight = 96;
+  static const double stackWidth = 200;
+
+  /// Half the length of the bare bar between the sleeves.
+  static const double barbellCollar = 64;
+  static const double dumbbellCollar = 30;
+
+  /// Distance from the collar to the first plate.
+  static const double barbellFirstGap = 3;
+  static const double dumbbellFirstGap = 1;
+
+  /// Gap between neighbouring plates.
+  static const double plateGap = 2;
+
+  /// Space kept free at the end of the sleeve.
+  static const double roomMargin = 14;
+  static const double plateStroke = 1.5;
+  static const double plateRadius = 3;
+
+  // Barbell.
+  static const double shaftHalfHeight = 3.5;
+  static const double sleeveHalfHeight = 6;
+  static const double sleeveInset = 8;
+  static const double stopHalfHeight = 13;
+  static const double stopWidth = 8;
+  static const double stopOutset = 6;
+  static const double stopInset = 2;
+  static const double stopRadius = 3;
+
+  // Dumbbell.
+  static const double handleHalfHeight = 5;
+  static const double gripHalfHeight = 4;
+  static const double gripLength = 34;
+
+  /// Plate sizes in kg, heaviest first, with the face height and thickness
+  /// each is drawn at on a barbell.
+  static const List<double> sizes = <double>[25, 20, 15, 10, 5, 2.5, 1.25];
+  static const List<double> barbellHeights = <double>[
+    96,
+    96,
+    96,
+    96,
+    62,
+    48,
+    40,
+  ];
+  static const List<double> barbellThickness = <double>[15, 13, 11, 9, 8, 7, 6];
+
+  /// Dumbbell plates exist for 5, 2.5 and 1.25 kg only (index 4 to 6).
+  static const List<double> dumbbellHeights = <double>[78, 62, 52];
+  static const List<double> dumbbellThickness = <double>[12, 9, 7];
+  static const int dumbbellFirstIndex = 4;
+
+  /// Two plate sizes closer than this many kilograms are the same size.
+  static const double lbMatchTolerance = 0.05;
+
+  // Machine stack.
+  static const int stackDefaultCount = 16;
+  static const double stackPlateHeight = 9;
+  static const double stackPitch = 11;
+  static const double stackTop = 10;
+  static const double stackBottom = 10;
+  static const double stackRodHalf = 3;
+  static const double stackPlateHalf = 46;
+  static const double stackPlateRadius = 2.5;
+  static const int stackLabelEvery = 4;
+  static const double stackLabelOffset = 56;
+  static const double stackLabelFont = 10;
+  static const double pinLength = 30;
+  static const double pinHeight = 4;
+  static const double pinStart = 64;
+  static const double pinKnobOffset = 66;
+  static const double pinKnobRadius = 6;
+
+  /// Gap between the art and its caption.
+  static const double captionGap = 6;
+  static const double captionFont = 13;
+  static const double captionLine = 18;
+}
+
+/// Set row metrics (Components and Train frames).
+abstract final class SetRowSpec {
+  static const double minHeight = SinewSpace.setRowHeight;
+  static const double plannedHeight = 56;
+  static const double compactHeight = 40;
+  static const double badge = 32;
+  static const double check = 52;
+  static const double checkBorder = 2;
+  static const double checkGlyph = 28;
+  static const double fieldMinHeight = 48;
+  static const double fieldPadH = 10;
+  static const double rowPadLeft = 8;
+  static const double rowPadRight = 6;
+  static const double rowPadV = 6;
+  static const double focusBorder = 2;
+  static const double valueFont = 18;
+  static const double valueLine = 22;
+  static const double summaryFont = 20;
+  static const double plannedFont = 16;
+  static const double prPadH = 10;
+  static const double prPadV = 4;
+
+  /// The check disc grows to this on completion, then settles to 1.
+  static const double checkOvershoot = 1.18;
+
+  /// Share of the 260ms check animation spent growing to the overshoot.
+  static const double checkGrowShare = 0.6;
+}
+
+/// Timer controls, ring and phase field metrics (Timer frames).
+abstract final class TimerSpec {
+  static const double ringSize = 340;
+  static const double ringStroke = 14;
+
+  /// The numeral fits this share of the ring's width (112 of 150 in the
+  /// design at full size).
+  static const double numeralWidthFactor = 0.62;
+  static const double trackOpacity = 0.15;
+  static const double secondaryFillOpacity = 0.12;
+  static const double pausedOpacity = 0.7;
+  static const double nextFillOpacity = 0.08;
+  static const double barFutureOpacity = 0.2;
+
+  static const double primaryIcon = 48;
+  static const double secondaryIcon = 28;
+  static const double addFont = 18;
+  static const double labelFont = 12;
+  static const double labelGap = 6;
+
+  /// Halo around the lock while locked, and the arc drawn while holding.
+  static const double lockHalo = 6;
+  static const double lockHaloOpacity = 0.2;
+  static const double lockHoldStroke = 4;
+  static const Duration holdToUnlock = Duration(seconds: 1);
+  static const double controlsGap = 12;
+
+  static const double phaseWordSize = 40;
+  static const double phaseWordTracking = 3;
+  static const double nextFont = 18;
+  static const double nextPadH = 18;
+  static const double nextPadV = 10;
+  static const double topBarPadV = 8;
+  static const double topBarPadH = 20;
+  static const double controlsBottom = 44;
+  static const double statusPill = 32;
+
+  // Warning (boxing): inset border, pill and round bars.
+  static const double warningBorder = 10;
+  static const double warningPill = 44;
+  static const double barWidth = 36;
+  static const double barHeight = 10;
+  static const double barGap = 6;
+
+  // AMRAP counter.
+  static const double amrapRadius = 40;
+  static const double amrapFont = 150;
+  static const double amrapTracking = -4;
+  static const double amrapMinHeight = 200;
+
+  // Finished.
+  static const double finishedDisc = 72;
+  static const double finishedGlyph = 40;
+}
+
+/// Numeric stepper metrics.
+abstract final class StepperSpec {
+  static const double button = IconSpec.tapTarget;
+  static const double buttonGlove = SinewSpace.gloveTarget;
+  static const double glyph = 24;
+  static const double glyphGlove = 28;
+  static const double valueMinWidth = 64;
+  static const double valueMinWidthGlove = 96;
+
+  /// Repeat while a button is held: the first interval, the faster one after
+  /// [accelerateAfter] repeats.
+  static const Duration repeatSlow = Duration(milliseconds: 120);
+  static const Duration repeatFast = Duration(milliseconds: 50);
+  static const int accelerateAfter = 12;
+
+  /// Decimal places kept when stepping, to avoid 0.1 + 0.2 drift.
+  static const int precision = 4;
+}

@@ -833,7 +833,10 @@ void main() {
         ],
       );
       addTearDown(container.dispose);
-      expect(container.read(settingsProvider).amoled, isFalse);
+      expect(
+        container.read(settingsProvider).themeMode,
+        isNot(AppThemeMode.amoled),
+      );
       final BackupService svc = container.read(backupServiceProvider);
       final BackupPreview preview = (svc.parse(
         const BackupCodec().encode(
@@ -841,12 +844,12 @@ void main() {
             schemaVersion: 1,
             exportedAt: _t(0),
             snapshot: const BackupSnapshot(),
-            settings: const <String, Object>{'theme.amoled': true},
+            settings: const <String, Object>{'theme.mode': 'amoled'},
           ),
         ),
       ) as ParsedBackup).preview;
       await svc.restore(preview, mode: RestoreMode.replace);
-      expect(container.read(settingsProvider).amoled, isTrue);
+      expect(container.read(settingsProvider).themeMode, AppThemeMode.amoled);
     });
   });
 }

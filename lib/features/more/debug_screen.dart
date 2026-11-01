@@ -12,6 +12,7 @@ import '../../core/theme/wallpaper_seed.dart';
 import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_segmented_control.dart';
 import '../../core/widgets/sinew_settings.dart';
+import 'debug_library_section.dart';
 
 /// Library status for the debug screen: count and version, or why not.
 final FutureProvider<({int count, String? version})> _libraryStatusProvider =
@@ -77,7 +78,7 @@ class DebugScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            // DebugLibrarySection goes here
+            const DebugLibrarySection(),
             SinewSettingsSection(
               label: 'Theme',
               children: <Widget>[

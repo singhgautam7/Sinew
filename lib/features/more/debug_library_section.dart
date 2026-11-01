@@ -5,7 +5,6 @@ import '../../core/db/library/library_installer.dart';
 import '../../core/db/repositories/exercise_repository.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/theme/tokens.dart';
 
 /// What the debug section shows about the installed library.
 class LibraryStatus {

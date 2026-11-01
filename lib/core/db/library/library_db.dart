@@ -27,7 +27,7 @@ class LibraryMeta extends Table {
 @TableIndex(name: 'exercises_category', columns: <Symbol>{#category})
 @TableIndex(name: 'exercises_tracking', columns: <Symbol>{#trackingType})
 @TableIndex(name: 'exercises_difficulty', columns: <Symbol>{#difficulty})
-@TableIndex(name: 'exercises_name_norm', columns: <Symbol>{#nameNorm})
+@TableIndex(name: 'exercises_name_norm', columns: <Symbol>{#nameNorm, #name})
 class Exercises extends Table {
   IntColumn get seq => integer().autoIncrement()();
   TextColumn get id => text().unique()();
@@ -87,6 +87,41 @@ class ExerciseEquipment extends Table {
   Set<Column<Object>> get primaryKey => <Column<Object>>{exerciseId, equipment};
 }
 
+/// A guided sequence for the timer's flow mode (yoga and mobility flows).
+@DataClassName('LibraryFlowRow')
+@TableIndex(name: 'flows_category', columns: <Symbol>{#category})
+class Flows extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get category => text()();
+  TextColumn get difficulty => text().nullable()();
+  TextColumn get description => text()();
+  IntColumn get totalDurationSec => integer()();
+  IntColumn get rounds => integer()();
+  TextColumn get tags => text().map(const StringListConverter())();
+
+  @override
+  Set<Column<Object>> get primaryKey => <Column<Object>>{id};
+}
+
+/// One pose of a flow, in order. [exerciseId] is the pose's library
+/// exercise; [label] is that exercise's name captured at build time so the
+/// timer can show it without a join (null when the pose is not in the
+/// library).
+@DataClassName('LibraryFlowStepRow')
+class FlowSteps extends Table {
+  TextColumn get flowId => text().references(Flows, #id)();
+  IntColumn get position => integer()();
+  TextColumn get exerciseId => text()();
+  TextColumn get label => text().nullable()();
+  IntColumn get holdSec => integer()();
+  IntColumn get transitionSec => integer()();
+  TextColumn get cue => text().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => <Column<Object>>{flowId, position};
+}
+
 /// The bundled, read-only exercise library.
 ///
 /// The app opens it with [LibraryDatabase.openReadOnly]; only the build tool
@@ -94,7 +129,14 @@ class ExerciseEquipment extends Table {
 /// `exercises_fts(name, aliases, muscles)` is contentless and keyed by
 /// `exercises.seq`; it is created here in [migration] and filled by the tool.
 @DriftDatabase(
-  tables: <Type>[LibraryMeta, Exercises, ExerciseMuscles, ExerciseEquipment],
+  tables: <Type>[
+    LibraryMeta,
+    Exercises,
+    ExerciseMuscles,
+    ExerciseEquipment,
+    Flows,
+    FlowSteps,
+  ],
 )
 class LibraryDatabase extends _$LibraryDatabase {
   LibraryDatabase._(super.executor, {required this.writable});

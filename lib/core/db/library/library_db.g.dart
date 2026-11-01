@@ -2242,6 +2242,999 @@ class ExerciseEquipmentCompanion extends UpdateCompanion<ExerciseEquipmentRow> {
   }
 }
 
+class $FlowsTable extends Flows with TableInfo<$FlowsTable, LibraryFlowRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FlowsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _difficultyMeta = const VerificationMeta(
+    'difficulty',
+  );
+  @override
+  late final GeneratedColumn<String> difficulty = GeneratedColumn<String>(
+    'difficulty',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalDurationSecMeta = const VerificationMeta(
+    'totalDurationSec',
+  );
+  @override
+  late final GeneratedColumn<int> totalDurationSec = GeneratedColumn<int>(
+    'total_duration_sec',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roundsMeta = const VerificationMeta('rounds');
+  @override
+  late final GeneratedColumn<int> rounds = GeneratedColumn<int>(
+    'rounds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String> tags =
+      GeneratedColumn<String>(
+        'tags',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<List<String>>($FlowsTable.$convertertags);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    category,
+    difficulty,
+    description,
+    totalDurationSec,
+    rounds,
+    tags,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'flows';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LibraryFlowRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('difficulty')) {
+      context.handle(
+        _difficultyMeta,
+        difficulty.isAcceptableOrUnknown(data['difficulty']!, _difficultyMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('total_duration_sec')) {
+      context.handle(
+        _totalDurationSecMeta,
+        totalDurationSec.isAcceptableOrUnknown(
+          data['total_duration_sec']!,
+          _totalDurationSecMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_totalDurationSecMeta);
+    }
+    if (data.containsKey('rounds')) {
+      context.handle(
+        _roundsMeta,
+        rounds.isAcceptableOrUnknown(data['rounds']!, _roundsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roundsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LibraryFlowRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LibraryFlowRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      difficulty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}difficulty'],
+      ),
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      totalDurationSec: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_duration_sec'],
+      )!,
+      rounds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rounds'],
+      )!,
+      tags: $FlowsTable.$convertertags.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}tags'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $FlowsTable createAlias(String alias) {
+    return $FlowsTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<List<String>, String> $convertertags =
+      const StringListConverter();
+}
+
+class LibraryFlowRow extends DataClass implements Insertable<LibraryFlowRow> {
+  final String id;
+  final String name;
+  final String category;
+  final String? difficulty;
+  final String description;
+  final int totalDurationSec;
+  final int rounds;
+  final List<String> tags;
+  const LibraryFlowRow({
+    required this.id,
+    required this.name,
+    required this.category,
+    this.difficulty,
+    required this.description,
+    required this.totalDurationSec,
+    required this.rounds,
+    required this.tags,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['category'] = Variable<String>(category);
+    if (!nullToAbsent || difficulty != null) {
+      map['difficulty'] = Variable<String>(difficulty);
+    }
+    map['description'] = Variable<String>(description);
+    map['total_duration_sec'] = Variable<int>(totalDurationSec);
+    map['rounds'] = Variable<int>(rounds);
+    {
+      map['tags'] = Variable<String>($FlowsTable.$convertertags.toSql(tags));
+    }
+    return map;
+  }
+
+  FlowsCompanion toCompanion(bool nullToAbsent) {
+    return FlowsCompanion(
+      id: Value(id),
+      name: Value(name),
+      category: Value(category),
+      difficulty: difficulty == null && nullToAbsent
+          ? const Value.absent()
+          : Value(difficulty),
+      description: Value(description),
+      totalDurationSec: Value(totalDurationSec),
+      rounds: Value(rounds),
+      tags: Value(tags),
+    );
+  }
+
+  factory LibraryFlowRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LibraryFlowRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      category: serializer.fromJson<String>(json['category']),
+      difficulty: serializer.fromJson<String?>(json['difficulty']),
+      description: serializer.fromJson<String>(json['description']),
+      totalDurationSec: serializer.fromJson<int>(json['totalDurationSec']),
+      rounds: serializer.fromJson<int>(json['rounds']),
+      tags: serializer.fromJson<List<String>>(json['tags']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'category': serializer.toJson<String>(category),
+      'difficulty': serializer.toJson<String?>(difficulty),
+      'description': serializer.toJson<String>(description),
+      'totalDurationSec': serializer.toJson<int>(totalDurationSec),
+      'rounds': serializer.toJson<int>(rounds),
+      'tags': serializer.toJson<List<String>>(tags),
+    };
+  }
+
+  LibraryFlowRow copyWith({
+    String? id,
+    String? name,
+    String? category,
+    Value<String?> difficulty = const Value.absent(),
+    String? description,
+    int? totalDurationSec,
+    int? rounds,
+    List<String>? tags,
+  }) => LibraryFlowRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    difficulty: difficulty.present ? difficulty.value : this.difficulty,
+    description: description ?? this.description,
+    totalDurationSec: totalDurationSec ?? this.totalDurationSec,
+    rounds: rounds ?? this.rounds,
+    tags: tags ?? this.tags,
+  );
+  LibraryFlowRow copyWithCompanion(FlowsCompanion data) {
+    return LibraryFlowRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      category: data.category.present ? data.category.value : this.category,
+      difficulty: data.difficulty.present
+          ? data.difficulty.value
+          : this.difficulty,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      totalDurationSec: data.totalDurationSec.present
+          ? data.totalDurationSec.value
+          : this.totalDurationSec,
+      rounds: data.rounds.present ? data.rounds.value : this.rounds,
+      tags: data.tags.present ? data.tags.value : this.tags,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LibraryFlowRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('description: $description, ')
+          ..write('totalDurationSec: $totalDurationSec, ')
+          ..write('rounds: $rounds, ')
+          ..write('tags: $tags')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    category,
+    difficulty,
+    description,
+    totalDurationSec,
+    rounds,
+    tags,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LibraryFlowRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.category == this.category &&
+          other.difficulty == this.difficulty &&
+          other.description == this.description &&
+          other.totalDurationSec == this.totalDurationSec &&
+          other.rounds == this.rounds &&
+          other.tags == this.tags);
+}
+
+class FlowsCompanion extends UpdateCompanion<LibraryFlowRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> category;
+  final Value<String?> difficulty;
+  final Value<String> description;
+  final Value<int> totalDurationSec;
+  final Value<int> rounds;
+  final Value<List<String>> tags;
+  final Value<int> rowid;
+  const FlowsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.category = const Value.absent(),
+    this.difficulty = const Value.absent(),
+    this.description = const Value.absent(),
+    this.totalDurationSec = const Value.absent(),
+    this.rounds = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FlowsCompanion.insert({
+    required String id,
+    required String name,
+    required String category,
+    this.difficulty = const Value.absent(),
+    required String description,
+    required int totalDurationSec,
+    required int rounds,
+    required List<String> tags,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       category = Value(category),
+       description = Value(description),
+       totalDurationSec = Value(totalDurationSec),
+       rounds = Value(rounds),
+       tags = Value(tags);
+  static Insertable<LibraryFlowRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? category,
+    Expression<String>? difficulty,
+    Expression<String>? description,
+    Expression<int>? totalDurationSec,
+    Expression<int>? rounds,
+    Expression<String>? tags,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (category != null) 'category': category,
+      if (difficulty != null) 'difficulty': difficulty,
+      if (description != null) 'description': description,
+      if (totalDurationSec != null) 'total_duration_sec': totalDurationSec,
+      if (rounds != null) 'rounds': rounds,
+      if (tags != null) 'tags': tags,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FlowsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? category,
+    Value<String?>? difficulty,
+    Value<String>? description,
+    Value<int>? totalDurationSec,
+    Value<int>? rounds,
+    Value<List<String>>? tags,
+    Value<int>? rowid,
+  }) {
+    return FlowsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      difficulty: difficulty ?? this.difficulty,
+      description: description ?? this.description,
+      totalDurationSec: totalDurationSec ?? this.totalDurationSec,
+      rounds: rounds ?? this.rounds,
+      tags: tags ?? this.tags,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (difficulty.present) {
+      map['difficulty'] = Variable<String>(difficulty.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (totalDurationSec.present) {
+      map['total_duration_sec'] = Variable<int>(totalDurationSec.value);
+    }
+    if (rounds.present) {
+      map['rounds'] = Variable<int>(rounds.value);
+    }
+    if (tags.present) {
+      map['tags'] = Variable<String>(
+        $FlowsTable.$convertertags.toSql(tags.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FlowsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('description: $description, ')
+          ..write('totalDurationSec: $totalDurationSec, ')
+          ..write('rounds: $rounds, ')
+          ..write('tags: $tags, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FlowStepsTable extends FlowSteps
+    with TableInfo<$FlowStepsTable, LibraryFlowStepRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FlowStepsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _flowIdMeta = const VerificationMeta('flowId');
+  @override
+  late final GeneratedColumn<String> flowId = GeneratedColumn<String>(
+    'flow_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES flows (id)',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<String> exerciseId = GeneratedColumn<String>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _holdSecMeta = const VerificationMeta(
+    'holdSec',
+  );
+  @override
+  late final GeneratedColumn<int> holdSec = GeneratedColumn<int>(
+    'hold_sec',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _transitionSecMeta = const VerificationMeta(
+    'transitionSec',
+  );
+  @override
+  late final GeneratedColumn<int> transitionSec = GeneratedColumn<int>(
+    'transition_sec',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cueMeta = const VerificationMeta('cue');
+  @override
+  late final GeneratedColumn<String> cue = GeneratedColumn<String>(
+    'cue',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    flowId,
+    position,
+    exerciseId,
+    label,
+    holdSec,
+    transitionSec,
+    cue,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'flow_steps';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LibraryFlowStepRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('flow_id')) {
+      context.handle(
+        _flowIdMeta,
+        flowId.isAcceptableOrUnknown(data['flow_id']!, _flowIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_flowIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    }
+    if (data.containsKey('hold_sec')) {
+      context.handle(
+        _holdSecMeta,
+        holdSec.isAcceptableOrUnknown(data['hold_sec']!, _holdSecMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_holdSecMeta);
+    }
+    if (data.containsKey('transition_sec')) {
+      context.handle(
+        _transitionSecMeta,
+        transitionSec.isAcceptableOrUnknown(
+          data['transition_sec']!,
+          _transitionSecMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_transitionSecMeta);
+    }
+    if (data.containsKey('cue')) {
+      context.handle(
+        _cueMeta,
+        cue.isAcceptableOrUnknown(data['cue']!, _cueMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {flowId, position};
+  @override
+  LibraryFlowStepRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LibraryFlowStepRow(
+      flowId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}flow_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      ),
+      holdSec: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hold_sec'],
+      )!,
+      transitionSec: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}transition_sec'],
+      )!,
+      cue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cue'],
+      ),
+    );
+  }
+
+  @override
+  $FlowStepsTable createAlias(String alias) {
+    return $FlowStepsTable(attachedDatabase, alias);
+  }
+}
+
+class LibraryFlowStepRow extends DataClass
+    implements Insertable<LibraryFlowStepRow> {
+  final String flowId;
+  final int position;
+  final String exerciseId;
+  final String? label;
+  final int holdSec;
+  final int transitionSec;
+  final String? cue;
+  const LibraryFlowStepRow({
+    required this.flowId,
+    required this.position,
+    required this.exerciseId,
+    this.label,
+    required this.holdSec,
+    required this.transitionSec,
+    this.cue,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['flow_id'] = Variable<String>(flowId);
+    map['position'] = Variable<int>(position);
+    map['exercise_id'] = Variable<String>(exerciseId);
+    if (!nullToAbsent || label != null) {
+      map['label'] = Variable<String>(label);
+    }
+    map['hold_sec'] = Variable<int>(holdSec);
+    map['transition_sec'] = Variable<int>(transitionSec);
+    if (!nullToAbsent || cue != null) {
+      map['cue'] = Variable<String>(cue);
+    }
+    return map;
+  }
+
+  FlowStepsCompanion toCompanion(bool nullToAbsent) {
+    return FlowStepsCompanion(
+      flowId: Value(flowId),
+      position: Value(position),
+      exerciseId: Value(exerciseId),
+      label: label == null && nullToAbsent
+          ? const Value.absent()
+          : Value(label),
+      holdSec: Value(holdSec),
+      transitionSec: Value(transitionSec),
+      cue: cue == null && nullToAbsent ? const Value.absent() : Value(cue),
+    );
+  }
+
+  factory LibraryFlowStepRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LibraryFlowStepRow(
+      flowId: serializer.fromJson<String>(json['flowId']),
+      position: serializer.fromJson<int>(json['position']),
+      exerciseId: serializer.fromJson<String>(json['exerciseId']),
+      label: serializer.fromJson<String?>(json['label']),
+      holdSec: serializer.fromJson<int>(json['holdSec']),
+      transitionSec: serializer.fromJson<int>(json['transitionSec']),
+      cue: serializer.fromJson<String?>(json['cue']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'flowId': serializer.toJson<String>(flowId),
+      'position': serializer.toJson<int>(position),
+      'exerciseId': serializer.toJson<String>(exerciseId),
+      'label': serializer.toJson<String?>(label),
+      'holdSec': serializer.toJson<int>(holdSec),
+      'transitionSec': serializer.toJson<int>(transitionSec),
+      'cue': serializer.toJson<String?>(cue),
+    };
+  }
+
+  LibraryFlowStepRow copyWith({
+    String? flowId,
+    int? position,
+    String? exerciseId,
+    Value<String?> label = const Value.absent(),
+    int? holdSec,
+    int? transitionSec,
+    Value<String?> cue = const Value.absent(),
+  }) => LibraryFlowStepRow(
+    flowId: flowId ?? this.flowId,
+    position: position ?? this.position,
+    exerciseId: exerciseId ?? this.exerciseId,
+    label: label.present ? label.value : this.label,
+    holdSec: holdSec ?? this.holdSec,
+    transitionSec: transitionSec ?? this.transitionSec,
+    cue: cue.present ? cue.value : this.cue,
+  );
+  LibraryFlowStepRow copyWithCompanion(FlowStepsCompanion data) {
+    return LibraryFlowStepRow(
+      flowId: data.flowId.present ? data.flowId.value : this.flowId,
+      position: data.position.present ? data.position.value : this.position,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      label: data.label.present ? data.label.value : this.label,
+      holdSec: data.holdSec.present ? data.holdSec.value : this.holdSec,
+      transitionSec: data.transitionSec.present
+          ? data.transitionSec.value
+          : this.transitionSec,
+      cue: data.cue.present ? data.cue.value : this.cue,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LibraryFlowStepRow(')
+          ..write('flowId: $flowId, ')
+          ..write('position: $position, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('label: $label, ')
+          ..write('holdSec: $holdSec, ')
+          ..write('transitionSec: $transitionSec, ')
+          ..write('cue: $cue')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    flowId,
+    position,
+    exerciseId,
+    label,
+    holdSec,
+    transitionSec,
+    cue,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LibraryFlowStepRow &&
+          other.flowId == this.flowId &&
+          other.position == this.position &&
+          other.exerciseId == this.exerciseId &&
+          other.label == this.label &&
+          other.holdSec == this.holdSec &&
+          other.transitionSec == this.transitionSec &&
+          other.cue == this.cue);
+}
+
+class FlowStepsCompanion extends UpdateCompanion<LibraryFlowStepRow> {
+  final Value<String> flowId;
+  final Value<int> position;
+  final Value<String> exerciseId;
+  final Value<String?> label;
+  final Value<int> holdSec;
+  final Value<int> transitionSec;
+  final Value<String?> cue;
+  final Value<int> rowid;
+  const FlowStepsCompanion({
+    this.flowId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.holdSec = const Value.absent(),
+    this.transitionSec = const Value.absent(),
+    this.cue = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FlowStepsCompanion.insert({
+    required String flowId,
+    required int position,
+    required String exerciseId,
+    this.label = const Value.absent(),
+    required int holdSec,
+    required int transitionSec,
+    this.cue = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : flowId = Value(flowId),
+       position = Value(position),
+       exerciseId = Value(exerciseId),
+       holdSec = Value(holdSec),
+       transitionSec = Value(transitionSec);
+  static Insertable<LibraryFlowStepRow> custom({
+    Expression<String>? flowId,
+    Expression<int>? position,
+    Expression<String>? exerciseId,
+    Expression<String>? label,
+    Expression<int>? holdSec,
+    Expression<int>? transitionSec,
+    Expression<String>? cue,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (flowId != null) 'flow_id': flowId,
+      if (position != null) 'position': position,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (label != null) 'label': label,
+      if (holdSec != null) 'hold_sec': holdSec,
+      if (transitionSec != null) 'transition_sec': transitionSec,
+      if (cue != null) 'cue': cue,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FlowStepsCompanion copyWith({
+    Value<String>? flowId,
+    Value<int>? position,
+    Value<String>? exerciseId,
+    Value<String?>? label,
+    Value<int>? holdSec,
+    Value<int>? transitionSec,
+    Value<String?>? cue,
+    Value<int>? rowid,
+  }) {
+    return FlowStepsCompanion(
+      flowId: flowId ?? this.flowId,
+      position: position ?? this.position,
+      exerciseId: exerciseId ?? this.exerciseId,
+      label: label ?? this.label,
+      holdSec: holdSec ?? this.holdSec,
+      transitionSec: transitionSec ?? this.transitionSec,
+      cue: cue ?? this.cue,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (flowId.present) {
+      map['flow_id'] = Variable<String>(flowId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<String>(exerciseId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (holdSec.present) {
+      map['hold_sec'] = Variable<int>(holdSec.value);
+    }
+    if (transitionSec.present) {
+      map['transition_sec'] = Variable<int>(transitionSec.value);
+    }
+    if (cue.present) {
+      map['cue'] = Variable<String>(cue.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FlowStepsCompanion(')
+          ..write('flowId: $flowId, ')
+          ..write('position: $position, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('label: $label, ')
+          ..write('holdSec: $holdSec, ')
+          ..write('transitionSec: $transitionSec, ')
+          ..write('cue: $cue, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LibraryDatabase extends GeneratedDatabase {
   _$LibraryDatabase(QueryExecutor e) : super(e);
   $LibraryDatabaseManager get managers => $LibraryDatabaseManager(this);
@@ -2252,6 +3245,8 @@ abstract class _$LibraryDatabase extends GeneratedDatabase {
   );
   late final $ExerciseEquipmentTable exerciseEquipment =
       $ExerciseEquipmentTable(this);
+  late final $FlowsTable flows = $FlowsTable(this);
+  late final $FlowStepsTable flowSteps = $FlowStepsTable(this);
   late final Index exercisesCategory = Index(
     'exercises_category',
     'CREATE INDEX exercises_category ON exercises (category)',
@@ -2266,7 +3261,7 @@ abstract class _$LibraryDatabase extends GeneratedDatabase {
   );
   late final Index exercisesNameNorm = Index(
     'exercises_name_norm',
-    'CREATE INDEX exercises_name_norm ON exercises (name_norm)',
+    'CREATE INDEX exercises_name_norm ON exercises (name_norm, name)',
   );
   late final Index exerciseMusclesMuscle = Index(
     'exercise_muscles_muscle',
@@ -2275,6 +3270,10 @@ abstract class _$LibraryDatabase extends GeneratedDatabase {
   late final Index exerciseEquipmentEquipment = Index(
     'exercise_equipment_equipment',
     'CREATE INDEX exercise_equipment_equipment ON exercise_equipment (equipment)',
+  );
+  late final Index flowsCategory = Index(
+    'flows_category',
+    'CREATE INDEX flows_category ON flows (category)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -2285,12 +3284,15 @@ abstract class _$LibraryDatabase extends GeneratedDatabase {
     exercises,
     exerciseMuscles,
     exerciseEquipment,
+    flows,
+    flowSteps,
     exercisesCategory,
     exercisesTracking,
     exercisesDifficulty,
     exercisesNameNorm,
     exerciseMusclesMuscle,
     exerciseEquipmentEquipment,
+    flowsCategory,
   ];
   @override
   DriftDatabaseOptions get options =>
@@ -3891,6 +4893,722 @@ typedef $$ExerciseEquipmentTableProcessedTableManager =
       ExerciseEquipmentRow,
       PrefetchHooks Function({bool exerciseId})
     >;
+typedef $$FlowsTableCreateCompanionBuilder = FlowsCompanion Function({
+  required String id,
+  required String name,
+  required String category,
+  Value<String?> difficulty,
+  required String description,
+  required int totalDurationSec,
+  required int rounds,
+  required List<String> tags,
+  Value<int> rowid,
+});
+typedef $$FlowsTableUpdateCompanionBuilder = FlowsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> category,
+  Value<String?> difficulty,
+  Value<String> description,
+  Value<int> totalDurationSec,
+  Value<int> rounds,
+  Value<List<String>> tags,
+  Value<int> rowid,
+});
+
+final class $$FlowsTableReferences
+    extends BaseReferences<_$LibraryDatabase, $FlowsTable, LibraryFlowRow> {
+  $$FlowsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$FlowStepsTable, List<LibraryFlowStepRow>>
+  _flowStepsRefsTable(_$LibraryDatabase db) => MultiTypedResultKey.fromTable(
+    db.flowSteps,
+    aliasName: 'flows__id__flow_steps__flow_id',
+  );
+
+  $$FlowStepsTableProcessedTableManager get flowStepsRefs {
+    final manager = $$FlowStepsTableTableManager(
+      $_db,
+      $_db.flowSteps,
+    ).filter((f) => f.flowId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_flowStepsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$FlowsTableFilterComposer
+    extends Composer<_$LibraryDatabase, $FlowsTable> {
+  $$FlowsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get difficulty => $composableBuilder(
+    column: $table.difficulty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalDurationSec => $composableBuilder(
+    column: $table.totalDurationSec,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rounds => $composableBuilder(
+    column: $table.rounds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String> get tags =>
+      $composableBuilder(
+        column: $table.tags,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  Expression<bool> flowStepsRefs(
+    Expression<bool> Function($$FlowStepsTableFilterComposer f) f,
+  ) {
+    final $$FlowStepsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.flowSteps,
+      getReferencedColumn: (t) => t.flowId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FlowStepsTableFilterComposer(
+            $db: $db,
+            $table: $db.flowSteps,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$FlowsTableOrderingComposer
+    extends Composer<_$LibraryDatabase, $FlowsTable> {
+  $$FlowsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get difficulty => $composableBuilder(
+    column: $table.difficulty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalDurationSec => $composableBuilder(
+    column: $table.totalDurationSec,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rounds => $composableBuilder(
+    column: $table.rounds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FlowsTableAnnotationComposer
+    extends Composer<_$LibraryDatabase, $FlowsTable> {
+  $$FlowsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get difficulty => $composableBuilder(
+    column: $table.difficulty,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalDurationSec => $composableBuilder(
+    column: $table.totalDurationSec,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get rounds =>
+      $composableBuilder(column: $table.rounds, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get tags =>
+      $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  Expression<T> flowStepsRefs<T extends Object>(
+    Expression<T> Function($$FlowStepsTableAnnotationComposer a) f,
+  ) {
+    final $$FlowStepsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.flowSteps,
+      getReferencedColumn: (t) => t.flowId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FlowStepsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.flowSteps,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$FlowsTableTableManager
+    extends
+        RootTableManager<
+          _$LibraryDatabase,
+          $FlowsTable,
+          LibraryFlowRow,
+          $$FlowsTableFilterComposer,
+          $$FlowsTableOrderingComposer,
+          $$FlowsTableAnnotationComposer,
+          $$FlowsTableCreateCompanionBuilder,
+          $$FlowsTableUpdateCompanionBuilder,
+          (LibraryFlowRow, $$FlowsTableReferences),
+          LibraryFlowRow,
+          PrefetchHooks Function({bool flowStepsRefs})
+        > {
+  $$FlowsTableTableManager(_$LibraryDatabase db, $FlowsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FlowsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FlowsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FlowsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String?> difficulty = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> totalDurationSec = const Value.absent(),
+                Value<int> rounds = const Value.absent(),
+                Value<List<String>> tags = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FlowsCompanion(
+                id: id,
+                name: name,
+                category: category,
+                difficulty: difficulty,
+                description: description,
+                totalDurationSec: totalDurationSec,
+                rounds: rounds,
+                tags: tags,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String category,
+                Value<String?> difficulty = const Value.absent(),
+                required String description,
+                required int totalDurationSec,
+                required int rounds,
+                required List<String> tags,
+                Value<int> rowid = const Value.absent(),
+              }) => FlowsCompanion.insert(
+                id: id,
+                name: name,
+                category: category,
+                difficulty: difficulty,
+                description: description,
+                totalDurationSec: totalDurationSec,
+                rounds: rounds,
+                tags: tags,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FlowsTable, LibraryFlowRow>(table),
+                  $$FlowsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({flowStepsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (flowStepsRefs) db.flowSteps],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (flowStepsRefs)
+                    await $_getPrefetchedDataByColumns<
+                      LibraryFlowRow,
+                      $FlowsTable,
+                      LibraryFlowStepRow,
+                      $FlowStepsTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$FlowsTableReferences
+                          ._flowStepsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$FlowsTableReferences(db, table, p0).flowStepsRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'flow_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FlowsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LibraryDatabase,
+      $FlowsTable,
+      LibraryFlowRow,
+      $$FlowsTableFilterComposer,
+      $$FlowsTableOrderingComposer,
+      $$FlowsTableAnnotationComposer,
+      $$FlowsTableCreateCompanionBuilder,
+      $$FlowsTableUpdateCompanionBuilder,
+      (LibraryFlowRow, $$FlowsTableReferences),
+      LibraryFlowRow,
+      PrefetchHooks Function({bool flowStepsRefs})
+    >;
+typedef $$FlowStepsTableCreateCompanionBuilder = FlowStepsCompanion Function({
+  required String flowId,
+  required int position,
+  required String exerciseId,
+  Value<String?> label,
+  required int holdSec,
+  required int transitionSec,
+  Value<String?> cue,
+  Value<int> rowid,
+});
+typedef $$FlowStepsTableUpdateCompanionBuilder = FlowStepsCompanion Function({
+  Value<String> flowId,
+  Value<int> position,
+  Value<String> exerciseId,
+  Value<String?> label,
+  Value<int> holdSec,
+  Value<int> transitionSec,
+  Value<String?> cue,
+  Value<int> rowid,
+});
+
+final class $$FlowStepsTableReferences
+    extends
+        BaseReferences<_$LibraryDatabase, $FlowStepsTable, LibraryFlowStepRow> {
+  $$FlowStepsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $FlowsTable _flowIdTable(_$LibraryDatabase db) =>
+      db.flows.createAlias('flow_steps__flow_id__flows__id');
+
+  $$FlowsTableProcessedTableManager get flowId {
+    final $_column = $_itemColumn<String>('flow_id')!;
+
+    final manager = $$FlowsTableTableManager(
+      $_db,
+      $_db.flows,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_flowIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FlowStepsTableFilterComposer
+    extends Composer<_$LibraryDatabase, $FlowStepsTable> {
+  $$FlowStepsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get holdSec => $composableBuilder(
+    column: $table.holdSec,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get transitionSec => $composableBuilder(
+    column: $table.transitionSec,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cue => $composableBuilder(
+    column: $table.cue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$FlowsTableFilterComposer get flowId {
+    final $$FlowsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.flowId,
+      referencedTable: $db.flows,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FlowsTableFilterComposer(
+            $db: $db,
+            $table: $db.flows,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FlowStepsTableOrderingComposer
+    extends Composer<_$LibraryDatabase, $FlowStepsTable> {
+  $$FlowStepsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get holdSec => $composableBuilder(
+    column: $table.holdSec,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get transitionSec => $composableBuilder(
+    column: $table.transitionSec,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cue => $composableBuilder(
+    column: $table.cue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$FlowsTableOrderingComposer get flowId {
+    final $$FlowsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.flowId,
+      referencedTable: $db.flows,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FlowsTableOrderingComposer(
+            $db: $db,
+            $table: $db.flows,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FlowStepsTableAnnotationComposer
+    extends Composer<_$LibraryDatabase, $FlowStepsTable> {
+  $$FlowStepsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<int> get holdSec =>
+      $composableBuilder(column: $table.holdSec, builder: (column) => column);
+
+  GeneratedColumn<int> get transitionSec => $composableBuilder(
+    column: $table.transitionSec,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cue =>
+      $composableBuilder(column: $table.cue, builder: (column) => column);
+
+  $$FlowsTableAnnotationComposer get flowId {
+    final $$FlowsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.flowId,
+      referencedTable: $db.flows,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FlowsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.flows,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FlowStepsTableTableManager
+    extends
+        RootTableManager<
+          _$LibraryDatabase,
+          $FlowStepsTable,
+          LibraryFlowStepRow,
+          $$FlowStepsTableFilterComposer,
+          $$FlowStepsTableOrderingComposer,
+          $$FlowStepsTableAnnotationComposer,
+          $$FlowStepsTableCreateCompanionBuilder,
+          $$FlowStepsTableUpdateCompanionBuilder,
+          (LibraryFlowStepRow, $$FlowStepsTableReferences),
+          LibraryFlowStepRow,
+          PrefetchHooks Function({bool flowId})
+        > {
+  $$FlowStepsTableTableManager(_$LibraryDatabase db, $FlowStepsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FlowStepsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FlowStepsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FlowStepsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> flowId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<String> exerciseId = const Value.absent(),
+                Value<String?> label = const Value.absent(),
+                Value<int> holdSec = const Value.absent(),
+                Value<int> transitionSec = const Value.absent(),
+                Value<String?> cue = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FlowStepsCompanion(
+                flowId: flowId,
+                position: position,
+                exerciseId: exerciseId,
+                label: label,
+                holdSec: holdSec,
+                transitionSec: transitionSec,
+                cue: cue,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String flowId,
+                required int position,
+                required String exerciseId,
+                Value<String?> label = const Value.absent(),
+                required int holdSec,
+                required int transitionSec,
+                Value<String?> cue = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FlowStepsCompanion.insert(
+                flowId: flowId,
+                position: position,
+                exerciseId: exerciseId,
+                label: label,
+                holdSec: holdSec,
+                transitionSec: transitionSec,
+                cue: cue,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FlowStepsTable, LibraryFlowStepRow>(table),
+                  $$FlowStepsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({flowId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (flowId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.flowId,
+                        referencedTable: $$FlowStepsTableReferences
+                            ._flowIdTable(db),
+                        referencedColumn: $$FlowStepsTableReferences
+                            ._flowIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FlowStepsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LibraryDatabase,
+      $FlowStepsTable,
+      LibraryFlowStepRow,
+      $$FlowStepsTableFilterComposer,
+      $$FlowStepsTableOrderingComposer,
+      $$FlowStepsTableAnnotationComposer,
+      $$FlowStepsTableCreateCompanionBuilder,
+      $$FlowStepsTableUpdateCompanionBuilder,
+      (LibraryFlowStepRow, $$FlowStepsTableReferences),
+      LibraryFlowStepRow,
+      PrefetchHooks Function({bool flowId})
+    >;
 
 class $LibraryDatabaseManager {
   final _$LibraryDatabase _db;
@@ -3903,4 +5621,8 @@ class $LibraryDatabaseManager {
       $$ExerciseMusclesTableTableManager(_db, _db.exerciseMuscles);
   $$ExerciseEquipmentTableTableManager get exerciseEquipment =>
       $$ExerciseEquipmentTableTableManager(_db, _db.exerciseEquipment);
+  $$FlowsTableTableManager get flows =>
+      $$FlowsTableTableManager(_db, _db.flows);
+  $$FlowStepsTableTableManager get flowSteps =>
+      $$FlowStepsTableTableManager(_db, _db.flowSteps);
 }

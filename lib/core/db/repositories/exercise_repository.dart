@@ -3,84 +3,11 @@ import 'package:drift/drift.dart';
 import '../../models/enums.dart';
 import '../../models/exercise.dart';
 import '../ids.dart';
-import '../library/library_db.dart';
 import '../user/user_db.dart';
+import 'library_repository.dart';
 
-/// Read access to the bundled library. Search and filters arrive in Phase 2.
-class LibraryRepository {
-  LibraryRepository(this._db);
-
-  final LibraryDatabase _db;
-
-  Future<int> count() async {
-    final Expression<int> c = _db.exercises.seq.count();
-    final TypedResult row = await (_db.selectOnly(
-      _db.exercises,
-    )..addColumns(<Expression<Object>>[c])).getSingle();
-    return row.read(c) ?? 0;
-  }
-
-  Future<String?> libraryVersion() => _db.meta('libraryVersion');
-
-  Future<Exercise?> byId(String id) async {
-    final LibraryExerciseRow? row = await (_db.select(
-      _db.exercises,
-    )..where(($ExercisesTable t) => t.id.equals(id))).getSingleOrNull();
-    return row == null ? null : mapLibraryRow(row);
-  }
-
-  /// Batched by 250 ids so SQLite's parameter limit is never reached.
-  Future<Map<String, Exercise>> byIds(Iterable<String> ids) async {
-    final List<String> all = ids.toSet().toList();
-    final Map<String, Exercise> out = <String, Exercise>{};
-    for (int i = 0; i < all.length; i += 250) {
-      final List<String> chunk = all.sublist(
-        i,
-        i + 250 > all.length ? all.length : i + 250,
-      );
-      final List<LibraryExerciseRow> rows = await (_db.select(
-        _db.exercises,
-      )..where(($ExercisesTable t) => t.id.isIn(chunk))).get();
-      for (final LibraryExerciseRow r in rows) {
-        out[r.id] = mapLibraryRow(r);
-      }
-    }
-    return out;
-  }
-
-  static Exercise mapLibraryRow(LibraryExerciseRow r) => Exercise(
-    id: r.id,
-    name: r.name,
-    aliases: r.aliases,
-    sanskritName: r.sanskritName,
-    category: r.category,
-    subcategory: r.subcategory,
-    trackingType: enumByName(
-      TrackingType.values,
-      r.trackingType,
-      TrackingType.unknown,
-    ),
-    primaryMuscles: r.primaryMuscles,
-    secondaryMuscles: r.secondaryMuscles,
-    equipment: r.equipment,
-    difficulty: enumByNameOrNull(Difficulty.values, r.difficulty),
-    unilateral: r.unilateral,
-    mechanic: r.mechanic,
-    force: r.force,
-    steps: r.steps,
-    tips: r.tips,
-    commonMistakes: r.commonMistakes,
-    safetyNotes: r.safetyNotes,
-    contraindications: r.contraindications,
-    metValue: r.metValue,
-    defaultRestSec: r.defaultRestSec,
-    defaultHoldSec: r.defaultHoldSec,
-    variationOf: r.variationOf,
-    tags: r.tags,
-    source: r.source,
-    license: r.license,
-  );
-}
+export 'library_repository.dart';
+export 'library_types.dart';
 
 /// The user's own exercises, and the tombstones of library exercises a
 /// library update removed.
@@ -148,6 +75,35 @@ class CustomExerciseRepository {
           updatedAt: Value<DateTime>(_clock()),
         ),
       );
+
+  /// Every non-archived custom exercise, for merging into library search.
+  Future<List<Exercise>> allActive() async =>
+      (await (_db.select(_db.customExercises)
+                ..where(($CustomExercisesTable t) => t.archived.equals(false)))
+              .get())
+          .map(_map)
+          .toList();
+
+  /// The library exercise ids the user's data points at: session exercises
+  /// and routine items. Custom ids are left out. Used by the library upgrade
+  /// to decide which removed exercises need a tombstone.
+  Future<Set<String>> referencedLibraryExerciseIds() async {
+    final List<QueryRow> rows = await _db
+        .customSelect(
+          'SELECT exercise_id FROM session_exercises '
+          'UNION SELECT exercise_id FROM routine_items',
+          readsFrom: <TableInfo<Table, dynamic>>{
+            _db.sessionExercises,
+            _db.routineItems,
+          },
+        )
+        .get();
+    return <String>{
+      for (final QueryRow r in rows)
+        if (!r.read<String>('exercise_id').startsWith(Exercise.customPrefix))
+          r.read<String>('exercise_id'),
+    };
+  }
 
   Future<List<ExerciseTombstone>> tombstones() async =>
       (await _db.select(_db.exerciseTombstones).get())

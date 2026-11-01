@@ -1,0 +1,294 @@
+{
+  "brand": {
+    "dark": "#3B4707",
+    "mid": "#6D8817",
+    "tint": "#E4ECC7",
+    "splashDark": "#131903"
+  },
+  "guardedL": 0.53,
+  "light": {
+    "primary": "#617600",
+    "onPrimary": "#FFFFFF",
+    "primaryContainer": "#E0EAC9",
+    "onPrimaryContainer": "#394B00",
+    "secondaryContainer": "#E0EAC9",
+    "onSecondaryContainer": "#394B00",
+    "inversePrimary": "#A1B567",
+    "surface": "#F9FBF4",
+    "surfaceContainerLowest": "#FFFFFF",
+    "surfaceContainerLow": "#F4F7ED",
+    "surfaceContainer": "#EFF2E5",
+    "surfaceContainerHigh": "#E6EADB",
+    "surfaceContainerHighest": "#DDE1D1",
+    "outlineVariant": "#D4D8C7",
+    "outline": "#858878",
+    "onSurface": "#15180B",
+    "onSurfaceVariant": "#626556",
+    "inverseSurface": "#191C0F",
+    "onInverseSurface": "#F5F6F2",
+    "error": "#BD413F",
+    "errorContainer": "#FFE7E4",
+    "onErrorContainer": "#A92227",
+    "ramp": [
+      "#E1FC97",
+      "#C4DE7A",
+      "#9CB450",
+      "#6C8213",
+      "#495C00"
+    ]
+  },
+  "dark": {
+    "primary": "#A1B567",
+    "onPrimary": "#090A05",
+    "primaryContainer": "#252C0F",
+    "onPrimaryContainer": "#D9E3C0",
+    "secondaryContainer": "#252C0F",
+    "onSecondaryContainer": "#D9E3C0",
+    "inversePrimary": "#677C06",
+    "surface": "#161811",
+    "surfaceContainerLowest": "#0F100A",
+    "surfaceContainerLow": "#1C1E16",
+    "surfaceContainer": "#22241B",
+    "surfaceContainerHigh": "#2D2F24",
+    "surfaceContainerHighest": "#35372C",
+    "outlineVariant": "#3C3F33",
+    "outline": "#7F8178",
+    "onSurface": "#F1F2EE",
+    "onSurfaceVariant": "#A3A69C",
+    "inverseSurface": "#E7E9E2",
+    "onInverseSurface": "#15180B",
+    "error": "#F07F77",
+    "errorContainer": "#391917",
+    "onErrorContainer": "#FFA8A0",
+    "ramp": [
+      "#222F00",
+      "#3B4A00",
+      "#607223",
+      "#8FA255",
+      "#BACF80"
+    ]
+  },
+  "dynLight": {
+    "primary": "#4567A8",
+    "primaryContainer": "#D6E5FF",
+    "onPrimaryContainer": "#203F7C",
+    "surface": "#F7FAFF",
+    "surfaceContainer": "#EBF0FA",
+    "surfaceContainerHigh": "#E2E8F4",
+    "surfaceContainerLow": "#F1F5FD",
+    "outlineVariant": "#CFD6E3",
+    "onSurface": "#11161F",
+    "onSurfaceVariant": "#5D646F",
+    "ramp": [
+      "#C6EFFF",
+      "#AAD1FF",
+      "#82A8ED",
+      "#5376B8",
+      "#2F508F"
+    ]
+  },
+  "dynDark": {
+    "primary": "#DE958E",
+    "onPrimary": "#0D0807",
+    "primaryContainer": "#3B211F",
+    "onPrimaryContainer": "#F8D4D0",
+    "surface": "#1C1514",
+    "surfaceContainer": "#29201F",
+    "surfaceContainerHigh": "#362B2A",
+    "surfaceContainerLow": "#231B1A",
+    "outlineVariant": "#453A39",
+    "onSurface": "#F5F0F0",
+    "onSurfaceVariant": "#ACA2A1",
+    "ramp": [
+      "#4C1010",
+      "#6A2C29",
+      "#96534F",
+      "#CA827C",
+      "#F9AEA7"
+    ]
+  },
+  "plates": {
+    "light": {
+      "5": {
+        "name": "white",
+        "fill": "#F1F2EF",
+        "edge": "#CACBC7"
+      },
+      "10": {
+        "name": "green",
+        "fill": "#5C913C",
+        "edge": "#396D14"
+      },
+      "15": {
+        "name": "yellow",
+        "fill": "#DBD856",
+        "edge": "#B5B124"
+      },
+      "20": {
+        "name": "blue",
+        "fill": "#0070B5",
+        "edge": "#004C8F"
+      },
+      "25": {
+        "name": "red",
+        "fill": "#C2460D",
+        "edge": "#991B00"
+      },
+      "2.5": {
+        "name": "graphite",
+        "fill": "#32342E",
+        "edge": "#151712"
+      },
+      "1.25": {
+        "name": "chrome",
+        "fill": "#B6B8B1",
+        "edge": "#91938C"
+      }
+    },
+    "dark": {
+      "5": {
+        "name": "white",
+        "fill": "#D0D1CE",
+        "edge": "#BDBEBB"
+      },
+      "10": {
+        "name": "green",
+        "fill": "#528435",
+        "edge": "#2E6100"
+      },
+      "15": {
+        "name": "yellow",
+        "fill": "#CDCB51",
+        "edge": "#A8A405"
+      },
+      "20": {
+        "name": "blue",
+        "fill": "#0064A5",
+        "edge": "#004082"
+      },
+      "25": {
+        "name": "red",
+        "fill": "#B13D03",
+        "edge": "#8C0400"
+      },
+      "2.5": {
+        "name": "graphite",
+        "fill": "#282A24",
+        "edge": "#0D0E09"
+      },
+      "1.25": {
+        "name": "chrome",
+        "fill": "#AAACA5",
+        "edge": "#858781"
+      }
+    }
+  },
+  "bar": {
+    "light": "#A4A5A2",
+    "dark": "#868783"
+  },
+  "phase": {
+    "light": {
+      "work": {
+        "field": "#C6E36B",
+        "on": "#1A2400",
+        "ring": "#425700",
+        "cr": "11.26",
+        "ringCr": "5.63"
+      },
+      "rest": {
+        "field": "#95E2F5",
+        "on": "#02242B",
+        "ring": "#005768",
+        "cr": "11.22",
+        "ringCr": "5.65"
+      },
+      "warmup": {
+        "field": "#F5CF7D",
+        "on": "#2B1C00",
+        "ring": "#684600",
+        "cr": "11.12",
+        "ringCr": "5.72"
+      },
+      "cooldown": {
+        "field": "#C6D1FF",
+        "on": "#1A1E30",
+        "ring": "#424A73",
+        "cr": "10.98",
+        "ringCr": "5.68"
+      }
+    },
+    "dark": {
+      "work": {
+        "field": "#2F3B00",
+        "on": "#E0F0B8",
+        "ring": "#B2CA6F",
+        "cr": "9.92",
+        "ringCr": "6.63"
+      },
+      "rest": {
+        "field": "#163B43",
+        "on": "#CBEFF9",
+        "ring": "#8EC9D8",
+        "cr": "9.91",
+        "ringCr": "6.60"
+      },
+      "warmup": {
+        "field": "#443309",
+        "on": "#F9E6BF",
+        "ring": "#D8BA7B",
+        "cr": "9.92",
+        "ringCr": "6.52"
+      },
+      "cooldown": {
+        "field": "#2F3449",
+        "on": "#E1E7FF",
+        "ring": "#B3BCE3",
+        "cr": "10.00",
+        "ringCr": "6.57"
+      }
+    }
+  },
+  "muscle": {
+    "light": {
+      "primary": "#617600",
+      "secondary": "#C4DE7A",
+      "base": "#DDDFD5",
+      "outline": "#ACB09F"
+    },
+    "dark": {
+      "primary": "#A1B567",
+      "secondary": "#3B4A00",
+      "base": "#32342C",
+      "outline": "#54574B"
+    }
+  },
+  "series": {
+    "light": [
+      "#2E79B7",
+      "#907000",
+      "#008A70",
+      "#AC5371",
+      "#5C822F",
+      "#A7611B",
+      "#6E69B7",
+      "#AF5742"
+    ],
+    "dark": [
+      "#82C4FF",
+      "#D9BB66",
+      "#66D5BA",
+      "#F89FBB",
+      "#A6CC80",
+      "#F2AD73",
+      "#B6B4FF",
+      "#FCA48D"
+    ]
+  },
+  "checks": {
+    "primaryOnSurfaceL": "4.91",
+    "primaryOnSurfaceD": "7.95",
+    "seriesL": "4.08,4.11,3.80,4.37,3.95,4.24,4.24,4.34",
+    "seriesD": "8.45,8.42,8.82,7.98,8.66,8.23,8.20,8.11"
+  }
+}

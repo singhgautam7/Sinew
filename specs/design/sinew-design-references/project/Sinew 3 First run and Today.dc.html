@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<script src="./sinew-art.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0">
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Bold.ttf);font-weight:700}
+body{margin:0;background:#E9E8E2}
+a{color:#617600}a:hover{color:#394B00}
+@keyframes skel{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
+</style>
+</helmet>
+<div style="font-family:Inter;padding:56px;display:flex;flex-direction:column;gap:40px;font-variant-numeric:tabular-nums">
+<div style="display:flex;flex-direction:column;gap:6px;color:#1F1E1B"><div style="font-size:40px;font-weight:700;letter-spacing:-.5px">First run + Today</div><div style="font-size:18px;color:#6B6A64">390 × 844. Each frame shows one theme: seed light, seed dark, or dynamic colour. <a href="Sinew 4 Train.dc.html">Train →</a></div></div>
+
+<div style="display:flex;gap:40px;flex-wrap:nowrap;align-items:flex-start">
+
+<div data-screen-label="Splash" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Splash · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;top:0;left:0;right:0;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" tint="#2A3310" size="192" hint-size="192px,192px"></x-import>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#F1F2EE66"></div>
+</div></div>
+
+<div data-screen-label="Welcome" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Welcome · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="flex:1;display:flex;flex-direction:column;padding:56px 24px 24px;gap:28px">
+<div style="display:flex;align-items:center;gap:12px"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="tile" size="56" hint-size="56px,56px"></x-import><div style="font-size:22px;font-weight:600;color:#617600">Sinew</div></div>
+<div style="font-size:36px;line-height:44px;font-weight:700;letter-spacing:-.5px;text-wrap:pretty">No account. Works offline. Your data stays on your phone.</div>
+<div style="font-size:16px;line-height:24px;color:#626556">Log any workout, look up thousands of exercises and poses, run interval timers and track your measurements. Free, with no ads.</div>
+<div style="display:flex;flex-direction:column;gap:0;border:1px solid #D4D8C7;border-radius:20px;background:#EFF2E5;overflow:hidden">
+<sc-for list="{{ promises }}" as="p" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid #D4D8C7"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#626556">{{ p.i }}</span><div style="font-size:16px;font-weight:600">{{ p.t }}</div></div></sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="height:56px;border-radius:999px;background:#617600;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Get started</div>
+<div style="height:56px;border-radius:999px;border:1px solid #D4D8C7;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:20px">settings_backup_restore</span>Restore a backup</div>
+</div></div>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#15180B66"></div>
+</div></div>
+
+<div data-screen-label="Quick profile" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Quick profile (optional) · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 8px 16px;display:flex;align-items:center;gap:6px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div><div style="flex:1"></div><div style="height:40px;padding:0 12px;display:flex;align-items:center;font-size:14px;font-weight:600;color:#A1B567">Skip all</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:20px;flex:1;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.25px">About you</div><div style="font-size:14px;line-height:20px;color:#A3A69C">Every field is optional and only used on this phone. Change it any time in More → Profile.</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">UNITS</div>
+<div style="display:flex;gap:8px"><div style="flex:1;display:flex;border:1px solid #7F8178;border-radius:999px;overflow:hidden;height:40px"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#252C0F;color:#D9E3C0;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>kg</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #7F8178">lb</div></div><div style="flex:1;display:flex;border:1px solid #7F8178;border-radius:999px;overflow:hidden;height:40px"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#252C0F;color:#D9E3C0;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>cm</div><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #7F8178">in</div></div></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">SEX</div>
+<div style="display:flex;border:1px solid #7F8178;border-radius:999px;overflow:hidden;height:40px"><div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Female</div><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:#252C0F;color:#D9E3C0;font-size:14px;font-weight:600;border-left:1px solid #7F8178"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>Male</div><div style="flex:1.3;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border-left:1px solid #7F8178">Not now</div></div>
+<div style="font-size:12px;line-height:16px;color:#A3A69C">Used only by formulas (BMR, body fat) and the silhouette base.</div></div>
+<div style="display:flex;gap:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:4px"><div style="height:56px;border-radius:16px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 16px"><div style="font-size:12px;color:#A3A69C">Birth year</div><div style="font-size:16px">1994</div></div><div style="font-size:12px;line-height:16px;color:#A3A69C;padding:0 4px">Unlocks resting calories</div></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:4px"><div style="height:56px;border-radius:16px;background:#2D2F24;display:flex;flex-direction:column;justify-content:center;padding:0 16px;box-shadow:inset 0 0 0 2px #A1B567"><div style="font-size:12px;color:#A1B567">Height</div><div style="font-size:16px">178 cm</div></div><div style="font-size:12px;line-height:16px;color:#A3A69C;padding:0 4px">Add height to see BMI</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">ACTIVITY LEVEL</div>
+<div style="border:1px solid #3C3F33;border-radius:20px;background:#22241B;overflow:hidden">
+<sc-for list="{{ activity }}" as="a" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #3C3F33"><div style="width:20px;height:20px;border-radius:50%;border:2px solid {{ a.ring }};box-sizing:border-box;display:flex;align-items:center;justify-content:center"><div style="width:10px;height:10px;border-radius:50%;background:{{ a.dot }}"></div></div><div style="flex:1"><div style="font-size:15px;font-weight:600">{{ a.t }}</div><div style="font-size:13px;color:#A3A69C">{{ a.d }}</div></div></div></sc-for>
+</div><div style="font-size:12px;line-height:16px;color:#A3A69C">Unlocks maintenance calories.</div></div>
+</div>
+<div style="padding:12px 20px 28px;display:flex;gap:12px"><div style="flex:1;height:56px;border-radius:999px;border:1px solid #3C3F33;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Skip</div><div style="flex:1.4;height:56px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Continue</div></div>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#F1F2EE66"></div>
+</div></div>
+
+<div data-screen-label="Restore backup" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Restore a backup · light (Kuber import sheet)</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:56px 24px;font-size:36px;line-height:44px;font-weight:700;letter-spacing:-.5px">No account. Works offline. Your data stays on your phone.</div>
+<div style="position:absolute;inset:0;background:#00000052"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;background:#F4F7ED;border-radius:28px 28px 0 0;padding:12px 20px 32px;display:flex;flex-direction:column;gap:16px">
+<div style="align-self:center;width:32px;height:4px;border-radius:2px;background:#858878"></div>
+<div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:24px;line-height:32px;font-weight:600">Restore a backup</div><div style="font-size:14px;line-height:20px;color:#626556">Pick a Sinew JSON backup from your phone or a folder you synced yourself. Nothing is uploaded.</div></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:16px;display:flex;gap:14px;align-items:center"><div style="width:44px;height:44px;border-radius:12px;background:#E0EAC9;color:#394B00;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:24px">description</span></div><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">sinew-backup-2026-10-12.json</div><div style="font-size:13px;color:#626556">Made 12 Oct · 1.4 MB</div></div><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#617600;font-variation-settings:'FILL' 1">check_circle</span></div>
+<div style="border:1px solid #D4D8C7;border-radius:20px;overflow:hidden">
+<sc-for list="{{ restoreCounts }}" as="r" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #D4D8C7;font-size:15px"><span style="color:#626556">{{ r.k }}</span><span style="font-weight:600">{{ r.v }}</span></div></sc-for>
+</div>
+<div style="display:flex;gap:12px"><div style="flex:1;height:48px;border-radius:999px;border:1px solid #D4D8C7;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Choose another</div><div style="flex:1;height:48px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Restore</div></div>
+</div>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#15180B66"></div>
+</div></div>
+</div>
+
+<div style="display:flex;gap:40px;flex-wrap:nowrap;align-items:flex-start">
+
+<div data-screen-label="Today populated" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Today · populated · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;gap:8px;height:48px"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="tile" size="32" hint-size="32px,32px"></x-import><div style="font-size:22px;font-weight:600;color:#617600;flex:1">Sinew</div><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">search</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:20px">
+<div><div style="font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.25px">Evening, Gautam</div><div style="font-size:14px;line-height:20px;color:#626556">Friday, 31 October</div></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:12px"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">PLANNED TODAY</div><div style="font-size:22px;line-height:28px;font-weight:600">Upper body A</div><div style="font-size:14px;color:#626556">5 exercises · about 50 min</div><div style="font-size:14px;color:#626556">Bench, row, press, pull-up, curl</div></div><div style="width:84px;height:92px"><x-import component-from-global-scope="sinew-muscles" labels="false" primary="chest,lats,shoulders" secondary="triceps,biceps,traps" hint-size="84px,92px"></x-import></div></div>
+<div style="height:56px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:24px;font-variation-settings:'FILL' 1">play_arrow</span>Start workout</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556;white-space:nowrap">QUICK TIMERS</div><div style="font-size:14px;font-weight:600;color:#617600">All</div></div>
+<div style="display:flex;gap:8px"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="4"><div style="flex:1;min-width:0;background:#EFF2E5;border:1px solid #D4D8C7;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:2px"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#617600">{{ q.i }}</span><div style="font-size:14px;font-weight:600">{{ q.t }}</div><div style="font-size:12px;color:#626556">{{ q.d }}</div></div></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">LAST SESSION</div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:16px;font-weight:600">Lower body</div><div style="font-size:14px;color:#626556">Wednesday · 52 min</div></div><div style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:#E0EAC9;color:#394B00">1 PR</div></div>
+<div style="display:flex;gap:8px"><div style="flex:1"><div style="font-size:18px;font-weight:700">6,240 kg</div><div style="font-size:12px;color:#626556">volume</div></div><div style="flex:1"><div style="font-size:18px;font-weight:700">18</div><div style="font-size:12px;color:#626556">sets</div></div><div style="flex:1"><div style="font-size:18px;font-weight:700">410 kcal</div><div style="font-size:12px;color:#626556">est. burned</div></div></div></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">THIS WEEK</div>
+<div style="display:flex;gap:6px"><sc-for list="{{ week }}" as="d" hint-placeholder-count="7"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:100%;height:36px;border-radius:10px;background:{{ d.bg }};box-shadow:{{ d.ring }}"></div><div style="font-size:12px;font-weight:{{ d.w }};color:#626556">{{ d.l }}</div></div></sc-for></div></div>
+</div>
+<dc-import name="NavPill" tab="0" theme="light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#15180B66"></div>
+</div></div>
+
+<div data-screen-label="Today rest day" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Today · rest day · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;gap:8px;height:48px"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="tile" tint="#2A3310" size="32" hint-size="32px,32px"></x-import><div style="font-size:22px;font-weight:600;color:#A1B567;flex:1">Sinew</div><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">search</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:20px">
+<div><div style="font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.25px">Morning, Gautam</div><div style="font-size:14px;line-height:20px;color:#A3A69C">Sunday, 2 November</div></div>
+<div style="background:#22241B;border:1px solid #3C3F33;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">TODAY</div><div style="font-size:22px;line-height:28px;font-weight:600">Rest day</div><div style="font-size:14px;line-height:20px;color:#A3A69C">Nothing planned. Next up is Upper body B on Monday.</div>
+<div style="display:flex;gap:8px"><div style="flex:1;height:48px;border-radius:999px;background:#252C0F;color:#D9E3C0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Start a workout</div><div style="flex:1;height:48px;border-radius:999px;border:1px solid #3C3F33;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">self_improvement</span>10-min stretch</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">QUICK TIMERS</div>
+<div style="display:flex;gap:8px"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="4"><div style="flex:1;min-width:0;background:#22241B;border:1px solid #3C3F33;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:2px"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#A1B567">{{ q.i }}</span><div style="font-size:14px;font-weight:600">{{ q.t }}</div><div style="font-size:12px;color:#A3A69C">{{ q.d }}</div></div></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">BODY · LATEST</div>
+<div style="display:flex;gap:8px"><sc-for list="{{ bodyLatest }}" as="b" hint-placeholder-count="3"><div style="flex:1;background:#22241B;border:1px solid #3C3F33;border-radius:16px;padding:12px"><div style="font-size:12px;color:#A3A69C">{{ b.k }}</div><div style="font-size:18px;font-weight:700">{{ b.v }}</div><div style="font-size:12px;color:#A3A69C">{{ b.d }}</div></div></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">THIS WEEK · 4 SESSIONS</div>
+<div style="display:flex;gap:6px"><sc-for list="{{ weekD }}" as="d" hint-placeholder-count="7"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:100%;height:36px;border-radius:10px;background:{{ d.bg }};box-shadow:{{ d.ring }}"></div><div style="font-size:12px;font-weight:{{ d.w }};color:#A3A69C">{{ d.l }}</div></div></sc-for></div></div>
+</div>
+<dc-import name="NavPill" tab="0" theme="dark" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#F1F2EE66"></div>
+</div></div>
+
+<div data-screen-label="Today new user" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Today · brand-new user · dynamic light (blue wallpaper)</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F7FAFF;color:#11161F;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;gap:8px;height:48px"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="tile" size="32" hint-size="32px,32px"></x-import><div style="font-size:22px;font-weight:600;color:#4567A8;flex:1">Sinew</div><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E2E8F4;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">search</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:20px">
+<div><div style="font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.25px">Welcome</div><div style="font-size:14px;line-height:20px;color:#5D646F">Friday, 31 October</div></div>
+<div style="background:#EBF0FA;border:1px solid #CFD6E3;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:22px;line-height:28px;font-weight:600">Log your first workout</div><div style="font-size:14px;line-height:20px;color:#5D646F">Add exercises as you go. Tap a set to save it. That's it.</div>
+<div style="height:56px;border-radius:999px;background:#4567A8;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:24px;font-variation-settings:'FILL' 1">play_arrow</span>Start empty workout</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#5D646F">OR PICK A STARTER</div>
+<div style="border:1px solid #CFD6E3;border-radius:20px;background:#EBF0FA;overflow:hidden"><sc-for list="{{ starters }}" as="s" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid #CFD6E3;min-height:72px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#5D646F">{{ s.i }}</span><div style="flex:1"><div style="font-size:16px;font-weight:600">{{ s.t }}</div><div style="font-size:14px;color:#5D646F">{{ s.d }}</div></div><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#5D646F">chevron_right</span></div></sc-for></div></div>
+<div style="background:#F7FAFF;border:1px dashed #A9B0BE;border-radius:20px;padding:16px;display:flex;gap:12px;align-items:center"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#5D646F">straighten</span><div style="flex:1;font-size:14px;line-height:20px">Add height and weight to see BMI.</div><div style="height:40px;padding:0 14px;border-radius:999px;background:#D6E5FF;color:#203F7C;display:flex;align-items:center;font-size:14px;font-weight:600">Add</div></div>
+</div>
+<dc-import name="NavPill" tab="0" theme="dyn-light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#11161F66"></div>
+</div></div>
+
+<div data-screen-label="Today loading" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Today · loading skeleton · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;gap:8px;height:48px"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="tile" size="32" hint-size="32px,32px"></x-import><div style="font-size:22px;font-weight:600;color:#617600;flex:1">Sinew</div><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;margin-right:4px"></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:20px;animation:skel 1.4s ease-in-out infinite">
+<div style="display:flex;flex-direction:column;gap:8px"><div style="height:28px;width:220px;border-radius:14px;background:#E6EADB"></div><div style="height:14px;width:130px;border-radius:7px;background:#E6EADB"></div></div>
+<div style="height:196px;border-radius:20px;background:#EFF2E5;border:1px solid #D4D8C7;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px"><div style="height:12px;width:100px;border-radius:6px;background:#E6EADB"></div><div style="height:22px;width:160px;border-radius:11px;background:#E6EADB"></div><div style="height:14px;width:200px;border-radius:7px;background:#E6EADB"></div><div style="flex:1"></div><div style="height:56px;border-radius:999px;background:#E6EADB"></div></div>
+<div style="display:flex;gap:8px"><div style="flex:1;height:76px;border-radius:16px;background:#EFF2E5"></div><div style="flex:1;height:76px;border-radius:16px;background:#EFF2E5"></div><div style="flex:1;height:76px;border-radius:16px;background:#EFF2E5"></div><div style="flex:1;height:76px;border-radius:16px;background:#EFF2E5"></div></div>
+<div style="height:120px;border-radius:20px;background:#EFF2E5"></div>
+<div style="display:flex;gap:6px"><div style="flex:1;height:36px;border-radius:10px;background:#EFF2E5"></div><div style="flex:1;height:36px;border-radius:10px;background:#EFF2E5"></div><div style="flex:1;height:36px;border-radius:10px;background:#EFF2E5"></div><div style="flex:1;height:36px;border-radius:10px;background:#EFF2E5"></div><div style="flex:1;height:36px;border-radius:10px;background:#EFF2E5"></div><div style="flex:1;height:36px;border-radius:10px;background:#EFF2E5"></div><div style="flex:1;height:36px;border-radius:10px;background:#EFF2E5"></div></div>
+</div>
+<dc-import name="NavPill" tab="0" theme="light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Global search" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Global search · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px"><div style="height:48px;border-radius:999px;background:#2D2F24;display:flex;align-items:center;gap:8px;padding:0 4px 0 12px"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#A3A69C">arrow_back</span><div style="flex:1;font-size:16px">bench<span style="display:inline-block;width:2px;height:20px;background:#A1B567;vertical-align:middle;margin-left:1px"></span></div><div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:#A3A69C">close</span></div></div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;gap:8px"><div style="height:32px;padding:0 12px 0 8px;border-radius:8px;background:#252C0F;color:#D9E3C0;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:18px">check</span>All</div><div style="height:32px;padding:0 12px;border-radius:8px;border:1px solid #3C3F33;color:#A3A69C;display:flex;align-items:center;font-size:14px;font-weight:600">Exercises</div><div style="height:32px;padding:0 12px;border-radius:8px;border:1px solid #3C3F33;color:#A3A69C;display:flex;align-items:center;font-size:14px;font-weight:600">Routines</div><div style="height:32px;padding:0 12px;border-radius:8px;border:1px solid #3C3F33;color:#A3A69C;display:flex;align-items:center;font-size:14px;font-weight:600">Workouts</div></div>
+<sc-for list="{{ searchGroups }}" as="g" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">{{ g.h }}</div><div style="border:1px solid #3C3F33;border-radius:20px;background:#22241B;overflow:hidden"><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid #3C3F33;min-height:64px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#A3A69C">{{ r.i }}</span><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ r.t }}</div><div style="font-size:14px;color:#A3A69C">{{ r.d }}</div></div></div></sc-for></div></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:141px;width:108px;height:4px;border-radius:2px;background:#F1F2EE66"></div>
+</div></div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const weekL = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const doneL = [1, 0, 1, 0, 0, 0, 0], doneD = [1, 0, 1, 1, 0, 1, 0];
+    return {
+      promises: [{ i: 'person_off', t: 'No account, no sign-in' }, { i: 'wifi_off', t: 'Works fully offline' }, { i: 'smartphone', t: 'Data stays on your phone' }, { i: 'money_off', t: 'Free. No ads.' }],
+      activity: [['Mostly sitting', 'Desk job, little walking', 0], ['Lightly active', 'On your feet some of the day', 0], ['Active', 'Training 3–5 days a week', 1], ['Very active', 'Hard training or a physical job', 0]].map(([t, d, on]) => ({ t, d, ring: on ? '#A1B567' : '#7F8178', dot: on ? '#A1B567' : 'transparent' })),
+      restoreCounts: [['Workouts', '214'], ['Routines', '9'], ['Custom exercises', '12'], ['Measurement entries', '38']].map(([k, v]) => ({ k, v })),
+      quick: [{ i: 'hourglass_top', t: 'Rest', d: '1:30' }, { i: 'timer', t: 'Tabata', d: '4:00' }, { i: 'repeat', t: 'EMOM', d: '10 min' }, { i: 'sports_mma', t: 'Rounds', d: '3 × 3:00' }],
+      week: weekL.map((l, i) => ({ l, bg: doneL[i] ? '#9CB450' : '#EFF2E5', ring: i === 4 ? 'inset 0 0 0 2px #617600' : 'inset 0 0 0 1px #D4D8C7', w: i === 4 ? 700 : 500 })),
+      weekD: weekL.map((l, i) => ({ l, bg: doneD[i] ? '#607223' : '#22241B', ring: i === 6 ? 'inset 0 0 0 2px #A1B567' : 'inset 0 0 0 1px #3C3F33', w: i === 6 ? 700 : 500 })),
+      bodyLatest: [{ k: 'Weight', v: '78.4 kg', d: '−0.6 since 26 Oct' }, { k: 'Waist', v: '84 cm', d: '−1 since 12 Oct' }, { k: 'BMI', v: '24.7', d: 'Healthy weight' }],
+      starters: [{ i: 'fitness_center', t: 'Full body, beginner', d: '6 exercises · 35 min' }, { i: 'self_improvement', t: 'Gentle yoga flow', d: '12 poses · 20 min' }, { i: 'sports_mma', t: 'Boxing basics', d: '6 rounds · 25 min' }],
+      searchGroups: [
+        { h: 'EXERCISES · 6', rows: [{ i: 'fitness_center', t: 'Bench press', d: 'Chest · Barbell' }, { i: 'fitness_center', t: 'Incline dumbbell bench', d: 'Chest · Dumbbell' }, { i: 'fitness_center', t: 'Bench dip', d: 'Triceps · Bodyweight' }] },
+        { h: 'ROUTINES · 1', rows: [{ i: 'list_alt', t: 'Upper body A', d: 'Includes bench press' }] },
+        { h: 'PAST WORKOUTS · 24', rows: [{ i: 'history', t: 'Upper body A · 28 Oct', d: 'Bench 82.5 kg × 6 · PR' }, { i: 'history', t: 'Upper body A · 21 Oct', d: 'Bench 80 kg × 8' }] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

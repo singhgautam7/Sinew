@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<script src="./sinew-art.js"></script>
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Bold.ttf);font-weight:700}
+@font-face{font-family:JBM;src:url(fonts/JetBrainsMono-Medium.ttf)}
+body{margin:0;background:#F3F1EC}
+a{color:#617600}a:hover{color:#394B00}
+</style>
+</helmet>
+<div style="font-family:Inter;color:#1F1E1B;padding:56px;display:flex;flex-direction:column;gap:72px;width:2400px;box-sizing:border-box;font-variant-numeric:tabular-nums">
+
+<header style="display:flex;align-items:center;gap:24px">
+<x-import component-from-global-scope="sinew-mark" concept="plates" bg="tile" size="72" hint-size="72px,72px"></x-import>
+<div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:40px;font-weight:700;letter-spacing:-.5px">Sinew · Foundations</div><div style="font-size:18px;color:#6B6A64">Palette, tokens and icon. Built on Kuber's M3 theme code (theme_families.dart, app_theme.dart). Files: <a href="Sinew 2 Components.dc.html">Components</a> · <a href="Sinew 3 First run and Today.dc.html">First run + Today</a> · <a href="Sinew 4 Train.dc.html">Train</a> · <a href="Sinew 5 Library.dc.html">Library</a> · <a href="Sinew 6 Timer.dc.html">Timer</a> · <a href="Sinew 7 Body.dc.html">Body</a> · <a href="Sinew 8 More.dc.html">More</a></div></div>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+<div style="font-size:40px;font-weight:600;letter-spacing:-.4px">Palette, all 9</div>
+<div style="display:flex;gap:22px">
+<sc-for list="{{ fams }}" as="f" hint-placeholder-count="9">
+<div style="display:flex;flex-direction:column;gap:14px;width:240px">
+<div style="height:240px;border-radius:24px;background:{{ f.t }};position:relative;outline:{{ f.ring }}"><div style="position:absolute;left:20px;bottom:20px;display:flex;gap:10px"><div style="width:50px;height:50px;border-radius:50%;background:{{ f.d }}"></div><div style="width:50px;height:50px;border-radius:50%;background:{{ f.m }}"></div></div></div>
+<div style="font-size:24px;font-weight:600">{{ f.name }}</div>
+<div style="font-family:JBM;font-size:18px;line-height:30px;color:#6B6A64;white-space:pre">{{ f.hex }}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1700px">
+<div style="background:#fff;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">WHY THESE VALUES</div><div style="font-size:16px;line-height:24px">Measured the eight siblings in OKLCh: dark L 0.34–0.40, mid L 0.52–0.64, tint L 0.90–0.945 at chroma ≈0.04. Your brief's tint (#EDF4CC, L 0.952, C 0.053) was lighter and more saturated than all eight, so it read as neon next to them.</div></div>
+<div style="background:#fff;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">TUNED</div><div style="font-family:JBM;font-size:14px;line-height:22px">dark  #3A4710 → #3B4707  oklch(.375 .085 121)<br>mid   #6E8A16 → #6D8817  oklch(.585 .135 123)<br>tint  #EDF4CC → #E4ECC7  oklch(.928 .050 118)</div></div>
+<div style="background:#fff;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">KEPT APART FROM POSTPURUSH</div><div style="font-size:16px;line-height:24px">PostPurush sits at hue 145, Unfurl at 63–79. Sinew takes hue 121, 24° from green and 42° from amber. Mid chroma 0.135 is higher than PostPurush's 0.100, so Sinew reads yellow-green, not leaf green.</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:40px;font-weight:600;letter-spacing:-.4px">Scheme · Sinew seed</div><div style="font-size:18px;color:#6B6A64">MullFamily(id: 'sinew', neutralHue 118, neutralChroma 1.2, primaryHue 121, primaryLightness .55 → guarded .53, primaryChroma .13, primaryContainerChroma .045). Same formula and surface rule as every Kuber family.</div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+<div style="background:#F9FBF4;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:16px;border:1px solid #D4D8C7">
+<div style="font-size:20px;font-weight:600;color:#15180B">Light</div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
+<sc-for list="{{ schemeL }}" as="c" hint-placeholder-count="18"><div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:12px;background:{{ c.v }};border:1px solid #0000000F"></div><div style="font-size:12px;font-weight:600;color:#15180B">{{ c.k }}</div><div style="font-family:JBM;font-size:11px;color:#626556">{{ c.v }}</div></div></sc-for>
+</div></div>
+<div style="background:#161811;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-size:20px;font-weight:600;color:#F1F2EE">Dark</div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
+<sc-for list="{{ schemeD }}" as="c" hint-placeholder-count="18"><div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:12px;background:{{ c.v }};border:1px solid #FFFFFF14"></div><div style="font-size:12px;font-weight:600;color:#F1F2EE">{{ c.k }}</div><div style="font-family:JBM;font-size:11px;color:#A3A69C">{{ c.v }}</div></div></sc-for>
+</div></div>
+<div style="background:#000000;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:baseline;gap:10px"><div style="font-size:20px;font-weight:600;color:#E4ECC7">AMOLED</div><div style="font-size:14px;color:#A9B98A">True black, coloured text</div></div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
+<sc-for list="{{ schemeA }}" as="c" hint-placeholder-count="18"><div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:12px;background:{{ c.v }};border:1px solid #2E3324"></div><div style="font-size:12px;font-weight:600;color:#E4ECC7">{{ c.k }}</div><div style="font-family:JBM;font-size:11px;color:#A9B98A">{{ c.v }}</div></div></sc-for>
+</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+<div style="background:#fff;border-radius:20px;padding:20px;display:flex;gap:20px;align-items:center"><div style="display:flex;gap:6px"><div style="width:40px;height:40px;border-radius:10px;background:#4567A8"></div><div style="width:40px;height:40px;border-radius:10px;background:#D6E5FF"></div><div style="width:40px;height:40px;border-radius:10px;background:#EBF0FA"></div><div style="width:40px;height:40px;border-radius:10px;background:#DE958E"></div><div style="width:40px;height:40px;border-radius:10px;background:#3B211F"></div><div style="width:40px;height:40px;border-radius:10px;background:#29201F"></div></div><div style="font-size:15px;line-height:22px">Dynamic colour: Android hands over one wallpaper seed and <span style="font-family:JBM;font-size:13px">MullFamily.fromSeed</span> derives the rest. Mocks use a blue wallpaper (light) and a coral wallpaper (dark).</div></div>
+<div style="background:#fff;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px"><div style="font-size:15px;line-height:22px">AMOLED is a third mode for every family, Sinew and dynamic alike: surface is #000000, containers step up from black by tone only, and onSurface / onSurfaceVariant take the family's tint and mid tones instead of grey. Same formula with primaryHue swapped, so Kuber, Mull and the rest get their own AMOLED for free. Both text roles clear 10:1 on black.</div><div style="font-size:15px;line-height:22px">Contrast: primary on surface 4.91:1 (light), 7.95:1 (dark). The light primary is stepped down from L .55 to .53 by Kuber's <span style="font-family:JBM;font-size:13px">guardedLightness</span> until white labels and the deepest card pass 4.5:1.</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:40px;font-weight:600;letter-spacing:-.4px">Fixed accents, harmonised</div><div style="font-size:18px;color:#6B6A64">Each fixed hue is pulled toward Sinew's primary hue (half the distance, at most 15°), the same idea as Kuber's color_harmonizer. In dynamic mode they harmonise to the wallpaper hue instead.</div></div>
+<div style="display:grid;grid-template-columns:1.25fr 1fr;gap:24px">
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">PLATES · IWF ORDER, BY SIZE</div>
+<div style="display:flex;gap:14px">
+<sc-for list="{{ plates }}" as="p" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;gap:8px;align-items:center;width:84px"><div style="display:flex;gap:4px"><div style="width:36px;height:72px;border-radius:6px;background:{{ p.l }};box-shadow:inset 0 0 0 2px {{ p.le }}"></div><div style="width:36px;height:72px;border-radius:6px;background:{{ p.d }};box-shadow:inset 0 0 0 2px {{ p.de }}"></div></div><div style="font-size:15px;font-weight:600">{{ p.w }} kg</div><div style="font-size:12px;color:#6B6A64;text-align:center">{{ p.lb }} lb · {{ p.n }}</div></div></sc-for>
+</div>
+<div style="font-size:14px;line-height:20px;color:#6B6A64">Left swatch light, right dark. Plates always carry a 1.5px edge in their own deeper tone so white and chrome plates hold up on light surfaces. Bar and collars use neutral greys (#A4A5A2 / #7E807A light, #868783 / #62645E dark).</div>
+</div>
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:18px" data-comment-anchor="565e50c73e-div">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">TIMER PHASES · FULL-SCREEN FIELDS</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<sc-for list="{{ phases }}" as="p" hint-placeholder-count="8"><div style="border-radius:16px;background:{{ p.f }};color:{{ p.on }};padding:12px;display:flex;flex-direction:column;gap:2px;height:96px;box-sizing:border-box;justify-content:space-between"><div style="font-size:13px;font-weight:600">{{ p.name }}</div><div style="font-size:30px;font-weight:700;line-height:32px">0:20</div><div style="font-size:11px;font-family:JBM">{{ p.f }} · {{ p.cr }}:1</div></div></sc-for>
+</div>
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">AMOLED · BLACK FIELD, PHASE-COLOURED NUMERALS AND RING</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<sc-for list="{{ phasesA }}" as="p" hint-placeholder-count="4"><div style="border-radius:16px;background:#000000;color:{{ p.c }};padding:12px;display:flex;flex-direction:column;gap:2px;height:96px;box-sizing:border-box;justify-content:space-between;box-shadow:inset 0 3px 0 {{ p.c }}"><div style="font-size:13px;font-weight:600">{{ p.name }}</div><div style="font-size:30px;font-weight:700;line-height:32px">0:20</div><div style="font-size:11px;font-family:JBM">{{ p.c }} · {{ p.cr }}:1</div></div></sc-for>
+</div>
+<div style="font-size:14px;line-height:20px;color:#6B6A64">Work is Sinew chartreuse; rest teal, warm-up amber and cool-down periwinkle are harmonised. All on-colours are ≥ 9.9:1, and the progress ring is ≥ 5.6:1 on its field.</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:24px">
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:14px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">HEAT RAMP · CALENDAR, MUSCLES THIS WEEK</div>
+<div style="display:flex;gap:6px"><div style="flex:1;height:44px;border-radius:8px;background:#E1FC97"></div><div style="flex:1;height:44px;border-radius:8px;background:#C4DE7A"></div><div style="flex:1;height:44px;border-radius:8px;background:#9CB450"></div><div style="flex:1;height:44px;border-radius:8px;background:#6C8213"></div><div style="flex:1;height:44px;border-radius:8px;background:#495C00"></div></div>
+<div style="display:flex;gap:6px"><div style="flex:1;height:44px;border-radius:8px;background:#222F00"></div><div style="flex:1;height:44px;border-radius:8px;background:#3B4A00"></div><div style="flex:1;height:44px;border-radius:8px;background:#607223"></div><div style="flex:1;height:44px;border-radius:8px;background:#8FA255"></div><div style="flex:1;height:44px;border-radius:8px;background:#BACF80"></div></div>
+<div style="font-size:14px;line-height:20px;color:#6B6A64">Kuber's 5-step ramp formula on hue 121. Weakest to strongest on each surface.</div></div>
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:14px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">MUSCLE MAP</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px"><div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#617600"></div>Primary</div><div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#C4DE7A"></div>Secondary</div><div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#ACB09F"></div>Idle</div><div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#DDDFD5"></div>Body</div>
+<div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#A1B567"></div>Primary</div><div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#3B4A00"></div>Secondary</div><div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#54574B"></div>Idle</div><div style="display:flex;flex-direction:column;gap:4px"><div style="height:36px;border-radius:8px;background:#32342C"></div>Body</div></div>
+<div style="font-size:14px;line-height:20px;color:#6B6A64">Primary = scheme primary, secondary = ramp[1]. Top row light, bottom row dark.</div></div>
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:14px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">CHART SERIES · KUBER CATEGORICAL HUES, HARMONISED</div>
+<div style="display:flex;gap:6px"><sc-for list="{{ seriesL }}" as="c" hint-placeholder-count="8"><div style="flex:1;height:44px;border-radius:8px;background:{{ c }}"></div></sc-for></div>
+<div style="display:flex;gap:6px;background:#22241B;padding:6px;border-radius:12px"><sc-for list="{{ seriesD }}" as="c" hint-placeholder-count="8"><div style="flex:1;height:32px;border-radius:6px;background:{{ c }}"></div></sc-for></div>
+<div style="font-size:14px;line-height:20px;color:#6B6A64">Hues 262 75 190 345 140 45 300 20. Light series are ≥ 3.8:1 on surfaceContainer (graphics need 3:1); dark series are ≥ 7.9:1.</div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+<div style="font-size:40px;font-weight:600;letter-spacing:-.4px">Type, space, shape, motion</div>
+<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:24px">
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">TYPE · INTER, TABULAR FIGURES (buildKuberTextTheme)</div>
+<sc-for list="{{ type }}" as="t" hint-placeholder-count="10"><div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid #EEEDE8;padding-top:8px"><div style="width:130px;font-size:13px;color:#6B6A64">{{ t.k }}</div><div style="font-family:JBM;font-size:12px;color:#6B6A64;width:110px">{{ t.spec }}</div><div style="font-size:{{ t.size }}px;font-weight:{{ t.w }};line-height:1.2">{{ t.sample }}</div></div></sc-for>
+<div style="font-size:14px;line-height:20px;color:#6B6A64;padding-top:6px">Sinew adds one role: <b>timerNumeral</b> 168/168 w700 −4 tracking for the across-the-room timer. It is display-only and scales down to fit the width.</div>
+</div>
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">SPACE (KuberSpace) · SHAPE (KuberShape)</div>
+<div style="font-family:JBM;font-size:13px;line-height:22px;white-space:pre">{{ spaceTxt }}</div>
+</div>
+<div style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">MOTION (KuberMotion + Sinew moments)</div>
+<div style="font-family:JBM;font-size:13px;line-height:22px;white-space:pre">{{ motionTxt }}</div>
+</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:28px" data-comment-anchor="caaf636618-section">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:40px;font-weight:600;letter-spacing:-.4px">App icon · Plate S</div><div style="font-size:18px;color:#6B6A64">Same tint, dark and mid as the siblings. The plate rim is ~31/512, a little lighter than the siblings' 44/512 strokes, to leave room for the hub and hole. Two plates make the S, so it works as the letter and as gym equipment at once. Every format below uses A until you pick.</div></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;max-width:1400px"><div style="background:#fff;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:20px">
+<div style="font-size:24px;font-weight:600">A · Plate S</div>
+<div style="display:flex;gap:24px;align-items:flex-end"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="square" size="300" hint-size="300px,300px"></x-import><div style="display:flex;flex-direction:column;gap:12px"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="tile" tint="#2A3310" dark="#C9D79C" mid="#A1B567" size="140" hint-size="140px,140px"></x-import><x-import component-from-global-scope="sinew-mark" concept="plates" bg="square" mode="mono-dark" size="140" hint-size="140px,140px"></x-import></div></div>
+<div style="display:flex;gap:14px;align-items:flex-end"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" size="96" hint-size="96px,96px"></x-import><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" size="48" hint-size="48px,48px"></x-import><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" size="24" hint-size="24px,24px"></x-import><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" mode="mono" size="48" hint-size="48px,48px"></x-import><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" mode="mono-dark" size="48" hint-size="48px,48px"></x-import></div>
+<div style="font-size:12px;color:#6B6A64">96 · 48 · 24dp · themed mono light and dark · right: dark splash and mono dark</div>
+<div style="font-size:16px;line-height:24px;text-wrap:pretty">Two weight plates seen face-on, each a thick ring with a hub. The top plate is open at the lower right and the bottom plate, the same shape turned 180°, is open at the upper left. They meet at the centre, so the pair is the S. Dark is the top plate, mid the bottom, and mid laps over dark where they join, the same lap as the other family glyphs. Round ends match the siblings.</div>
+</div>
+<div style="background:#fff;border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:20px">
+<div style="font-size:24px;font-weight:600">B · Plate S, cut ends</div>
+<div style="display:flex;gap:24px;align-items:flex-end"><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="square" size="300" hint-size="300px,300px"></x-import><div style="display:flex;flex-direction:column;gap:12px"><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="tile" tint="#2A3310" dark="#C9D79C" mid="#A1B567" size="140" hint-size="140px,140px"></x-import><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="square" mode="mono-dark" size="140" hint-size="140px,140px"></x-import></div></div>
+<div style="display:flex;gap:14px;align-items:flex-end"><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="circle" size="96" hint-size="96px,96px"></x-import><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="circle" size="48" hint-size="48px,48px"></x-import><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="circle" size="24" hint-size="24px,24px"></x-import><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="circle" mode="mono" size="48" hint-size="48px,48px"></x-import><x-import component-from-global-scope="sinew-mark" concept="platesCut" bg="circle" mode="mono-dark" size="48" hint-size="48px,48px"></x-import></div>
+<div style="font-size:12px;color:#6B6A64">96 · 48 · 24dp · themed mono light and dark · right: dark splash and mono dark</div>
+<div style="font-size:16px;line-height:24px;text-wrap:pretty">The same two plates with square-cut ends, so each reads as a plate with one quarter taken out. It looks more machined and is a little further from the family's round-ended strokes.</div>
+</div></div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+<div style="font-size:40px;font-weight:600;letter-spacing:-.4px">Option A · every format</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
+<sc-for list="{{ formats }}" as="f" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;gap:10px;width:220px"><div style="background:#fff;border-radius:20px;padding:20px;display:flex;align-items:center;justify-content:center;height:220px;box-sizing:border-box"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="{{ f.bg }}" mode="{{ f.mode }}" tint="{{ f.tint }}" size="180" hint-size="180px,180px"></x-import></div><div style="font-size:16px;font-weight:600">{{ f.name }}</div><div style="font-size:13px;line-height:18px;color:#6B6A64">{{ f.note }}</div></div>
+</sc-for>
+</div>
+<div style="background:#fff;border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:20px;width:fit-content">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">IN THE FAMILY · 48dp</div>
+<div style="display:flex;gap:28px;align-items:center">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><img src="assets/sib-kuber.png" style="width:48px;height:48px;border-radius:50%"><div style="font-size:12px">Kuber</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><img src="assets/sib-postpurush.png" style="width:48px;height:48px;border-radius:50%"><div style="font-size:12px">PostPurush</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><img src="assets/sib-mull-splash.png" style="width:48px;height:48px;border-radius:50%"><div style="font-size:12px">Mull</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><img src="assets/sib-headshorts-splash.png" style="width:48px;height:48px;border-radius:50%"><div style="font-size:12px">Headshorts</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" size="48" hint-size="48px,48px"></x-import><div style="font-size:12px;font-weight:600">Sinew</div></div>
+</div>
+<div style="display:flex;gap:28px;align-items:center;background:#22241B;padding:16px 20px;border-radius:20px">
+<img src="assets/sib-kuber.png" style="width:48px;height:48px;border-radius:50%"><img src="assets/sib-postpurush.png" style="width:48px;height:48px;border-radius:50%"><img src="assets/sib-mull-splash.png" style="width:48px;height:48px;border-radius:50%"><img src="assets/sib-headshorts-splash.png" style="width:48px;height:48px;border-radius:50%"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" size="48" hint-size="48px,48px"></x-import>
+</div>
+<div style="font-size:13px;color:#6B6A64">Mull and Headshorts come from their splash art, so their glyphs sit slightly smaller in the circle.</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const fams = [
+      ['Kuber', '#003D88', '#2573E6', '#D8E2FF'], ['PostPurush', '#1E4120', '#417843', '#CCE6CC'], ['Sinew', '#3B4707', '#6D8817', '#E4ECC7'], ['Unfurl', '#663D12', '#B2782C', '#F8E5C7'],
+      ['Perch', '#4C2979', '#8B5DCE', '#EAE1FE'], ['A Tour of Go', '#004A5D', '#089BBF', '#C8EFFE'], ['Dally', '#721A49', '#C84C8B', '#FEDEEB'], ['Mull', '#064045', '#087A84', '#D8F3F6'], ['Headshorts', '#791A18', '#D3453D', '#FFDDD9']
+    ].map(([name, d, m, t]) => ({ name, d, m, t, hex: [d, m, t].join('\n'), ring: name === 'Sinew' ? '3px solid #3B4707' : 'none' }));
+    const L = { primary: '#617600', onPrimary: '#FFFFFF', primaryContainer: '#E0EAC9', onPrimaryContainer: '#394B00', inversePrimary: '#A1B567', error: '#BD413F', surface: '#F9FBF4', surfaceContainerLowest: '#FFFFFF', surfaceContainerLow: '#F4F7ED', surfaceContainer: '#EFF2E5', surfaceContainerHigh: '#E6EADB', surfaceContainerHighest: '#DDE1D1', outlineVariant: '#D4D8C7', outline: '#858878', onSurfaceVariant: '#626556', onSurface: '#15180B', inverseSurface: '#191C0F', errorContainer: '#FFE7E4' };
+    const D = { primary: '#A1B567', onPrimary: '#090A05', primaryContainer: '#252C0F', onPrimaryContainer: '#D9E3C0', inversePrimary: '#677C06', error: '#F07F77', surface: '#161811', surfaceContainerLowest: '#0F100A', surfaceContainerLow: '#1C1E16', surfaceContainer: '#22241B', surfaceContainerHigh: '#2D2F24', surfaceContainerHighest: '#35372C', outlineVariant: '#3C3F33', outline: '#7F8178', onSurfaceVariant: '#A3A69C', onSurface: '#F1F2EE', inverseSurface: '#E7E9E2', errorContainer: '#391917' };
+    const A = { primary: '#A1B567', onPrimary: '#000000', primaryContainer: '#1A2005', onPrimaryContainer: '#D9E3C0', inversePrimary: '#677C06', error: '#F07F77', surface: '#000000', surfaceContainerLowest: '#000000', surfaceContainerLow: '#050603', surfaceContainer: '#0B0D06', surfaceContainerHigh: '#13160B', surfaceContainerHighest: '#1B1F11', outlineVariant: '#2E3324', outline: '#6F7A52', onSurfaceVariant: '#A9B98A', onSurface: '#E4ECC7', inverseSurface: '#E4ECC7', errorContainer: '#2A0E0C' };
+    const lum = hx => { const c = [1, 3, 5].map(i => parseInt(hx.slice(i, i + 2), 16) / 255).map(v => v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4)); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
+    const phasesA = [['Work', '#C6E36B'], ['Rest', '#95E2F5'], ['Warm-up', '#F5CF7D'], ['Cool-down', '#C6D1FF']].map(([name, c]) => ({ name, c, cr: ((lum(c) + .05) / .05).toFixed(1) }));
+    const toList = o => Object.entries(o).map(([k, v]) => ({ k: k.replace('surfaceContainer', 'sc').replace('primaryContainer', 'primaryCont.'), v }));
+    const plates = [['25', 55, 'red', '#C2460D', '#991B00', '#B13D03', '#8C0400'], ['20', 45, 'blue', '#0070B5', '#004C8F', '#0064A5', '#004082'], ['15', 35, 'yellow', '#DBD856', '#B5B124', '#CDCB51', '#A8A405'], ['10', 25, 'green', '#5C913C', '#396D14', '#528435', '#2E6100'], ['5', 10, 'white', '#F1F2EF', '#CACBC7', '#D0D1CE', '#BDBEBB'], ['2.5', 5, 'graphite', '#32342E', '#151712', '#282A24', '#0D0E09'], ['1.25', 2.5, 'chrome', '#B6B8B1', '#91938C', '#AAACA5', '#858781']].map(([w, lb, n, l, le, d, de]) => ({ w, lb, n, l, le, d, de }));
+    const phases = [['Work', '#C6E36B', '#1A2400', '11.3'], ['Rest', '#95E2F5', '#02242B', '11.2'], ['Warm-up', '#F5CF7D', '#2B1C00', '11.1'], ['Cool-down', '#C6D1FF', '#1A1E30', '11.0'], ['Work', '#2F3B00', '#E0F0B8', '9.9'], ['Rest', '#163B43', '#CBEFF9', '9.9'], ['Warm-up', '#443309', '#F9E6BF', '9.9'], ['Cool-down', '#2F3449', '#E1E7FF', '10.0']].map(([name, f, on, cr]) => ({ name, f, on, cr }));
+    const type = [['displayLarge', '57/64 w700', 57, 700, '142.5'], ['headlineMedium', '28/36 w700', 28, 700, 'Evening, Gautam'], ['headlineSmall', '24/32 w600', 24, 600, 'Bench press'], ['titleLarge', '22/28 w600', 22, 600, 'Train'], ['titleMedium', '16/24 w600', 16, 600, 'Upper body A'], ['bodyLarge', '16/24 w400', 16, 400, 'Keep your elbows at 45°.'], ['bodyMedium', '14/20 w400', 14, 400, '5 exercises · 48 min'], ['labelLarge', '14/20 w600', 14, 600, 'Start workout'], ['labelMedium', '12/16 w600', 12, 600, 'LAST SESSION'], ['bodySmall', '12/16 w400', 12, 400, 'Previous: 80 × 8']].map(([k, spec, size, w, sample]) => ({ k, spec, size, w, sample }));
+    const spaceTxt = 'xs 4   sm 8   md 12   lg 16   xl 24   xxl 32   xxxl 48\nscreenMargin 20   sectionGap 28   cardGap 12\ncardPadding 16   hero 20   tapTarget 48\nlistItem 56/72/88   navClearance 108\n+ sinew.gloveTarget 64 (workout, timer)\n+ sinew.timerControl 80\n\nextraSmall 4   small 8 (chips)   medium 12\nlarge 16 (fields)   largeIncreased 20 (cards)\nextraLarge 28 (sheets)   full 999';
+    const motionTxt = 'instant 90   fast 150   navIndicator 220\nnavHide 160   reducedFade 90\nspring = easeOutBack  cubic(.34,1.56,.64,1)\ndecelerate = easeOutCubic\n\nplate in   420ms spring, 45ms stagger\nplate out  220ms decelerate, slide 46dp\nset done   check 0→1.18→1 · 260ms + light haptic\nPR flash   primaryContainer pulse 1× 600ms\nsilhouette 480ms decelerate, path lerp\nphase      radial sweep 360ms from ring\nreduced    jump to end / 90ms crossfade';
+    const formats = [
+      { name: 'Play Store 512', note: '512 × 512, square tint. Play applies its own mask.', bg: 'square', mode: 'color', tint: '#E4ECC7' },
+      { name: 'Adaptive · foreground', note: '108dp canvas. Dashed: 72dp visible mask (amber), 66dp safe zone (red).', bg: 'adaptive-fg', mode: 'color', tint: '#E4ECC7' },
+      { name: 'Adaptive · composed', note: 'Background layer: flat #E4ECC7.', bg: 'adaptive', mode: 'color', tint: '#E4ECC7' },
+      { name: 'Monochrome layer', note: 'Single path, tinted by the system. Shown on Android 13 themed tint.', bg: 'circle', mode: 'mono', tint: '#E0EAC9' },
+      { name: 'Monochrome · dark', note: 'Same layer in a dark themed icon.', bg: 'circle', mode: 'mono-dark', tint: '#252C0F' },
+      { name: 'Splash', note: 'Glyph on the tint circle. Android 12 launch screen.', bg: 'circle', mode: 'color', tint: '#E4ECC7' },
+      { name: 'Splash · dark', note: 'Dark-mode splash: same strokes on a #2A3310 circle.', bg: 'circle', mode: 'color', tint: '#2A3310' }
+    ];
+    return { fams, schemeL: toList(L), schemeD: toList(D), schemeA: toList(A), phasesA, plates, phases, type, spaceTxt, motionTxt, formats,
+      seriesL: ['#2E79B7', '#907000', '#008A70', '#AC5371', '#5C822F', '#A7611B', '#6E69B7', '#AF5742'], seriesD: ['#82C4FF', '#D9BB66', '#66D5BA', '#F89FBB', '#A6CC80', '#F2AD73', '#B6B4FF', '#FCA48D'] };
+  }
+}
+</script>
+</body>
+</html>

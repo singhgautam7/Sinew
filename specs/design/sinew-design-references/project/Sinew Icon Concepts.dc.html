@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Bold.ttf);font-weight:700}
+@font-face{font-family:JBM;src:url(fonts/JetBrainsMono-Medium.ttf)}
+body{margin:0;background:#F3F1EC}
+a{color:#617600}a:hover{color:#394B00}
+</style>
+</helmet>
+<div style="font-family:Inter;color:#1F1E1B;padding:56px;display:flex;flex-direction:column;gap:64px;width:1840px;box-sizing:border-box;font-variant-numeric:tabular-nums">
+
+<header style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:40px;font-weight:700;letter-spacing:-.5px">Sinew · App icon, 3 concepts</div>
+<div style="font-size:18px;color:#6B6A64">Glyph SVGs in icons/. Palette from <a href="Sinew 1 Foundations.dc.html">Foundations</a>: dark #3B4707, mid #6D8817, tint #E4ECC7 (the brief's tint was lighter than all eight siblings).</div>
+</header>
+
+<section data-screen-label="Measurements" style="display:flex;flex-direction:column;gap:20px">
+<div style="font-size:32px;font-weight:600;letter-spacing:-.3px">Step 1 · The family, measured</div>
+<div style="display:grid;grid-template-columns:160px repeat(4,minmax(0,1fr));gap:1px;background:#DDDAD2;border-radius:20px;overflow:hidden;font-size:15px;line-height:22px">
+<div style="background:#fff;padding:14px 16px;font-weight:600"></div>
+<div style="background:#fff;padding:14px 16px;font-weight:600">PostPurush · 512 square</div>
+<div style="background:#fff;padding:14px 16px;font-weight:600">Kuber · 512 square</div>
+<div style="background:#fff;padding:14px 16px;font-weight:600">Mull · 384 splash circle</div>
+<div style="background:#fff;padding:14px 16px;font-weight:600">Headshorts · 384 splash circle</div>
+<div style="background:#fff;padding:14px 16px;color:#6B6A64">Stroke</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">35 px · 6.8%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">39 px · 7.6%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">32 px · 8.4%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">32 px · 8.3%</div>
+<div style="background:#fff;padding:14px 16px;color:#6B6A64">Glyph box (w × h)</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">38.7 × 48.2%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">33.2 × 46.5%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">45.3 × 43.8%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">50.0 × 51.8%</div>
+<div style="background:#fff;padding:14px 16px;color:#6B6A64">Empty tint</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">top/bottom 26% · sides 31%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">top/bottom 27% · sides 33%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">top/bottom 28% · sides 27%</div>
+<div style="background:#fff;padding:14px 16px;font-family:JBM">top 21% · bottom 27% · sides 21–29%</div>
+<div style="background:#fff;padding:14px 16px;color:#6B6A64">Caps, joins</div>
+<div style="background:#fff;padding:14px 16px">Round, round</div>
+<div style="background:#fff;padding:14px 16px">Round, round</div>
+<div style="background:#fff;padding:14px 16px">Round, round</div>
+<div style="background:#fff;padding:14px 16px">Round, round</div>
+<div style="background:#fff;padding:14px 16px;color:#6B6A64">Tone split</div>
+<div style="background:#fff;padding:14px 16px">Dark stem + bracket (50% of ink). Mid bowl; its round start cap sits on top of the stem.</div>
+<div style="background:#fff;padding:14px 16px">Dark bars + curve (72%). Mid leg; its round cap sits on the end of the curve.</div>
+<div style="background:#fff;padding:14px 16px">Dark left page (46%). Mid right arch and base, over the dark at the spine and base.</div>
+<div style="background:#fff;padding:14px 16px">Dark stem + waves (66%). Mid crossbar + right stem; crossbar cap on the dark stem.</div>
+</div>
+<div style="background:#fff;border-radius:20px;padding:20px;font-size:16px;line-height:24px;max-width:1200px">
+<b>Used for every concept:</b> stroke 37 on 512 (7.2%, the square siblings' mean); glyph 245–248 tall (48%) and 165–205 wide, optically centred; round caps and joins; mid drawn last, its round cap visible on the dark. Splash: glyph × 1.155 on the circle, which gives the splash siblings' 8.3% stroke. In the 48dp rows, Mull and Headshorts splash art is scaled by the same 1/1.155 so all five glyphs are compared at icon size.
+</div>
+</section>
+
+<section id="c1" data-screen-label="1 Dumbbell S" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:32px;font-weight:600;letter-spacing:-.3px">1 · Dumbbell S</div><div style="font-size:17px;color:#6B6A64">The spine is the handle; each end carries a vertical plate. Dark: top curve + top plate. Mid: bottom curve + bottom plate, its cap on the spine.</div></div>
+<div style="display:flex;gap:32px;align-items:flex-start">
+<div style="width:512px;height:512px;background:#E4ECC7;flex:none"><img src="icons/sinew-dumbbell.svg" style="display:block;width:512px;height:512px"></div>
+<div style="width:384px;height:384px;border-radius:50%;background:#E4ECC7;overflow:hidden;position:relative;flex:none"><img src="icons/sinew-dumbbell.svg" style="position:absolute;width:443.5px;height:443.5px;left:-29.75px;top:-29.75px"></div>
+<div style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">THEMED · ONE FLAT COLOUR</div><div style="display:flex;gap:16px">
+<div style="width:120px;height:120px;border-radius:50%;background:#E3E6D9;display:flex;align-items:center;justify-content:center"><div style="width:120px;height:120px;background:#2F3A06;-webkit-mask:url(icons/sinew-dumbbell-mono.svg) center/100% no-repeat;mask:url(icons/sinew-dumbbell-mono.svg) center/100% no-repeat"></div></div>
+<div style="width:120px;height:120px;border-radius:50%;background:#2A3310;display:flex;align-items:center;justify-content:center"><div style="width:120px;height:120px;background:#D9E3C0;-webkit-mask:url(icons/sinew-dumbbell-mono.svg) center/100% no-repeat;mask:url(icons/sinew-dumbbell-mono.svg) center/100% no-repeat"></div></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">48DP ROW</div><div style="display:flex;gap:16px">
+<div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#E4ECC7"><img src="icons/sinew-dumbbell.svg" style="display:block;width:48px;height:48px"></div>
+<img src="assets/sib-postpurush.png" style="width:48px;height:48px;border-radius:50%">
+<div style="width:48px;height:48px;border-radius:50%;background:#D8F3F6;display:flex;align-items:center;justify-content:center"><img src="assets/sib-mull-splash.png" style="width:41.5px;height:41.5px"></div>
+<div style="width:48px;height:48px;border-radius:50%;background:#FFDDD9;display:flex;align-items:center;justify-content:center"><img src="assets/sib-headshorts-splash.png" style="width:41.5px;height:41.5px"></div>
+<img src="assets/sib-kuber.png" style="width:48px;height:48px;border-radius:50%">
+</div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">SAME ROW × 2</div><div style="display:flex;gap:32px">
+<div style="width:96px;height:96px;border-radius:50%;overflow:hidden;background:#E4ECC7"><img src="icons/sinew-dumbbell.svg" style="display:block;width:96px;height:96px"></div>
+<img src="assets/sib-postpurush.png" style="width:96px;height:96px;border-radius:50%">
+<div style="width:96px;height:96px;border-radius:50%;background:#D8F3F6;display:flex;align-items:center;justify-content:center"><img src="assets/sib-mull-splash.png" style="width:83px;height:83px"></div>
+<div style="width:96px;height:96px;border-radius:50%;background:#FFDDD9;display:flex;align-items:center;justify-content:center"><img src="assets/sib-headshorts-splash.png" style="width:83px;height:83px"></div>
+<img src="assets/sib-kuber.png" style="width:96px;height:96px;border-radius:50%">
+</div></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;max-width:1440px">
+<pre style="margin:0;background:#fff;border-radius:20px;padding:20px;font-family:JBM;font-size:13px;line-height:20px;white-space:pre-wrap">&lt;svg viewBox="0 0 512 512"&gt;&lt;g fill="none" stroke-width="37" stroke-linecap="round" stroke-linejoin="round"&gt;
+  &lt;path d="M340 180 H224 A38 38 0 0 0 224 256 H288" stroke="#3B4707"/&gt;
+  &lt;path d="M340 152 V208" stroke="#3B4707"/&gt;
+  &lt;path d="M256 256 H288 A38 38 0 0 1 288 332 H172" stroke="#6D8817"/&gt;
+  &lt;path d="M172 304 V360" stroke="#6D8817"/&gt;
+&lt;/g&gt;&lt;/svg&gt;</pre>
+<div style="background:#fff;border-radius:20px;padding:20px;font-size:15px;line-height:23px;display:flex;flex-direction:column;gap:4px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">CHECK</div><div>S at 48dp · yes</div><div>Dumbbell in one glance · yes</div><div>Weight and size · 37 / 245 tall, matches</div><div>As simple as Kuber · yes, 4 strokes, 2 straight</div></div>
+</div>
+</section>
+
+<section id="c2" data-screen-label="2 Flex S" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:32px;font-weight:600;letter-spacing:-.3px">2 · Flex S</div><div style="font-size:17px;color:#6B6A64">A fuller lower curve for the bicep; the top end turns straight up into a forearm and round fist. Dark: top curve + forearm + fist. Mid: the bicep curve, its cap on the spine.</div></div>
+<div style="display:flex;gap:32px;align-items:flex-start">
+<div style="width:512px;height:512px;background:#E4ECC7;flex:none"><img src="icons/sinew-flex.svg" style="display:block;width:512px;height:512px"></div>
+<div style="width:384px;height:384px;border-radius:50%;background:#E4ECC7;overflow:hidden;position:relative;flex:none"><img src="icons/sinew-flex.svg" style="position:absolute;width:443.5px;height:443.5px;left:-29.75px;top:-29.75px"></div>
+<div style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">THEMED · ONE FLAT COLOUR</div><div style="display:flex;gap:16px">
+<div style="width:120px;height:120px;border-radius:50%;background:#E3E6D9;display:flex;align-items:center;justify-content:center"><div style="width:120px;height:120px;background:#2F3A06;-webkit-mask:url(icons/sinew-flex-mono.svg) center/100% no-repeat;mask:url(icons/sinew-flex-mono.svg) center/100% no-repeat"></div></div>
+<div style="width:120px;height:120px;border-radius:50%;background:#2A3310;display:flex;align-items:center;justify-content:center"><div style="width:120px;height:120px;background:#D9E3C0;-webkit-mask:url(icons/sinew-flex-mono.svg) center/100% no-repeat;mask:url(icons/sinew-flex-mono.svg) center/100% no-repeat"></div></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">48DP ROW</div><div style="display:flex;gap:16px">
+<div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#E4ECC7"><img src="icons/sinew-flex.svg" style="display:block;width:48px;height:48px"></div>
+<img src="assets/sib-postpurush.png" style="width:48px;height:48px;border-radius:50%">
+<div style="width:48px;height:48px;border-radius:50%;background:#D8F3F6;display:flex;align-items:center;justify-content:center"><img src="assets/sib-mull-splash.png" style="width:41.5px;height:41.5px"></div>
+<div style="width:48px;height:48px;border-radius:50%;background:#FFDDD9;display:flex;align-items:center;justify-content:center"><img src="assets/sib-headshorts-splash.png" style="width:41.5px;height:41.5px"></div>
+<img src="assets/sib-kuber.png" style="width:48px;height:48px;border-radius:50%">
+</div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">SAME ROW × 2</div><div style="display:flex;gap:32px">
+<div style="width:96px;height:96px;border-radius:50%;overflow:hidden;background:#E4ECC7"><img src="icons/sinew-flex.svg" style="display:block;width:96px;height:96px"></div>
+<img src="assets/sib-postpurush.png" style="width:96px;height:96px;border-radius:50%">
+<div style="width:96px;height:96px;border-radius:50%;background:#D8F3F6;display:flex;align-items:center;justify-content:center"><img src="assets/sib-mull-splash.png" style="width:83px;height:83px"></div>
+<div style="width:96px;height:96px;border-radius:50%;background:#FFDDD9;display:flex;align-items:center;justify-content:center"><img src="assets/sib-headshorts-splash.png" style="width:83px;height:83px"></div>
+<img src="assets/sib-kuber.png" style="width:96px;height:96px;border-radius:50%">
+</div></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;max-width:1440px">
+<pre style="margin:0;background:#fff;border-radius:20px;padding:20px;font-family:JBM;font-size:13px;line-height:20px;white-space:pre-wrap">&lt;svg viewBox="0 0 512 512"&gt;&lt;g fill="none" stroke-width="37" stroke-linecap="round" stroke-linejoin="round"&gt;
+  &lt;path d="M300 158 V220 H222 A28 28 0 0 0 222 276 H270" stroke="#3B4707"/&gt;
+  &lt;circle cx="300" cy="158" r="27" fill="#3B4707" stroke="none"/&gt;
+  &lt;path d="M248 276 H270 A50 42 0 0 1 270 360 H192" stroke="#6D8817"/&gt;
+&lt;/g&gt;&lt;/svg&gt;</pre>
+<div style="background:#fff;border-radius:20px;padding:20px;font-size:15px;line-height:23px;display:flex;flex-direction:column;gap:4px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">CHECK</div><div>S at 48dp · yes</div><div>Bicep in one glance · weak: the arm reads, the bicep only at 96dp and up</div><div>Weight and size · 37 / 248 tall, matches</div><div>As simple as Kuber · yes, 3 shapes</div></div>
+</div>
+</section>
+
+<section id="c3" data-screen-label="3 Stopwatch S" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:32px;font-weight:600;letter-spacing:-.3px">3 · Stopwatch S</div><div style="font-size:17px;color:#6B6A64">The top curve runs on into a three-quarter ring with a short button. Dark: ring + button. Mid: the lower curve, starting on the ring where it leaves it. The button sits at 1 o'clock: at 12 it made a dollar sign.</div></div>
+<div style="display:flex;gap:32px;align-items:flex-start">
+<div style="width:512px;height:512px;background:#E4ECC7;flex:none"><img src="icons/sinew-stopwatch.svg" style="display:block;width:512px;height:512px"></div>
+<div style="width:384px;height:384px;border-radius:50%;background:#E4ECC7;overflow:hidden;position:relative;flex:none"><img src="icons/sinew-stopwatch.svg" style="position:absolute;width:443.5px;height:443.5px;left:-29.75px;top:-29.75px"></div>
+<div style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">THEMED · ONE FLAT COLOUR</div><div style="display:flex;gap:16px">
+<div style="width:120px;height:120px;border-radius:50%;background:#E3E6D9;display:flex;align-items:center;justify-content:center"><div style="width:120px;height:120px;background:#2F3A06;-webkit-mask:url(icons/sinew-stopwatch-mono.svg) center/100% no-repeat;mask:url(icons/sinew-stopwatch-mono.svg) center/100% no-repeat"></div></div>
+<div style="width:120px;height:120px;border-radius:50%;background:#2A3310;display:flex;align-items:center;justify-content:center"><div style="width:120px;height:120px;background:#D9E3C0;-webkit-mask:url(icons/sinew-stopwatch-mono.svg) center/100% no-repeat;mask:url(icons/sinew-stopwatch-mono.svg) center/100% no-repeat"></div></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">48DP ROW</div><div style="display:flex;gap:16px">
+<div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#E4ECC7"><img src="icons/sinew-stopwatch.svg" style="display:block;width:48px;height:48px"></div>
+<img src="assets/sib-postpurush.png" style="width:48px;height:48px;border-radius:50%">
+<div style="width:48px;height:48px;border-radius:50%;background:#D8F3F6;display:flex;align-items:center;justify-content:center"><img src="assets/sib-mull-splash.png" style="width:41.5px;height:41.5px"></div>
+<div style="width:48px;height:48px;border-radius:50%;background:#FFDDD9;display:flex;align-items:center;justify-content:center"><img src="assets/sib-headshorts-splash.png" style="width:41.5px;height:41.5px"></div>
+<img src="assets/sib-kuber.png" style="width:48px;height:48px;border-radius:50%">
+</div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">SAME ROW × 2</div><div style="display:flex;gap:32px">
+<div style="width:96px;height:96px;border-radius:50%;overflow:hidden;background:#E4ECC7"><img src="icons/sinew-stopwatch.svg" style="display:block;width:96px;height:96px"></div>
+<img src="assets/sib-postpurush.png" style="width:96px;height:96px;border-radius:50%">
+<div style="width:96px;height:96px;border-radius:50%;background:#D8F3F6;display:flex;align-items:center;justify-content:center"><img src="assets/sib-mull-splash.png" style="width:83px;height:83px"></div>
+<div style="width:96px;height:96px;border-radius:50%;background:#FFDDD9;display:flex;align-items:center;justify-content:center"><img src="assets/sib-headshorts-splash.png" style="width:83px;height:83px"></div>
+<img src="assets/sib-kuber.png" style="width:96px;height:96px;border-radius:50%">
+</div></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;max-width:1440px">
+<pre style="margin:0;background:#fff;border-radius:20px;padding:20px;font-family:JBM;font-size:13px;line-height:20px;white-space:pre-wrap">&lt;svg viewBox="0 0 512 512"&gt;&lt;g fill="none" stroke-width="37" stroke-linecap="round" stroke-linejoin="round"&gt;
+  &lt;path d="M306 222 A50 50 0 1 0 256 272" stroke="#3B4707"/&gt;
+  &lt;path d="M273.1 175 L282 150.6" stroke="#3B4707"/&gt;
+  &lt;path d="M227.3 263 A50 50 0 0 0 256 272 A44 44 0 0 1 256 360 H212" stroke="#6D8817"/&gt;
+&lt;/g&gt;&lt;/svg&gt;</pre>
+<div style="background:#fff;border-radius:20px;padding:20px;font-size:15px;line-height:23px;display:flex;flex-direction:column;gap:4px"><div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">CHECK</div><div>S at 48dp · yes</div><div>Stopwatch in one glance · yes from 96dp, a hint at 48dp</div><div>Weight and size · 37 / 246 tall, matches</div><div>As simple as Kuber · yes, 3 strokes</div></div>
+</div>
+</section>
+
+<section data-screen-label="Recommendation" style="background:#fff;border-radius:24px;padding:28px;max-width:1100px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:13px;font-weight:600;letter-spacing:.8px;color:#6B6A64">SHIP</div>
+<div style="font-size:22px;line-height:32px">Ship <a href="#c1">1 · Dumbbell S</a>. At 48dp it reads as an S first and a dumbbell second, it is built from the same straight bars and round caps as Kuber's rupee, and it names the app's main job, lifting, where the stopwatch names one feature and the bicep needs a larger size to read.</div>
+</section>
+
+</div>
+</x-dc>
+</body>
+</html>

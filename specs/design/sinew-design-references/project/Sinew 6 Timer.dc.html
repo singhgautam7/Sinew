@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<script src="./sinew-art.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0">
+<style>
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+@font-face{font-family:Inter;src:url(fonts/Inter-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Bold.ttf);font-weight:700}
+body{margin:0;background:#E9E8E2}
+a{color:#617600}a:hover{color:#394B00}
+</style>
+</helmet>
+<div style="font-family:Inter;padding:56px;display:flex;flex-direction:column;gap:40px;font-variant-numeric:tabular-nums">
+<div style="display:flex;flex-direction:column;gap:6px;color:#1F1E1B"><div style="font-size:40px;font-weight:700;letter-spacing:-.5px">Timer</div><div style="font-size:18px;color:#6B6A64">Running timers fill the screen with the phase colour so you can read them from across a room. When the phase changes, the colour sweeps outward from the ring (360ms); with reduced motion it's a 90ms crossfade. <a href="Sinew 5 Library.dc.html">← Library</a> · <a href="Sinew 7 Body.dc.html">Body →</a></div></div>
+
+<div style="display:flex;gap:40px;align-items:flex-start">
+<div data-screen-label="Timer home" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Timer home · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 20px;display:flex;align-items:center;height:48px"><div style="font-size:22px;font-weight:600;flex:1">Timer</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><sc-for list="{{ modes }}" as="m" hint-placeholder-count="9"><div style="height:92px;border-radius:20px;background:#EFF2E5;border:1px solid #D4D8C7;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#617600">{{ m.i }}</span><div><div style="font-size:14px;font-weight:600;line-height:18px">{{ m.t }}</div><div style="font-size:12px;color:#626556">{{ m.d }}</div></div></div></sc-for></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556;padding-top:6px">SAVED PRESETS</div>
+<div style="border:1px solid #D4D8C7;border-radius:20px;background:#EFF2E5;overflow:hidden"><sc-for list="{{ presets }}" as="p" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:14px;padding:8px 8px 8px 16px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #D4D8C7"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#626556">{{ p.i }}</span><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ p.t }}</div><div style="font-size:13px;color:#626556">{{ p.d }}</div></div><div style="width:48px;height:48px;border-radius:50%;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:26px;font-variation-settings:'FILL' 1">play_arrow</span></div></div></sc-for></div>
+</div>
+<dc-import name="NavPill" tab="2" theme="light" hint-size="100%,100px" style="position:absolute;left:0;right:0;bottom:0;height:100px"></dc-import>
+</div></div>
+
+<div data-screen-label="Interval setup" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Interval / HIIT setup · dark · total updates live</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#161811;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px;display:flex;align-items:center;gap:6px;height:48px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div><div style="font-size:22px;font-weight:600;flex:1">Interval</div><div style="height:40px;padding:0 14px;display:flex;align-items:center;font-size:14px;font-weight:600;color:#A1B567">Save preset</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#22241B;border:1px solid #3C3F33;border-radius:20px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">TOTAL</div><div style="font-size:36px;line-height:44px;font-weight:700">{{ total }}</div></div><div style="display:flex;gap:3px;align-items:flex-end;height:40px"><sc-for list="{{ strip }}" as="s" hint-placeholder-count="12"><div style="width:7px;height:{{ s.h }};border-radius:2px;background:{{ s.c }}"></div></sc-for></div></div>
+<div style="border:1px solid #3C3F33;border-radius:20px;background:#22241B;overflow:hidden"><sc-for list="{{ fields }}" as="f" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #3C3F33"><div style="width:10px;height:10px;border-radius:3px;background:{{ f.c }}"></div><div style="flex:1;font-size:16px;font-weight:600">{{ f.k }}</div><div onClick="{{ f.dec }}" style="width:48px;height:48px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px">remove</span></div><div style="width:64px;text-align:center;font-size:20px;font-weight:700">{{ f.v }}</div><div onClick="{{ f.inc }}" style="width:48px;height:48px;border-radius:50%;background:#2D2F24;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px">add</span></div></div></sc-for></div>
+<div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#A3A69C">CUES</div>
+<div style="display:flex;gap:8px"><sc-for list="{{ cues }}" as="c" hint-placeholder-count="3"><div style="flex:1;height:72px;border-radius:16px;background:{{ c.bg }};border:1px solid {{ c.bd }};color:{{ c.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:22px">{{ c.i }}</span>{{ c.t }}</div></sc-for></div>
+</div>
+<div style="position:absolute;left:20px;right:20px;bottom:28px;height:64px;border-radius:999px;background:#A1B567;color:#090A05;display:flex;align-items:center;justify-content:center;gap:8px;font-size:17px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">play_arrow</span>Start · {{ total }}</div>
+</div></div>
+
+<div data-screen-label="Custom sequence" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Custom sequence setup · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px;display:flex;align-items:center;gap:6px;height:48px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E6EADB;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">arrow_back</span></div></div><div style="font-size:22px;font-weight:600;flex:1">Custom sequence</div></div>
+<div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+<div style="height:56px;border-radius:16px;background:#E6EADB;display:flex;flex-direction:column;justify-content:center;padding:0 16px"><div style="font-size:12px;color:#626556">Name</div><div style="font-size:16px">Kettlebell ladder</div></div>
+<div style="display:flex;justify-content:space-between"><div style="font-size:12px;font-weight:600;letter-spacing:.8px;color:#626556">STEPS · 7</div><div style="font-size:12px;font-weight:600;color:#626556">Total 14:30</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><sc-for list="{{ seq }}" as="s" hint-placeholder-count="7"><div style="display:flex;align-items:center;gap:10px;background:#EFF2E5;border:1px solid #D4D8C7;border-radius:16px;padding:6px 12px 6px 4px;height:56px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#858878">drag_indicator</span><div style="width:8px;height:32px;border-radius:4px;background:{{ s.c }}"></div><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{ s.n }}</div><div style="font-size:12px;color:#626556">{{ s.p }}</div></div><div style="height:36px;padding:0 12px;border-radius:10px;background:#F9FBF4;display:flex;align-items:center;font-size:15px;font-weight:700">{{ s.t }}</div></div></sc-for></div>
+<div style="height:48px;border-radius:999px;border:1px dashed #858878;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:20px">add</span>Add step</div>
+</div>
+<div style="position:absolute;left:20px;right:20px;bottom:28px;height:64px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:17px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">play_arrow</span>Start</div>
+</div></div>
+
+<div data-screen-label="Stopwatch" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Stopwatch with laps · dynamic light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F7FAFF;color:#11161F;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:14px 16px 12px 16px;display:flex;align-items:center;gap:6px;height:48px"><div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:#E2E8F4;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px">close</span></div></div><div style="font-size:22px;font-weight:600;flex:1">Stopwatch</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;padding:48px 0 24px"><div style="font-size:96px;font-weight:700;letter-spacing:-3px;line-height:1">12:48</div><div style="font-size:32px;font-weight:600;color:#5D646F">.36</div></div>
+<div style="padding:0 20px"><div style="border:1px solid #CFD6E3;border-radius:20px;background:#EBF0FA;overflow:hidden"><sc-for list="{{ laps }}" as="l" hint-placeholder-count="4"><div style="display:flex;padding:12px 16px;border-bottom:1px solid #CFD6E3;font-size:15px"><div style="width:72px;color:#5D646F">Lap {{ l.n }}</div><div style="flex:1;font-weight:600">{{ l.t }}</div><div style="color:#5D646F">{{ l.c }}</div></div></sc-for></div></div>
+<div style="position:absolute;left:20px;right:20px;bottom:40px;display:flex;gap:12px;align-items:center;justify-content:center"><div style="width:80px;height:80px;border-radius:50%;background:#E2E8F4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Lap</div><div style="width:96px;height:96px;border-radius:32px;background:#4567A8;color:#fff;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:44px;font-variation-settings:'FILL' 1">pause</span></div><div style="width:80px;height:80px;border-radius:50%;background:#E2E8F4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Reset</div></div>
+</div></div>
+</div>
+
+<div style="display:flex;gap:40px;align-items:flex-start">
+<div data-screen-label="Running work" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Running · work phase · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#C6E36B;color:#1A2400;box-shadow:0 0 0 1px #0000001A;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:600">Tabata · legs</div><div style="font-size:16px;font-weight:600">Set 1 of 2</div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+<div style="font-size:40px;font-weight:700;letter-spacing:3px">WORK</div>
+<div style="position:relative;width:340px;height:340px"><svg viewBox="0 0 340 340" style="position:absolute;inset:0"><circle cx="170" cy="170" r="158" fill="none" stroke="#1A240026" stroke-width="14"/><circle cx="170" cy="170" r="158" fill="none" stroke="#425700" stroke-width="14" stroke-linecap="round" stroke-dasharray="993" stroke-dashoffset="298" transform="rotate(-90 170 170)"/></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:112px;font-weight:700;letter-spacing:-3px;line-height:1" data-comment-anchor="dc08587621-div">0:14</div><div style="font-size:22px;font-weight:600">Round 3 of 8</div></div></div>
+<div style="background:#1A240014;border-radius:20px;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:18px;font-weight:600;margin-top:8px"><span style="font-family:'Material Symbols Rounded';font-size:22px">arrow_forward</span>Next: Rest 0:10</div>
+</div>
+<div style="padding:0 20px 44px;display:flex;align-items:center;justify-content:space-around">
+<div style="width:64px;height:64px;border-radius:50%;background:#1A24001F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px">lock_open</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#1A24001F;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">+10s</div>
+<div style="width:96px;height:96px;border-radius:32px;background:#1A2400;color:#C6E36B;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:48px;font-variation-settings:'FILL' 1">pause</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#1A24001F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">skip_next</span></div>
+</div>
+</div></div>
+
+<div data-screen-label="Running rest" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Running · rest phase · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#163B43;color:#CBEFF9;box-shadow:0 0 0 1px #0000001A;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:600">Tabata · legs</div><div style="font-size:16px;font-weight:600">Set 1 of 2</div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+<div style="font-size:40px;font-weight:700;letter-spacing:3px">REST</div>
+<div style="position:relative;width:340px;height:340px"><svg viewBox="0 0 340 340" style="position:absolute;inset:0"><circle cx="170" cy="170" r="158" fill="none" stroke="#CBEFF926" stroke-width="14"/><circle cx="170" cy="170" r="158" fill="none" stroke="#8EC9D8" stroke-width="14" stroke-linecap="round" stroke-dasharray="993" stroke-dashoffset="596" transform="rotate(-90 170 170)"/></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:112px;font-weight:700;letter-spacing:-3px;line-height:1">0:06</div><div style="font-size:22px;font-weight:600">Round 3 of 8</div></div></div>
+<div style="background:#CBEFF914;border-radius:20px;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:18px;font-weight:600;margin-top:8px"><span style="font-family:'Material Symbols Rounded';font-size:22px">arrow_forward</span>Next: Work 0:20 · round 4</div>
+</div>
+<div style="padding:0 20px 44px;display:flex;align-items:center;justify-content:space-around">
+<div style="width:64px;height:64px;border-radius:50%;background:#CBEFF91F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px">lock_open</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#CBEFF91F;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">+10s</div>
+<div style="width:96px;height:96px;border-radius:32px;background:#CBEFF9;color:#163B43;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:48px;font-variation-settings:'FILL' 1">pause</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#CBEFF91F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">skip_next</span></div>
+</div>
+</div></div>
+
+<div data-screen-label="Paused locked" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Paused + controls locked · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#2F3B00;color:#E0F0B8;box-shadow:0 0 0 1px #0000001A;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:600">Interval · 18:30</div><div style="height:32px;padding:0 12px;border-radius:999px;background:#E0F0B8;color:#2F3B00;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700"><span style="font-family:'Material Symbols Rounded';font-size:16px">pause</span>PAUSED</div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+<div style="font-size:40px;font-weight:700;letter-spacing:3px;opacity:.7">WORK</div>
+<div style="position:relative;width:340px;height:340px"><svg viewBox="0 0 340 340" style="position:absolute;inset:0"><circle cx="170" cy="170" r="158" fill="none" stroke="#E0F0B826" stroke-width="14"/><circle cx="170" cy="170" r="158" fill="none" stroke="#B2CA6F" stroke-width="14" stroke-linecap="round" stroke-dasharray="993" stroke-dashoffset="460" transform="rotate(-90 170 170)" opacity=".7"/></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:112px;font-weight:700;letter-spacing:-3px;line-height:1">0:21</div><div style="font-size:22px;font-weight:600">Round 5 of 10</div></div></div>
+<div style="font-size:16px;line-height:22px;text-align:center;max-width:280px;margin-top:8px">Controls are locked. Hold the lock for 1 second to unlock.</div>
+</div>
+<div style="padding:0 20px 44px;display:flex;align-items:center;justify-content:space-around">
+<div style="width:64px;height:64px;border-radius:50%;background:#E0F0B8;color:#2F3B00;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px #E0F0B833"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">lock</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#E0F0B81F;opacity:.38;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">+10s</div>
+<div style="width:96px;height:96px;border-radius:50%;background:#E0F0B8;color:#2F3B00;opacity:.38;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:48px;font-variation-settings:'FILL' 1">play_arrow</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#E0F0B81F;opacity:.38;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">skip_next</span></div>
+</div>
+</div></div>
+
+<div data-screen-label="Finished" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Finished · light</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#F9FBF4;color:#15180B;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:56px 20px 0;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><div style="width:72px;height:72px;border-radius:50%;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:40px;font-variation-settings:'wght' 600">check</span></div><div style="font-size:28px;line-height:36px;font-weight:700">Done. Nice work.</div><div style="font-size:14px;color:#626556">Tabata · legs · 2 sets</div></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><sc-for list="{{ doneStats }}" as="s" hint-placeholder-count="3"><div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:16px;padding:12px"><div style="font-size:20px;font-weight:700">{{ s.v }}</div><div style="font-size:12px;color:#626556">{{ s.k }}</div></div></sc-for></div>
+<div style="background:#EFF2E5;border:1px solid #D4D8C7;border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:6px"><div style="font-size:14px;font-weight:600">Timeline</div><div style="display:flex;gap:2px;height:28px;border-radius:8px;overflow:hidden"><div style="flex:3;background:#F5CF7D"></div><sc-for list="{{ timeline }}" as="t" hint-placeholder-count="16"><div style="flex:{{ t.f }};background:{{ t.c }}"></div></sc-for><div style="flex:6;background:#95E2F5"></div><sc-for list="{{ timeline }}" as="t" hint-placeholder-count="16"><div style="flex:{{ t.f }};background:{{ t.c }}"></div></sc-for><div style="flex:3;background:#C6D1FF"></div></div><div style="display:flex;justify-content:space-between;font-size:12px;color:#626556"><span>Warm-up</span><span>Set 1</span><span>Rest</span><span>Set 2</span><span>Cool</span></div></div>
+</div>
+<div style="position:absolute;left:20px;right:20px;bottom:28px;display:flex;flex-direction:column;gap:10px"><div style="height:56px;border-radius:999px;background:#617600;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:22px">edit_note</span>Log as workout</div><div style="height:56px;border-radius:999px;border:1px solid #D4D8C7;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Close</div></div>
+</div></div>
+</div>
+
+<div style="display:flex;gap:40px;align-items:flex-start">
+<div data-screen-label="Boxing warning" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Boxing rounds · 10-second warning · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#2F3B00;color:#E0F0B8;box-shadow:inset 0 0 0 10px #D8BA7B;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:8px 24px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:600">Heavy bag</div><div style="font-size:16px;font-weight:600">Round 4 of 6</div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+<div style="height:44px;padding:0 18px;border-radius:999px;background:#D8BA7B;color:#2B1C00;display:flex;align-items:center;gap:8px;font-size:18px;font-weight:700"><span style="font-family:'Material Symbols Rounded';font-size:22px">notifications_active</span>10 seconds left</div>
+<div style="font-size:176px;font-weight:700;letter-spacing:-7px;line-height:1">0:08</div>
+<div style="display:flex;gap:6px"><sc-for list="{{ boxRounds }}" as="r" hint-placeholder-count="6"><div style="width:36px;height:10px;border-radius:5px;background:{{ r }}"></div></sc-for></div>
+<div style="font-size:18px;font-weight:600;margin-top:16px">Next: Rest 1:00</div>
+</div>
+<div style="padding:0 24px 48px;display:flex;align-items:center;justify-content:space-around">
+<div style="width:64px;height:64px;border-radius:50%;background:#E0F0B81F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px">lock_open</span></div>
+<div style="width:96px;height:96px;border-radius:32px;background:#E0F0B8;color:#2F3B00;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:48px;font-variation-settings:'FILL' 1">pause</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#E0F0B81F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">skip_next</span></div>
+</div>
+</div></div>
+
+<div data-screen-label="Yoga flow running" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Yoga flow · light · cool-down field</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#C6D1FF;color:#1A1E30;box-shadow:0 0 0 1px #0000001A;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:600">Evening wind-down</div><div style="font-size:16px;font-weight:600">Pose 6 of 12</div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:0 24px;text-align:center">
+<div style="font-size:36px;line-height:42px;font-weight:700">Pigeon pose</div><div style="font-size:20px;font-style:italic">Eka Pada Rajakapotasana</div>
+<div style="font-size:16px;font-weight:600;padding:4px 12px;border-radius:999px;background:#1A1E301A">Left side</div>
+<div style="position:relative;width:300px;height:300px;margin-top:8px"><svg viewBox="0 0 300 300" style="position:absolute;inset:0"><circle cx="150" cy="150" r="138" fill="none" stroke="#1A1E3026" stroke-width="12"/><circle cx="150" cy="150" r="138" fill="none" stroke="#424A73" stroke-width="12" stroke-linecap="round" stroke-dasharray="867" stroke-dashoffset="520" transform="rotate(-90 150 150)"/></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:92px;font-weight:700;letter-spacing:-2px;line-height:1">0:36</div><div style="font-size:18px;font-weight:600">hold of 1:00</div></div></div>
+<div style="background:#1A1E3014;border-radius:20px;padding:12px 18px;display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:8px"><div style="font-size:12px;font-weight:600;letter-spacing:.8px">NEXT</div><div style="font-size:18px;font-weight:600">Pigeon pose · right side</div></div>
+</div>
+<div style="padding:0 20px 44px;display:flex;align-items:center;justify-content:space-around">
+<div style="width:64px;height:64px;border-radius:50%;background:#1A1E301F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">skip_previous</span></div>
+<div style="width:96px;height:96px;border-radius:32px;background:#1A1E30;color:#C6D1FF;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:48px;font-variation-settings:'FILL' 1">pause</span></div>
+<div style="width:64px;height:64px;border-radius:50%;background:#1A1E301F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">skip_next</span></div>
+</div>
+</div></div>
+
+<div data-screen-label="AMRAP counter" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">AMRAP · tap to count rounds · dark</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#2F3B00;color:#E0F0B8;box-shadow:0 0 0 1px #0000001A;display:flex;flex-direction:column">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;flex:none">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:16px;font-weight:600">AMRAP 12</div><div style="font-size:16px;font-weight:600">Time left</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;padding-top:16px"><div style="font-size:120px;font-weight:700;letter-spacing:-5px;line-height:1">7:41</div><div style="width:300px;height:10px;border-radius:5px;background:#E0F0B826;margin-top:14px;overflow:hidden"><div style="width:36%;height:100%;background:#B2CA6F;border-radius:5px"></div></div></div>
+<div style="flex:1;padding:28px 20px 20px;display:flex"><div onClick="{{ addRound }}" style="flex:1;border-radius:40px;background:#E0F0B8;color:#2F3B00;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer"><div style="font-size:20px;font-weight:600">Rounds</div><div style="font-size:150px;font-weight:700;line-height:1;letter-spacing:-4px">{{ amrap }}</div><div style="font-size:18px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="font-family:'Material Symbols Rounded';font-size:24px">touch_app</span>Tap anywhere here</div></div></div>
+<div style="padding:0 20px 40px;display:flex;align-items:center;justify-content:space-between"><div onClick="{{ undoRound }}" style="height:64px;padding:0 20px;border-radius:999px;background:#E0F0B81F;display:flex;align-items:center;gap:6px;font-size:16px;font-weight:600;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px">undo</span>Undo</div><div style="width:64px;height:64px;border-radius:50%;background:#E0F0B81F;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1">pause</span></div></div>
+</div></div>
+
+<div data-screen-label="Lock screen notification" style="display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:600;color:#1F1E1B">Background · lock screen + notification</div>
+<div style="width:390px;height:844px;border-radius:32px;overflow:hidden;position:relative;background:#0F100A;color:#F1F2EE;box-shadow:0 0 0 1px #0000001A">
+<div style="height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500">9:41<span style="font-family:'Material Symbols Rounded';font-size:16px">signal_cellular_alt wifi battery_full</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;padding-top:56px"><div style="font-size:88px;font-weight:300;line-height:1;letter-spacing:-2px">9:41</div><div style="font-size:16px;margin-top:8px">Friday, 31 October</div></div>
+<div style="position:absolute;left:12px;right:12px;top:260px;background:#22241B;border-radius:28px;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A3A69C"><x-import component-from-global-scope="sinew-mark" concept="plates" bg="circle" mode="mono-dark" size="20" hint-size="20px,20px"></x-import>Sinew · Timer<span style="flex:1"></span>now</div>
+<div style="display:flex;gap:12px;align-items:center"><div style="width:56px;height:56px;border-radius:16px;background:#C6E36B;color:#1A2400;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">0:14</div><div style="flex:1"><div style="font-size:16px;font-weight:600">Work · round 3 of 8</div><div style="font-size:14px;color:#A3A69C">Tabata · legs · next: rest 0:10</div></div></div>
+<div style="height:6px;border-radius:3px;background:#35372C;overflow:hidden"><div style="width:70%;height:100%;background:#A1B567"></div></div>
+<div style="display:flex;gap:8px"><div style="flex:1;height:48px;border-radius:999px;background:#35372C;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:20px;font-variation-settings:'FILL' 1">pause</span>Pause</div><div style="flex:1;height:48px;border-radius:999px;background:#35372C;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600"><span style="font-family:'Material Symbols Rounded';font-size:20px;font-variation-settings:'FILL' 1">skip_next</span>Skip</div><div style="flex:1;height:48px;border-radius:999px;background:#35372C;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">+10s</div></div>
+</div>
+<div style="position:absolute;left:12px;right:12px;top:500px;background:#22241B;border-radius:28px;padding:14px 16px;display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;border-radius:12px;background:#163B43;color:#CBEFF9;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px">hourglass_top</span></div><div style="flex:1"><div style="font-size:15px;font-weight:600">Rest · 1:14 left</div><div style="font-size:13px;color:#A3A69C">Workout rest notification (compact)</div></div><div style="font-size:14px;font-weight:600;color:#A1B567">Skip</div></div>
+<div style="position:absolute;bottom:40px;left:0;right:0;display:flex;justify-content:space-between;padding:0 40px"><span style="font-family:'Material Symbols Rounded';font-size:28px">flashlight_on</span><span style="font-family:'Material Symbols Rounded';font-size:28px">photo_camera</span></div>
+</div></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { work: 40, rest: 20, rounds: 8, sets: 3, setRest: 60, warm: 120, amrap: 5 };
+  renderVals() {
+    const s = this.state;
+    const totalSec = s.warm + s.sets * (s.rounds * (s.work + s.rest) - s.rest) + (s.sets - 1) * s.setRest;
+    const mmss = t => Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+    const mk = (k, key, step, fmt, c, min) => ({ k, c, v: fmt(s[key]), inc: () => this.setState({ [key]: s[key] + step }), dec: () => this.setState({ [key]: Math.max(min, s[key] - step) }) });
+    const strip = [];
+    for (let i = 0; i < 12; i++) strip.push({ h: i % 2 ? '45%' : '100%', c: i % 2 ? '#8EC9D8' : '#A1B567' });
+    const tl = [];
+    for (let i = 0; i < 8; i++) { tl.push({ f: 2, c: '#C6E36B' }); tl.push({ f: 1, c: '#95E2F5' }); }
+    return {
+      total: mmss(totalSec), strip,
+      fields: [mk('Warm-up', 'warm', 30, mmss, '#D8BA7B', 0), mk('Work', 'work', 5, mmss, '#A1B567', 5), mk('Rest', 'rest', 5, mmss, '#8EC9D8', 0), mk('Rounds', 'rounds', 1, String, '#7F8178', 1), mk('Sets', 'sets', 1, String, '#7F8178', 1), mk('Rest between sets', 'setRest', 15, mmss, '#8EC9D8', 0)],
+      cues: [['Sound', 'volume_up', 1], ['Vibration', 'vibration', 1], ['Spoken 3-2-1', 'record_voice_over', 0]].map(([t, i, on]) => ({ t, i, bg: on ? '#252C0F' : '#22241B', bd: on ? '#A1B567' : '#3C3F33', fg: on ? '#D9E3C0' : '#A3A69C' })),
+      modes: [['timer', 'Stopwatch', 'Laps'], ['hourglass_bottom', 'Countdown', 'One time'], ['repeat', 'Interval', 'Work / rest'], ['bolt', 'Tabata', '20 / 10 × 8'], ['update', 'EMOM', 'Every minute'], ['all_inclusive', 'AMRAP', 'Count rounds'], ['sports_mma', 'Boxing', 'Rounds'], ['self_improvement', 'Yoga flow', 'Pose holds'], ['format_list_numbered', 'Custom', 'Any steps']].map(([i, t, d]) => ({ i, t, d })),
+      presets: [['bolt', 'Tabata · legs', '2 sets · 9:00'], ['sports_mma', 'Bag work', '6 × 3:00, rest 1:00 · 23:00'], ['self_improvement', 'Evening wind-down', '12 poses · 15:00'], ['update', 'EMOM 10 · KB swings', '10:00']].map(([i, t, d]) => ({ i, t, d })),
+      seq: [['Warm-up jog', 'Warm-up', '3:00', '#D8BA7B'], ['Swings × 10', 'Work', '1:00', '#9CB450'], ['Rest', 'Rest', '0:30', '#8EC9D8'], ['Swings × 15', 'Work', '1:30', '#9CB450'], ['Rest', 'Rest', '0:30', '#8EC9D8'], ['Swings × 20', 'Work', '2:00', '#9CB450'], ['Stretch', 'Cool-down', '6:00', '#B3BCE3']].map(([n, p, t, c]) => ({ n, p, t, c })),
+      laps: [['4', '3:02.11', '12:48'], ['3', '3:10.40', '9:46'], ['2', '3:15.02', '6:36'], ['1', '3:21.83', '3:21']].map(([n, t, c]) => ({ n, t, c })),
+      doneStats: [['9:00', 'Total'], ['16', 'Work rounds'], ['~96 kcal', 'Est. burned']].map(([v, k]) => ({ v, k })),
+      timeline: tl,
+      boxRounds: ['#E0F0B8', '#E0F0B8', '#E0F0B8', '#D8BA7B', '#E0F0B833', '#E0F0B833'],
+      amrap: s.amrap, addRound: () => this.setState({ amrap: s.amrap + 1 }), undoRound: () => this.setState({ amrap: Math.max(0, s.amrap - 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

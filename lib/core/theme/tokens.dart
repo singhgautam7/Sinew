@@ -326,3 +326,123 @@ abstract final class SinewMotion {
   static const Duration silhouetteMorph = Duration(milliseconds: 480);
   static const Duration phaseSweep = Duration(milliseconds: 360);
 }
+
+// ═════════════════════════════════════════════════════════════════════════
+// Domain widgets (muscle map, silhouette, stat card, chart card, field row,
+// exercise tile). Append-only section: lib/core/widgets/domain/.
+// ═════════════════════════════════════════════════════════════════════════
+
+/// Muscle map metrics.
+abstract final class MapSpec {
+  /// Gap between the front and back figure.
+  static const double figureGap = 6;
+
+  /// Figure to its "Front" / "Back" caption.
+  static const double labelGap = 4;
+
+  /// Share of a routine tint in the pale secondary colour (the rest is the
+  /// surface).
+  static const double tintSecondaryMix = 0.4;
+
+  /// The cropped map in an exercise tile: the 48dp thumbnail.
+  static const double thumb = 48;
+}
+
+/// Silhouette metrics. The `view*` and stroke values are in the reference's
+/// own 240 x 424 canvas units and scale with the figure, as an SVG would.
+abstract final class SilhouetteSpec {
+  static const double viewWidth = 240;
+  static const double viewHeight = 424;
+
+  /// Figure height inside the canvas, and the gap above it.
+  static const double figureHeight = 400;
+  static const double topInset = 12;
+
+  static const double strokeMeasured = 2.25;
+  static const double strokeEstimated = 1.75;
+  static const double strokeCompare = 1.5;
+
+  /// Estimated outline: dashes of 3 with gaps of 5.
+  static const double dashOn = 3;
+  static const double dashOff = 5;
+
+  /// Comparison outline: dots of 1 with gaps of 4.
+  static const double dotOn = 1;
+  static const double dotOff = 4;
+
+  /// Highlighted level: a 1.25 dashed line and a dot at its end.
+  static const double highlightStroke = 1.25;
+  static const double highlightDashOn = 2;
+  static const double highlightDashOff = 4;
+  static const double highlightInset = 18;
+  static const double markerRadius = 4.5;
+  static const double markerRadiusSmall = 2.5;
+  static const double labelSize = 9;
+  static const double labelGap = 4;
+
+  /// Height of the view when its parent gives none.
+  static const double defaultHeight = 300;
+}
+
+/// Stat card metrics.
+abstract final class StatSpec {
+  /// Gap between the value and its unit.
+  static const double valueGap = 8;
+
+  /// Vertical rhythm inside a card.
+  static const double gap = 10;
+
+  /// Lock glyph in a locked card.
+  static const double lockGlyph = 20;
+
+  /// The compact card (Today).
+  static const double compactMinWidth = 132;
+  static const double skeletonValue = 32;
+  static const double skeletonLabel = 14;
+  static const double skeletonLabelWidth = 0.5;
+  static const double skeletonValueWidth = 0.35;
+}
+
+/// Chart card metrics.
+abstract final class ChartSpec {
+  static const double height = 160;
+  static const double lineWidth = 2.5;
+  static const double secondaryLineWidth = 2;
+  static const double dotRadius = 3;
+  static const double lastDotRadius = 5;
+  static const double dotRing = 2;
+  static const double areaTop = 0.18;
+  static const double leftReserved = 40;
+  static const double bottomReserved = 24;
+  static const double referenceDashOn = 5;
+  static const double referenceDashOff = 4;
+  static const double headerGap = 8;
+
+  /// The y range grows by this share of its span so the line never touches
+  /// the edge.
+  static const double padRatio = 0.12;
+
+  /// Horizontal gridlines.
+  static const int gridLines = 3;
+
+  /// Most x labels shown.
+  static const int maxXLabels = 4;
+}
+
+/// Measurement field row metrics.
+abstract final class FieldSpec {
+  static const double inputWidth = 112;
+  static const double inputGap = 12;
+  static const double dragSlot = 40;
+  static const double switchRowMinHeight = 72;
+  static const double tagPadH = 6;
+  static const double tagPadV = 2;
+}
+
+/// Exercise tile metrics (the thumbnail is [MapSpec.thumb] with
+/// [Radii.thumb]).
+abstract final class ExerciseTileSpec {
+  static const double actionSize = 40;
+  static const double actionGlyph = 20;
+  static const double metaGlyph = 16;
+}

@@ -64,7 +64,7 @@ class ThemeScreen extends ConsumerWidget {
           SinewSwitchRow(
             icon: Icons.wallpaper_rounded,
             card: true,
-            label: 'From your wallpaper',
+            label: 'Colours from wallpaper',
             subtitle: seed == null
                 ? 'Not available on this phone (Android 12 and later)'
                 : 'Dynamic colour, Android 12 and later',

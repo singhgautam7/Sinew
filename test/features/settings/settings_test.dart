@@ -154,7 +154,7 @@ void main() {
         prefs: <String, Object>{AppSettings.kDynamic: false},
         wallpaper: const Color(0xFF3366CC),
       );
-      await tapText(tester, 'From your wallpaper');
+      await tapText(tester, 'Colours from wallpaper');
       expect(h.prefs.getBool(AppSettings.kDynamic), isTrue);
       await closeApp(tester);
     });

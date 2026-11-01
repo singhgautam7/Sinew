@@ -148,11 +148,7 @@ class _TodayBody extends ConsumerWidget {
       ],
       if (s.last != null) ...<Widget>[
         const SizedBox(height: Space.section),
-        _LastSession(
-          session: s.last!,
-          now: s.now,
-          profile: s.profile.weightUnit,
-        ),
+        _LastSession(session: s.last!, now: s.now, unit: s.profile.weightUnit),
       ],
       const SizedBox(height: Space.section),
       const _BodyLatest(),
@@ -586,12 +582,12 @@ class _LastSession extends StatelessWidget {
   const _LastSession({
     required this.session,
     required this.now,
-    required this.profile,
+    required this.unit,
   });
 
   final WorkoutSession session;
   final DateTime now;
-  final WeightUnit profile;
+  final WeightUnit unit;
 
   @override
   Widget build(BuildContext context) {
@@ -613,8 +609,8 @@ class _LastSession extends StatelessWidget {
     final List<(String, String)> facts = <(String, String)>[
       if (volume != null && volume > 0)
         (
-          _thousands(Units.fromKg(volume, profile)),
-          '${Units.weightLabel(profile)} volume',
+          _thousands(Units.fromKg(volume, unit)),
+          '${Units.weightLabel(unit)} volume',
         ),
       if (sets > 0) ('$sets', sets == 1 ? 'set' : 'sets'),
       if (kcal != null && kcal > 0) ('${kcal.round()} kcal', 'est. burned'),

@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'core/db/repositories/seed_repository.dart';
+import 'core/db/seeds/measurement_seed.dart';
 import 'core/db/user/user_db.dart';
 import 'core/error/error_handling.dart';
 import 'core/providers.dart';
@@ -26,6 +28,8 @@ Future<void> main() async {
     // Forces the open and the migration now, where a failure can be shown,
     // rather than inside the first screen that reads.
     await userDb.customSelect('SELECT 1').get();
+    // First run: the built-in measurement fields. Idempotent.
+    await MeasurementSeed.seed(SeedRepository(userDb));
   } on Object catch (e, st) {
     debugPrint('Sinew: could not open the user database: $e\n$st');
     runApp(StartupErrorApp(error: e));

@@ -75,8 +75,9 @@ class ForegroundTaskLink implements TimerServiceLink {
 /// background.
 ///
 /// Every platform call is guarded: a missing plugin (tests, other Train
-/// widgets that never start a service) or a refused permission leaves the
-/// timer running in the foreground and never throws.
+/// widgets that never start a service) leaves the timer running in the
+/// foreground and never throws. A refused notification permission does not
+/// stop the service either; only its notification is hidden.
 class ForegroundTimerHost implements BackgroundTimerHost {
   ForegroundTimerHost({int Function()? nowMs})
     : _nowMs = nowMs ?? (() => DateTime.now().millisecondsSinceEpoch);
@@ -85,7 +86,6 @@ class ForegroundTimerHost implements BackgroundTimerHost {
 
   Future<void> _queue = Future<void>.value();
   Timer? _heartbeat;
-  bool _denied = false;
 
   @override
   Future<void> show(
@@ -98,18 +98,23 @@ class ForegroundTimerHost implements BackgroundTimerHost {
       await _clear();
       return;
     }
-    if (_denied) return;
-    if (!await _permitted()) {
-      _denied = true;
-      return;
-    }
+    // The service runs without the notification permission (the notification
+    // is just not shown), so the permission is asked for once and never
+    // decides whether the timer keeps going with the screen off.
+    await _askNotificationPermissionOnce();
     final String json = encodeState(
       ActiveTimer(run: run, cues: cues, title: title, updatedAtMs: now),
     );
     _init();
     await FlutterForegroundTask.saveData(key: kServiceStateKey, value: json);
+    final bool paused = run.isPaused;
     if (await FlutterForegroundTask.isRunningService) {
       FlutterForegroundTask.sendDataToTask(stateMessage(json));
+    } else if (paused) {
+      // A paused run does not need a service (it stopped after a long pause,
+      // or the app was reopened on it). Resuming starts one.
+      _stopHeartbeat();
+      return;
     } else {
       final ServiceRequestResult r = await FlutterForegroundTask.startService(
         serviceId: kServiceId,
@@ -129,15 +134,18 @@ class ForegroundTimerHost implements BackgroundTimerHost {
         return;
       }
     }
-    _startHeartbeat();
+    if (paused) {
+      _stopHeartbeat();
+    } else {
+      _startHeartbeat();
+    }
   });
 
   @override
   Future<void> clear() => _enqueue(_clear);
 
   Future<void> _clear() async {
-    _heartbeat?.cancel();
-    _heartbeat = null;
+    _stopHeartbeat();
     await FlutterForegroundTask.removeData(key: kServiceStateKey);
     if (await FlutterForegroundTask.isRunningService) {
       await FlutterForegroundTask.stopService();
@@ -165,32 +173,30 @@ class ForegroundTimerHost implements BackgroundTimerHost {
         showNotification: false,
         playSound: false,
       ),
-      foregroundTaskOptions: ForegroundTaskOptions(
-        eventAction: ForegroundTaskEventAction.repeat(
-          TimerTiming.serviceTick.inMilliseconds,
-        ),
-        allowWakeLock: true,
-      ),
+      foregroundTaskOptions: timerServiceOptions(TimerTiming.serviceTick),
     );
   }
 
-  /// Android 13 and up need the notification permission for the service's
-  /// notification. It is asked for at the first timer start, once; refused,
-  /// the timer runs in the foreground only.
-  Future<bool> _permitted() async {
+  /// Android 13 and up need the notification permission to show the
+  /// service's notification. It is asked for at the first timer start, once.
+  Future<void> _askNotificationPermissionOnce() async {
     final NotificationPermission p =
         await FlutterForegroundTask.checkNotificationPermission();
-    if (p == NotificationPermission.granted) return true;
+    if (p == NotificationPermission.granted) return;
     final bool asked =
         await FlutterForegroundTask.getData<bool>(key: kNotificationAskedKey) ??
         false;
-    if (asked) return false;
+    if (asked) return;
     await FlutterForegroundTask.saveData(
       key: kNotificationAskedKey,
       value: true,
     );
-    return await FlutterForegroundTask.requestNotificationPermission() ==
-        NotificationPermission.granted;
+    await FlutterForegroundTask.requestNotificationPermission();
+  }
+
+  void _stopHeartbeat() {
+    _heartbeat?.cancel();
+    _heartbeat = null;
   }
 
   void _startHeartbeat() {

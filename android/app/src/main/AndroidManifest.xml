@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Timer: the foreground service that keeps a running timer and its cues
          alive with the screen off (flutter_foreground_task README, Android).
          No INTERNET permission, ever (offline guarantee). -->
@@ -15,12 +16,26 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Haptic cues. -->
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- flutter_foreground_task merges this in for its restart-after-boot
+         feature. A workout timer must never come back after a reboot, so the
+         permission and the receivers below are removed from the merged
+         manifest (the Dart side also sets allowAutoRestart: false). -->
+    <uses-permission
+        android:name="android.permission.RECEIVE_BOOT_COMPLETED"
+        tools:node="remove" />
 
     <application
         android:label="Sinew"
-        android:name="${applicationName}"
+        android:name=".SinewApplication"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:enableOnBackInvokedCallback="true"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules">
+        <receiver
+            android:name="com.pravera.flutter_foreground_task.service.RebootReceiver"
+            tools:node="remove" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -72,6 +87,11 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- Android 11+ package visibility: without this TextToSpeech cannot
+             bind to the phone's speech engine and spoken cues stay silent. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE"/>
         </intent>
     </queries>
 </manifest>

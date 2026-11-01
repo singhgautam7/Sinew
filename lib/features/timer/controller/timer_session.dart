@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,10 +9,13 @@ import '../../../core/models/enums.dart';
 import '../../../core/models/timer_preset.dart';
 import '../../../core/models/training.dart';
 import '../../../core/providers.dart';
+import '../../../core/settings/app_settings.dart';
+import '../../../core/settings/haptics.dart';
 import '../../../core/theme/tokens.dart';
 import '../../../engines/timer/timer_engine.dart';
 import '../api/timer_api.dart';
 import '../data/active_timer.dart';
+import '../data/timer_cues.dart';
 import '../services/cue_player_impl.dart';
 
 /// Epoch milliseconds now. The one clock the timer feature reads, so tests
@@ -69,7 +71,7 @@ class TimerSession extends AsyncNotifier<ActiveTimer?> {
     final int now = _now();
     final ActiveTimer a = ActiveTimer(
       run: TimerRun.start(compile(config), now, mode: config.mode),
-      cues: cues ?? config.defaultCues,
+      cues: cues ?? seedCues(config.defaultCues, ref.read(settingsProvider)),
       title: title,
       updatedAtMs: now,
       config: config,
@@ -131,7 +133,7 @@ class TimerSession extends AsyncNotifier<ActiveTimer?> {
     scheduleMicrotask(() {
       if (ref.mounted && active != null) {
         _syncHost(active!);
-        _ensureTicker();
+        _syncTicker(active!);
       }
     });
     return a;
@@ -161,7 +163,7 @@ class TimerSession extends AsyncNotifier<ActiveTimer?> {
     if (a.run.isPaused && !next.run.isPaused) _lastCueMs = _now();
     state = AsyncData<ActiveTimer?>(next);
     _persist(next);
-    _ensureTicker();
+    _syncTicker(next);
   }
 
   // ---- controls ---------------------------------------------------------
@@ -280,18 +282,24 @@ class TimerSession extends AsyncNotifier<ActiveTimer?> {
   // ---- the cue tick -----------------------------------------------------
 
   /// Plays every cue due since the last look and notices when the run ends.
-  /// Runs on a 100 ms timer while a run is live; tests call it directly.
-  /// Cues come from timestamps, so a late call never plays a stale burst: a
-  /// cue older than [TimerTiming.staleCueMs] is dropped (the background
-  /// service played it).
+  /// Runs on a 100 ms timer while a run is counting (not while it is paused);
+  /// tests call it directly. Cues come from timestamps, so a late call never
+  /// plays a stale burst: a countdown tick or warning older than
+  /// [TimerTiming.staleCueMs], or a phase start or finish older than
+  /// [TimerTiming.staleLongCueMs], is dropped (the background service played
+  /// it).
   void tick([int? nowMs]) {
     final ActiveTimer? a = active;
     if (a == null) return;
     final int now = nowMs ?? _now();
     final TimerRun run = a.run;
     if (run.endedAtMs == null && !run.isPaused) {
-      final int from = math.max(_lastCueMs, now - TimerTiming.staleCueMs);
-      for (final CueEvent e in run.cuesBetween(from, now + 1, a.cues)) {
+      for (final CueEvent e in dueCues(
+        run,
+        a.cues,
+        lastCueMs: _lastCueMs,
+        nowMs: now,
+      )) {
         _play(e, run, a.cues);
       }
     }
@@ -321,10 +329,21 @@ class TimerSession extends AsyncNotifier<ActiveTimer?> {
     if (a != null) state = AsyncData<ActiveTimer?>(a);
   }
 
-  void _ensureTicker() {
-    if (_ticker != null || _finishHandled) return;
-    _ticker = Timer.periodic(TimerTiming.cueTick, (Timer _) => tick());
+  /// The 100 ms cue ticker runs only while the run is counting: a paused run
+  /// has no cue due, so nothing wakes the isolate until it is resumed.
+  void _syncTicker(ActiveTimer a) {
+    final bool counting = !_finishHandled && !a.run.isPaused;
+    if (counting) {
+      _ticker ??= Timer.periodic(TimerTiming.cueTick, (Timer _) => tick());
+    } else {
+      _ticker?.cancel();
+      _ticker = null;
+    }
   }
+
+  /// Whether the cue ticker is running. For tests.
+  @visibleForTesting
+  bool get tickerActive => _ticker != null;
 
   // ---- plumbing ---------------------------------------------------------
 
@@ -339,7 +358,7 @@ class TimerSession extends AsyncNotifier<ActiveTimer?> {
     }
     _persist(a);
     if (host) _syncHost(a);
-    _ensureTicker();
+    _syncTicker(a);
   }
 
   void _persist(ActiveTimer a) {
@@ -352,11 +371,14 @@ class TimerSession extends AsyncNotifier<ActiveTimer?> {
   }
 
   void _syncHost(ActiveTimer a) {
+    // The service cannot read Settings, so the global Haptics switch travels
+    // inside the cues it is given.
+    final TimerCues cues = a.cues.copyWith(
+      haptic: a.cues.haptic && ref.read(hapticsEnabledProvider),
+    );
     unawaited(
       _quietly(
-        ref
-            .read(backgroundTimerHostProvider)
-            .show(a.run, a.cues, title: a.title),
+        ref.read(backgroundTimerHostProvider).show(a.run, cues, title: a.title),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/timer_preset.dart';
+import '../../../core/settings/haptics.dart';
 import '../../../engines/timer/timer_engine.dart';
 import '../services/cue_player_impl.dart';
 import '../services/foreground_host.dart';
@@ -38,7 +39,8 @@ final Provider<BackgroundTimerHost> backgroundTimerHostProvider =
     Provider<BackgroundTimerHost>((Ref ref) => ForegroundTimerHost());
 
 final Provider<CuePlayer> cuePlayerProvider = Provider<CuePlayer>(
-  (Ref ref) => PlatformCuePlayer(),
+  (Ref ref) =>
+      PlatformCuePlayer(hapticsEnabled: () => ref.read(hapticsEnabledProvider)),
 );
 
 final Provider<ScreenWake> screenWakeProvider = Provider<ScreenWake>(

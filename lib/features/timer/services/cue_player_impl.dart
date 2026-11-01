@@ -1,8 +1,7 @@
 import 'dart:async';
+import 'dart:math' as math;
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 
 import '../../../core/models/enums.dart';
 import '../../../core/models/timer_preset.dart';
@@ -42,56 +41,56 @@ abstract interface class SoundOutput {
   Future<void> play(CueSound sound);
 }
 
-/// Plays the bundled wavs through `audioplayers` in low-latency mode.
+/// Plays the bundled wavs on the native cue channel (a `SoundPool`, see
+/// `CueChannel.kt`). The channel exists in the app's isolate and in the
+/// service's, so both use this one class.
 ///
-/// The audio context uses the "assistance sonification" usage with no audio
-/// focus: a cue never pauses the user's music, and Android itself mutes it in
-/// silent and vibrate mode, in the background service as well as here.
-class AudioplayersSoundOutput implements SoundOutput {
-  final Map<CueSound, Future<AudioPlayer?>> _players =
-      <CueSound, Future<AudioPlayer?>>{};
-
-  static final AudioContext _context = AudioContext(
-    android: const AudioContextAndroid(
-      contentType: AndroidContentType.sonification,
-      usageType: AndroidUsageType.assistanceSonification,
-      audioFocus: AndroidAudioFocus.none,
-    ),
-  );
-
-  Future<AudioPlayer?> _player(CueSound sound) =>
-      _players.putIfAbsent(sound, () async {
-        try {
-          final AudioPlayer p = AudioPlayer(playerId: 'sinew-${sound.name}');
-          await p.setPlayerMode(PlayerMode.lowLatency);
-          await p.setReleaseMode(ReleaseMode.stop);
-          await p.setAudioContext(_context);
-          await p.setSource(AssetSource('audio/${sound.name}.wav'));
-          return p;
-        } on Object catch (e) {
-          debugPrint('Sinew cue sound ${sound.name} unavailable: $e');
-          return null;
-        }
-      });
+/// The sounds use the media usage with sonification content and no audio
+/// focus: a cue never pauses the user's music, and the silent and vibrate
+/// ringer modes are honoured by [PlatformCuePlayer] before it gets here.
+class ChannelSoundOutput implements SoundOutput {
+  Future<bool>? _loaded;
 
   /// Loads every sound so the first cue is not late.
-  Future<void> preload() async {
-    for (final CueSound s in CueSound.values) {
-      await _player(s);
-    }
-  }
+  Future<bool> preload() => _loaded ??= SinewCues.load(<String>[
+    for (final CueSound s in CueSound.values) s.name,
+  ]);
 
   @override
   Future<void> play(CueSound sound) async {
     try {
-      final AudioPlayer? p = await _player(sound);
-      if (p == null) return;
-      await p.stop();
-      await p.resume();
+      if (!await preload()) {
+        // Not loaded (no platform yet): try again at the next cue.
+        _loaded = null;
+        return;
+      }
+      await SinewCues.play(sound.name);
     } on Object catch (e) {
       debugPrint('Sinew cue sound ${sound.name} failed: $e');
     }
   }
+}
+
+/// How late a cue may still be played. A countdown tick or a warning that is
+/// a second old is noise; a phase start or the finish is still news.
+int staleLimitMs(CueKind kind) => switch (kind) {
+  CueKind.phaseStart || CueKind.finish => TimerTiming.staleLongCueMs,
+  CueKind.countdown || CueKind.warning => TimerTiming.staleCueMs,
+};
+
+/// The cues of [run] due in `[lastCueMs, nowMs]` that are not stale. Shared by
+/// the app's ticker and the service, so both drop the same ones.
+List<CueEvent> dueCues(
+  TimerRun run,
+  TimerCues cues, {
+  required int lastCueMs,
+  required int nowMs,
+}) {
+  final int from = math.max(lastCueMs, nowMs - TimerTiming.staleLongCueMs);
+  return <CueEvent>[
+    for (final CueEvent e in run.cuesBetween(from, nowMs + 1, cues))
+      if (nowMs - e.atMs <= staleLimitMs(e.kind)) e,
+  ];
 }
 
 /// Sound, haptic and voice for one cue, respecting the cue toggles and the
@@ -102,17 +101,23 @@ class PlatformCuePlayer implements PhaseCuePlayer {
     Future<RingerMode> Function()? ringerMode,
     Future<void> Function(String text)? speak,
     Future<void> Function(CueKind kind)? haptic,
+    bool Function()? hapticsEnabled,
     int Function()? nowMs,
-  }) : _sound = sound ?? AudioplayersSoundOutput(),
-       _ringer = ringerMode ?? SinewPlatform.ringerMode,
-       _speak = speak ?? ((String t) => SinewPlatform.speak(t)),
-       _haptic = haptic ?? _systemHaptic,
+  }) : _sound = sound ?? ChannelSoundOutput(),
+       _ringer = ringerMode ?? SinewCues.ringerMode,
+       _speak = speak ?? ((String t) => SinewCues.speak(t)),
+       _haptic = haptic ?? _channelHaptic,
+       _hapticsEnabled = hapticsEnabled ?? (() => true),
        _nowMs = nowMs ?? (() => DateTime.now().millisecondsSinceEpoch);
 
   final SoundOutput _sound;
   final Future<RingerMode> Function() _ringer;
   final Future<void> Function(String text) _speak;
   final Future<void> Function(CueKind kind) _haptic;
+
+  /// The app-wide Settings > Haptics switch. The service cannot read
+  /// settings, so there the cues it was given already carry it.
+  final bool Function() _hapticsEnabled;
   final int Function() _nowMs;
 
   RingerMode _cachedRinger = RingerMode.normal;
@@ -145,7 +150,9 @@ class PlatformCuePlayer implements PhaseCuePlayer {
     final RingerMode ringer = await _ringerNow();
     final bool audible = ringer == RingerMode.normal;
     final List<Future<void>> work = <Future<void>>[];
-    if (event.haptic && cues.haptic) work.add(_haptic(event.kind));
+    if (event.haptic && cues.haptic && _hapticsEnabled()) {
+      work.add(_haptic(event.kind));
+    }
     if (audible && event.sound && cues.sound) {
       work.add(_sound.play(soundFor(event.kind, phase)));
     }
@@ -160,15 +167,9 @@ class PlatformCuePlayer implements PhaseCuePlayer {
   }
 }
 
-Future<void> _systemHaptic(CueKind kind) async {
-  switch (kind) {
-    case CueKind.countdown:
-      await HapticFeedback.selectionClick();
-    case CueKind.phaseStart:
-      await HapticFeedback.mediumImpact();
-    case CueKind.warning:
-      await HapticFeedback.heavyImpact();
-    case CueKind.finish:
-      await HapticFeedback.vibrate();
-  }
-}
+Future<void> _channelHaptic(CueKind kind) => SinewCues.vibrate(switch (kind) {
+  CueKind.countdown => CueHaptics.countdown,
+  CueKind.phaseStart => CueHaptics.phaseStart,
+  CueKind.warning => CueHaptics.warning,
+  CueKind.finish => CueHaptics.finish,
+});

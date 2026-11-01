@@ -45,14 +45,18 @@ Added together with their native configuration (see `lib/features/timer/`):
   `specialUse` (a workout timer fits no named type; `health` needs body-sensor permissions).
 - **`wakelock_plus` 1.8.2** (fluttercommunity.dev): keeps the screen on while the run screen
   is open.
-- **`audioplayers` 6.8.1** (blue-fire.xyz): low-latency playback of the five bundled cue
-  sounds, from the main isolate and from the service. Only `AssetSource` is used; its `http`
-  dependency exists for `UrlSource`, which the guardrail test keeps out of `lib/`.
+- **No audio plugin.** The five cue sounds, vibration, spoken cues and the ringer mode are
+  one small native class, `CueChannel.kt` (`com.grs.sinew/cues`: SoundPool with media usage
+  and sonification content, Vibrator, TextToSpeech with speech attributes, a wake lock for a
+  counting run). It is registered on the app's engine (`MainActivity`) and on the service's
+  engine (`SinewApplication` adds a `FlutterForegroundTaskLifecycleListener`), so the same
+  Dart calls (`SinewCues`) work in both isolates. `audioplayers` was dropped: its Gradle
+  build predates AGP 9 and it pulled in `http`.
 - **Not added: `flutter_local_notifications`.** The service's own notification covers
   everything the timer needs, and the package would require core library desugaring.
-- **Voice** stays on `SinewPlatform.speak` (the `TextToSpeech` channel in `MainActivity`),
-  so it plays only while the app's isolate is alive. The service plays sound only; haptics
-  and voice need the app's activity engine.
+- The service plays sound, haptics and voice itself while the app's isolate is silent.
+  While a run is paused it slows its tick, drops the wake lock, and after 20 minutes stops
+  (the run stays saved and restores on the next open).
 
 Deliberately not added yet:
 - **Timer and cue plugins** (`flutter_foreground_task`, `flutter_local_notifications`,

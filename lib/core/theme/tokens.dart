@@ -862,6 +862,11 @@ abstract final class TimerTiming {
   /// suspended); the background service played it already.
   static const int staleCueMs = 1000;
 
+  /// The same, for the cues that matter most (a new phase, the finish): they
+  /// are still worth playing a little late, for example after the main
+  /// isolate was busy for a moment.
+  static const int staleLongCueMs = 3000;
+
   /// How often the app tells the service it is alive.
   static const Duration heartbeat = Duration(seconds: 1);
 
@@ -879,6 +884,14 @@ abstract final class TimerTiming {
 
   /// The finish notification stays this long before the service stops.
   static const Duration finishLinger = Duration(seconds: 3);
+
+  /// While a run is paused the service only looks this often (the face does
+  /// not change; the tick is just there to notice the pause timeout).
+  static const Duration pausedServiceTick = Duration(seconds: 5);
+
+  /// A run paused this long stops its service (and the wake lock and the
+  /// notification). The run itself stays saved and restores on the next open.
+  static const Duration pausedServiceTimeout = Duration(minutes: 20);
 }
 
 /// The on / off option tile (`SinewToggleTile`).
@@ -952,4 +965,25 @@ abstract final class SettingsSpec {
   /// Weight step presets, in the unit's own terms.
   static const List<double> kgSteps = <double>[1, 1.25, 2.5, 5];
   static const List<double> lbSteps = <double>[2.5, 5, 10];
+}
+
+/// Vibration patterns of the timer cues, as `[wait, on, off, on, ...]` in
+/// milliseconds (what `Vibrator` takes). Short for a countdown tick, long
+/// for the finish.
+abstract final class CueHaptics {
+  static const List<int> countdown = <int>[0, 15];
+  static const List<int> phaseStart = <int>[0, 45];
+  static const List<int> warning = <int>[0, 60, 70, 60];
+  static const List<int> finish = <int>[0, 200, 100, 200, 100, 400];
+}
+
+/// The timer home grid and the setup screen's floating Start.
+abstract final class TimerHomeSpec {
+  /// Below this width the mode grid has two columns, so a label like
+  /// "Countdown" fits its tile at 1x text on a 360dp phone.
+  static const double narrowWidth = 380;
+
+  /// Where the Start button's scrim becomes fully opaque (fraction of its
+  /// height, top to bottom).
+  static const double scrimSolidFrom = 0.45;
 }

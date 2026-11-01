@@ -44,13 +44,11 @@ dependencies:
   share_plus: ^13.3.1
   csv: ^8.0.0
 
-  # Timer (Phase 6), verified on pub.dev 2026-11-01. None opens a socket at
-  # runtime: the foreground service and wake lock are local Android APIs, and
-  # audioplayers only ever plays AssetSource (its http dependency serves
-  # UrlSource, which Sinew never uses). Justification in CLAUDE.md "Stack".
+  # Timer (Phase 6), verified on pub.dev 2026-11-01. Neither opens a socket at
+  # runtime: the foreground service and wake lock are local Android APIs.
+  # Sound, vibration and voice are on our own native channel (CueChannel.kt).
   flutter_foreground_task: ^11.0.3
   wakelock_plus: ^1.8.2
-  audioplayers: ^6.8.1
 
 dev_dependencies:
   flutter_test:

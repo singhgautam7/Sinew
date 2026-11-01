@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive icon monochrome layer (Android 13 themed icons): one colour, the system tints it.
+     Plate S, variant A (round ends), ported from sinew-art.js plateS() on its
+     512 grid. The group applies the design's 0.92 glyph scale times the
+     72/108 adaptive scale about the centre (0.92 * 2/3 = 0.6133), so the glyph
+     sits in the 72dp mask and well inside the 66dp safe zone. See docs/ICON.md. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.6133"
+        android:scaleY="0.6133">
+        <!-- Top plate: ring open at the lower right (90 to 334 degrees). -->
+        <path
+            android:pathData="M256,256 A62,62 0 1 1 311.725,166.821"
+            android:strokeColor="#FF000000"
+            android:strokeWidth="34"
+            android:strokeLineCap="round" />
+        <!-- Top hub with its centre hole (even-odd, so the hole is clear). -->
+        <path
+            android:fillColor="#FF000000"
+            android:fillType="evenOdd"
+            android:pathData="M287,194 A31,31 0 1 0 225,194 A31,31 0 1 0 287,194 Z M267,194 A11,11 0 1 0 245,194 A11,11 0 1 0 267,194 Z" />
+        <!-- Bottom plate: the 180 degree turn, open at the upper left. -->
+        <path
+            android:pathData="M256,256 A62,62 0 1 1 200.275,345.179"
+            android:strokeColor="#FF000000"
+            android:strokeWidth="34"
+            android:strokeLineCap="round" />
+        <!-- Spine join: the last 20 degrees of the top ring in the bottom colour, butt ends. -->
+        <path
+            android:pathData="M277.205,252.261 A62,62 0 0 1 256,256"
+            android:strokeColor="#FF000000"
+            android:strokeWidth="34"
+            android:strokeLineCap="butt" />
+        <!-- Bottom hub with its centre hole. -->
+        <path
+            android:fillColor="#FF000000"
+            android:fillType="evenOdd"
+            android:pathData="M287,318 A31,31 0 1 0 225,318 A31,31 0 1 0 287,318 Z M267,318 A11,11 0 1 0 245,318 A11,11 0 1 0 267,318 Z" />
+    </group>
+</vector>

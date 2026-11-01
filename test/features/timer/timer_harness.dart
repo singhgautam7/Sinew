@@ -34,6 +34,16 @@ class FakeClock {
   void advance(Duration d) => nowMs += d.inMilliseconds;
 }
 
+/// Settings the kit serves without touching preferences.
+class _FixedSettings extends SettingsController {
+  _FixedSettings(this._settings);
+
+  final AppSettings _settings;
+
+  @override
+  AppSettings build() => _settings;
+}
+
 class FakeCuePlayer implements CuePlayer {
   final List<CueEvent> events = <CueEvent>[];
 
@@ -48,6 +58,7 @@ class FakeCuePlayer implements CuePlayer {
 class FakeHost implements BackgroundTimerHost {
   final List<({TimerRun run, String title})> shown =
       <({TimerRun run, String title})>[];
+  final List<TimerCues> cuesShown = <TimerCues>[];
   int clears = 0;
 
   @override
@@ -57,6 +68,7 @@ class FakeHost implements BackgroundTimerHost {
     required String title,
   }) async {
     shown.add((run: run, title: title));
+    cuesShown.add(cues);
   }
 
   @override
@@ -98,6 +110,9 @@ class TimerKit {
   final FakeWake wake = FakeWake();
   final FakeLink link = FakeLink();
 
+  /// What the app's settings say; set before building a container.
+  AppSettings settings = const AppSettings();
+
   List<Override> overrides({List<Override> extra = const <Override>[]}) =>
       <Override>[
         userDatabaseProvider.overrideWithValue(db),
@@ -106,6 +121,7 @@ class TimerKit {
         backgroundTimerHostProvider.overrideWithValue(host),
         screenWakeProvider.overrideWithValue(wake),
         timerServiceLinkProvider.overrideWithValue(link),
+        settingsProvider.overrideWith(() => _FixedSettings(settings)),
         ...extra,
       ];
 

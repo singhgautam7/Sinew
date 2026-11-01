@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/settings/haptics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_icon_button.dart';
 import '../../../core/widgets/domain/timer_ring.dart';
-import '../../../core/widgets/sinew_list.dart';
 import '../../../engines/timer/timer_engine.dart';
 import '../data/active_timer.dart';
 import 'run_labels.dart';
@@ -16,6 +17,7 @@ class StopwatchView extends StatelessWidget {
     super.key,
     required this.timer,
     required this.snapshot,
+    required this.elapsedMs,
     required this.onLap,
     required this.onToggle,
     required this.onReset,
@@ -24,6 +26,10 @@ class StopwatchView extends StatelessWidget {
 
   final ActiveTimer timer;
   final TimerSnapshot snapshot;
+
+  /// Total elapsed ms, every frame. Only the hundredths listen to it; the
+  /// rest of the view follows [snapshot], refreshed once a second.
+  final ValueListenable<int> elapsedMs;
   final VoidCallback onLap;
   final VoidCallback onToggle;
   final VoidCallback onReset;
@@ -34,7 +40,6 @@ class StopwatchView extends StatelessWidget {
     final ColorScheme cs = context.cs;
     final int ms = snapshot.totalElapsedMs;
     final String main = ClockText.format(ms ~/ 1000);
-    final String centis = (ms ~/ 10 % 100).toString().padLeft(2, '0');
     final List<({int number, int splitMs, int cumulativeMs})> laps = timer
         .lapRows
         .reversed
@@ -92,12 +97,16 @@ class StopwatchView extends StatelessWidget {
                             color: cs.onSurface,
                           ),
                         ),
-                        Text(
-                          '.$centis',
-                          style: context.text.headlineMedium!.copyWith(
-                            fontSize: TimerUi.stopwatchCentis,
-                            color: cs.onSurfaceVariant,
-                          ),
+                        ValueListenableBuilder<int>(
+                          valueListenable: elapsedMs,
+                          builder: (BuildContext context, int ms, Widget? _) =>
+                              Text(
+                                '.${(ms ~/ 10 % 100).toString().padLeft(2, '0')}',
+                                style: context.text.headlineMedium!.copyWith(
+                                  fontSize: TimerUi.stopwatchCentis,
+                                  color: cs.onSurfaceVariant,
+                                ),
+                              ),
                         ),
                       ],
                     ),
@@ -112,16 +121,7 @@ class StopwatchView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                         horizontal: Space.screen,
                       ),
-                      child: SinewGroup(
-                        children: <Widget>[
-                          for (final lap in laps)
-                            _LapRow(
-                              number: lap.number,
-                              split: lapText(lap.splitMs),
-                              total: ClockText.format(lap.cumulativeMs ~/ 1000),
-                            ),
-                        ],
-                      ),
+                      child: _LapList(laps: laps),
                     ),
             ),
             Padding(
@@ -143,6 +143,41 @@ class StopwatchView extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The laps, newest first, built lazily so a long session costs nothing per
+/// frame.
+class _LapList extends StatelessWidget {
+  const _LapList({required this.laps});
+
+  final List<({int number, int splitMs, int cumulativeMs})> laps;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme cs = context.cs;
+    return Material(
+      color: cs.surfaceContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: Radii.cardR,
+        side: BorderSide(color: cs.outlineVariant),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: ListView.separated(
+        padding: EdgeInsets.zero,
+        itemCount: laps.length,
+        separatorBuilder: (BuildContext _, int _) => Divider(
+          height: Strokes.hairline,
+          thickness: Strokes.hairline,
+          color: cs.outlineVariant,
+        ),
+        itemBuilder: (BuildContext _, int i) => _LapRow(
+          number: laps[i].number,
+          split: lapText(laps[i].splitMs),
+          total: ClockText.format(laps[i].cumulativeMs ~/ 1000),
         ),
       ),
     );
@@ -236,14 +271,14 @@ class _TextCircle extends StatelessWidget {
   }
 }
 
-class _PrimaryButton extends StatelessWidget {
+class _PrimaryButton extends ConsumerWidget {
   const _PrimaryButton({required this.paused, required this.onTap});
 
   final bool paused;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme cs = context.cs;
     return Semantics(
       button: true,
@@ -258,7 +293,7 @@ class _PrimaryButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () {
-            HapticFeedback.mediumImpact();
+            SinewHaptics.medium(enabled: ref.read(hapticsEnabledProvider));
             onTap();
           },
           child: SizedBox(

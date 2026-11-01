@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 
 import '../../../engines/timer/timer_engine.dart';
@@ -62,10 +63,16 @@ class TimerRing extends StatelessWidget {
     required this.trackColor,
     this.size = TimerSpec.ringSize,
     this.strokeWidth = TimerSpec.ringStroke,
+    this.fractionListenable,
     this.child,
   });
 
   final double fraction;
+
+  /// When set, the arc follows this value instead of [fraction] and only the
+  /// arc repaints when it changes (no widget rebuild). The run screen feeds it
+  /// at frame rate while the rest of the face rebuilds once a second.
+  final ValueListenable<double>? fractionListenable;
   final Color ringColor;
   final Color trackColor;
   final double size;
@@ -86,6 +93,7 @@ class TimerRing extends StatelessWidget {
                 child: CustomPaint(
                   painter: _RingPainter(
                     fraction: fraction.clamp(0.0, 1.0),
+                    listenable: fractionListenable,
                     ring: ringColor,
                     track: trackColor,
                     stroke: strokeWidth,
@@ -102,14 +110,16 @@ class TimerRing extends StatelessWidget {
 }
 
 class _RingPainter extends CustomPainter {
-  const _RingPainter({
+  _RingPainter({
     required this.fraction,
     required this.ring,
     required this.track,
     required this.stroke,
-  });
+    this.listenable,
+  }) : super(repaint: listenable);
 
   final double fraction;
+  final ValueListenable<double>? listenable;
   final Color ring;
   final Color track;
   final double stroke;
@@ -123,6 +133,7 @@ class _RingPainter extends CustomPainter {
       ..strokeWidth = stroke
       ..isAntiAlias = true;
     canvas.drawCircle(c, r, base..color = track);
+    final double fraction = listenable?.value.clamp(0.0, 1.0) ?? this.fraction;
     if (fraction <= 0) return;
     final Rect rect = Rect.fromCircle(center: c, radius: r);
     canvas.drawArc(
@@ -139,6 +150,7 @@ class _RingPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RingPainter old) =>
       old.fraction != fraction ||
+      old.listenable != listenable ||
       old.ring != ring ||
       old.track != track ||
       old.stroke != stroke;
@@ -175,9 +187,15 @@ class PhaseField extends StatefulWidget {
     this.finishedTitle = 'Done. Nice work.',
     this.finishedSubtitle,
     this.controls,
+    this.ringFraction,
   });
 
   final TimerSnapshot snapshot;
+
+  /// Drives the ring arc at frame rate without rebuilding the face (see
+  /// [TimerRing.fractionListenable]). The face itself still follows
+  /// [snapshot], which the parent may refresh only once a second.
+  final ValueListenable<double>? ringFraction;
 
   /// Top left, for example "Tabata, legs".
   final String? title;
@@ -378,6 +396,9 @@ class _PhaseFieldState extends State<PhaseField>
           const SizedBox(height: Space.sm),
           TimerRing(
             fraction: snap.stepDurationMs == null ? 1 : 1 - snap.stepProgress,
+            fractionListenable: snap.stepDurationMs == null
+                ? null
+                : widget.ringFraction,
             ringColor: paused
                 ? now.ring.withValues(alpha: TimerSpec.pausedOpacity)
                 : now.ring,

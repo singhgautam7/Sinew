@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -13,6 +14,7 @@ class AmrapView extends StatelessWidget {
     super.key,
     required this.timer,
     required this.snapshot,
+    required this.progress,
     required this.onTogglePause,
     required this.onAddRound,
     required this.onUndoRound,
@@ -23,6 +25,9 @@ class AmrapView extends StatelessWidget {
 
   final ActiveTimer timer;
   final TimerSnapshot snapshot;
+
+  /// Fraction of the cap already used, every frame. Only the bar listens.
+  final ValueListenable<double> progress;
   final VoidCallback onTogglePause;
   final VoidCallback onAddRound;
   final VoidCallback onUndoRound;
@@ -107,10 +112,21 @@ class AmrapView extends StatelessWidget {
                                       alpha: TimerSpec.trackOpacity,
                                     ),
                                   ),
-                                  FractionallySizedBox(
-                                    alignment: Alignment.centerLeft,
-                                    widthFactor: snapshot.stepProgress,
-                                    child: ColoredBox(color: c.ring),
+                                  ValueListenableBuilder<double>(
+                                    valueListenable: progress,
+                                    builder:
+                                        (
+                                          BuildContext _,
+                                          double left,
+                                          Widget? _,
+                                        ) => FractionallySizedBox(
+                                          alignment: Alignment.centerLeft,
+                                          widthFactor: (1 - left).clamp(
+                                            0.0,
+                                            1.0,
+                                          ),
+                                          child: ColoredBox(color: c.ring),
+                                        ),
                                   ),
                                 ],
                               ),

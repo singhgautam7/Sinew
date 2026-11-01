@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/enums.dart';
 import '../../../core/routing/nav_visibility.dart';
 import '../../../core/routing/router.dart';
+import '../../../core/settings/app_settings.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/domain/timer_controls.dart';
 import '../../../core/widgets/domain/timer_ring.dart';
@@ -22,9 +23,14 @@ import 'finished_view.dart';
 import 'run_labels.dart';
 import 'stopwatch_view.dart';
 
-/// The running timer, full screen above the shell (no nav). Repaints from a
-/// ticker but always reads the run at the clock's current instant, so it is
-/// right after any pause in frames.
+/// The running timer, full screen above the shell (no nav).
+///
+/// A ticker reads the run at the clock's current instant every frame, so the
+/// face is right after any pause in frames, but it only rebuilds the screen
+/// when something visible changes: once per displayed second, or on a state
+/// change. What moves between those (the ring arc, the AMRAP bar, the
+/// stopwatch hundredths) is fed through listenables to widgets that repaint
+/// on their own.
 class TimerRunScreen extends ConsumerStatefulWidget {
   const TimerRunScreen({super.key});
 
@@ -38,6 +44,13 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
   late final NavHideReasons _nav;
   late final ScreenWake _wake;
   int _shown = -1;
+  Object? _faceKey;
+
+  /// Fraction of the ring still to run, updated every frame.
+  final ValueNotifier<double> _ring = ValueNotifier<double>(1);
+
+  /// Total elapsed ms, updated every frame (the stopwatch hundredths).
+  final ValueNotifier<int> _elapsed = ValueNotifier<int>(0);
   int? _lastStep;
   int _lastAnnounceMs = 0;
   bool _busy = false;
@@ -55,13 +68,15 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _nav.hide(NavHideReason.runningTimer);
-      _wake.keepOn(on: true);
+      _wake.keepOn(on: ref.read(settingsProvider).keepScreenOn);
     });
   }
 
   @override
   void dispose() {
     _ticker.dispose();
+    _ring.dispose();
+    _elapsed.dispose();
     // Providers may not change while the tree is being torn down.
     Future<void>.microtask(() {
       try {
@@ -81,15 +96,30 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
     final ActiveTimer? a = ref.read(timerSessionProvider).value;
     if (a == null) return;
     final TimerSnapshot s = a.run.snapshotAt(now);
-    _announce(a, s, now);
-    // A paused or finished face does not change between frames: stop asking
-    // for them (build starts the ticker again when the run moves).
-    if (s.paused || s.finished) {
-      _ticker.stop();
-      setState(() {});
-    } else {
+    _feed(s);
+    final Object key = _keyOf(a, s);
+    if (key != _faceKey) {
+      _faceKey = key;
+      _announce(a, s, now);
       setState(() {});
     }
+    // A paused or finished face does not change between frames: stop asking
+    // for them (build starts the ticker again when the run moves).
+    if (s.paused || s.finished) _ticker.stop();
+  }
+
+  /// What the face shows, to the second. The screen rebuilds when it changes.
+  Object _keyOf(ActiveTimer a, TimerSnapshot s) {
+    final int? left = s.stepRemainingMs;
+    final int seconds = a.run.mode == TimerMode.stopwatch
+        ? s.totalElapsedMs ~/ 1000
+        : (left == null ? s.stepElapsedMs ~/ 1000 : (left + 999) ~/ 1000);
+    return (s.stepIndex, seconds, s.paused, s.finished, s.round, s.phase);
+  }
+
+  void _feed(TimerSnapshot s) {
+    _ring.value = s.stepDurationMs == null ? 1 : 1 - s.stepProgress;
+    _elapsed.value = s.totalElapsedMs;
   }
 
   /// Tells a screen reader about a new step, and about the time left every
@@ -184,6 +214,8 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
       return const Scaffold(body: Delayed(child: SinewLoader()));
     }
     final TimerSnapshot snap = a.run.snapshotAt(_clock());
+    _feed(snap);
+    _faceKey = _keyOf(a, snap);
     final bool locked = a.run.locked && !snap.finished;
     final bool moving = !snap.paused && !snap.finished;
     if (moving && !_ticker.isActive) _ticker.start();
@@ -201,6 +233,7 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
       body = StopwatchView(
         timer: a,
         snapshot: snap,
+        elapsedMs: _elapsed,
         onLap: _session.lap,
         onToggle: _session.togglePause,
         onReset: _session.resetStopwatch,
@@ -210,6 +243,7 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
       body = AmrapView(
         timer: a,
         snapshot: snap,
+        progress: _ring,
         onTogglePause: _session.togglePause,
         onAddRound: _session.addRound,
         onUndoRound: _session.undoRound,
@@ -234,6 +268,7 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
     final bool yogaPose = yoga && snap.phase == TimerPhase.work;
     return PhaseField(
       snapshot: snap,
+      ringFraction: _ring,
       title: a.title,
       trailing: trailingLabel(a, snap),
       heading: yogaPose ? snap.step?.label : null,

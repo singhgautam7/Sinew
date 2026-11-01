@@ -61,7 +61,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.descendant(
-          of: find.byType(SinewAppBar),
+          // A tab's landing page uses the app bar or the large page header.
+          of: find.byWidgetPredicate(
+            (Widget w) => w is SinewAppBar || w is SinewPageHeader,
+          ),
           matching: find.text(tab.label),
         ),
         findsOneWidget,

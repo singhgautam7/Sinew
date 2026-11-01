@@ -16,9 +16,11 @@ final FutureProvider<void> timerPresetSeedProvider = FutureProvider<void>((
   );
 });
 
-/// The saved presets, live, after the built-ins were seeded.
-final StreamProvider<List<TimerPreset>> timerPresetsProvider =
-    StreamProvider<List<TimerPreset>>((Ref ref) async* {
+/// The saved presets, after the built-ins were seeded. A plain future, not a
+/// database stream: every place that changes a preset invalidates it, and
+/// there is no open query to keep alive behind the tab.
+final FutureProvider<List<TimerPreset>> timerPresetsProvider =
+    FutureProvider<List<TimerPreset>>((Ref ref) async {
       await ref.watch(timerPresetSeedProvider.future);
-      yield* ref.watch(timerPresetRepositoryProvider).watchAll();
+      return ref.watch(timerPresetRepositoryProvider).all();
     });

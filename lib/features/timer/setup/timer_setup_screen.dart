@@ -25,6 +25,7 @@ import '../../../core/widgets/sinew_settings.dart';
 import '../../../core/widgets/sinew_snackbar.dart';
 import '../../../core/widgets/sinew_toggle_tile.dart';
 import '../../../engines/timer/timer_engine.dart';
+import '../controller/timer_presets_provider.dart';
 import '../controller/timer_session.dart';
 import '../data/timer_modes.dart';
 import '../data/timer_presets.dart';
@@ -175,6 +176,7 @@ class _TimerSetupScreenState extends ConsumerState<TimerSetupScreen> {
       updatedAt: DateTime.now().toUtc(),
     );
     await repo.save(saved);
+    ref.invalidate(timerPresetsProvider);
     if (!mounted) return;
     setState(() {
       _preset = saved;

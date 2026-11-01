@@ -263,6 +263,7 @@ class _PresetRow extends ConsumerWidget {
     await ref
         .read(timerPresetRepositoryProvider)
         .save(preset.copyWith(name: name));
+    ref.invalidate(timerPresetsProvider);
   }
 
   Future<void> _duplicate(WidgetRef ref) async {
@@ -276,16 +277,21 @@ class _PresetRow extends ConsumerWidget {
         position: count,
       ),
     );
+    ref.invalidate(timerPresetsProvider);
   }
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final repo = ref.read(timerPresetRepositoryProvider);
     await repo.delete(preset.id);
+    ref.invalidate(timerPresetsProvider);
     if (!context.mounted) return;
     showSinewUndoSnackBar(
       context,
       'Deleted "${preset.name}".',
-      onUndo: () => repo.save(preset),
+      onUndo: () async {
+        await repo.save(preset);
+        ref.invalidate(timerPresetsProvider);
+      },
     );
   }
 

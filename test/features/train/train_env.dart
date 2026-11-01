@@ -21,6 +21,7 @@ import 'package:sinew/features/train/train_providers.dart';
 import 'package:sinew/features/train/train_routes.dart';
 import 'package:sinew/features/train/train_screen.dart';
 
+import '../../helpers/fake_timer_services.dart';
 import '../../helpers/test_db.dart';
 
 /// A clock the test moves by hand.
@@ -117,7 +118,11 @@ class TrainEnv {
     );
   }
 
+  /// The timer services the Train rest timer talks to, faked.
+  final FakeTimerServices timerServices = FakeTimerServices();
+
   List<Override> overrides() => <Override>[
+    ...timerServices.overrides(),
     prefsProvider.overrideWithValue(prefs),
     userDatabaseProvider.overrideWithValue(db),
     exerciseResolverProvider.overrideWith(

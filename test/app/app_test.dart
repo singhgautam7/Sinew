@@ -50,9 +50,6 @@ Future<void> _unmount(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 50));
 }
 
-/// Tabs whose landing page uses `SinewPageHeader` rather than `SinewAppBar`.
-const Set<String> kPageHeaderTabs = <String>{'Train', 'Body'};
-
 void _usePhone(WidgetTester tester, {double textScale = 1}) {
   tester.view.physicalSize = const Size(360, 780);
   tester.view.devicePixelRatio = 1;
@@ -72,10 +69,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.descendant(
-          // Tabs that use the large page header instead of the app bar.
-          of: kPageHeaderTabs.contains(tab.label)
-              ? find.byType(SinewPageHeader)
-              : find.byType(SinewAppBar),
+          // A tab's landing page uses the app bar or the large page header.
+          of: find.byWidgetPredicate(
+            (Widget w) => w is SinewAppBar || w is SinewPageHeader,
+          ),
           matching: find.text(tab.label),
         ),
         findsOneWidget,

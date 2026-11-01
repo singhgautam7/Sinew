@@ -36,6 +36,24 @@ share_plus · csv. Dev: build_runner, drift_dev, flutter_native_splash, flutter_
 Versions were checked on pub.dev on 2026-10-31 (latest, maintained, publisher known) and are
 pinned with carets in `pubspec.yaml`; `pubspec.lock` is committed.
 
+### Timer plugins (Phase 6)
+
+Added together with their native configuration (see `lib/features/timer/`):
+- **`flutter_foreground_task` 11.0.3** (pravera.me): the Android foreground service
+  and ongoing notification that keep a running timer and its cues alive with the screen off,
+  with notification buttons (pause or resume, skip, +10 s). Local only. Service type
+  `specialUse` (a workout timer fits no named type; `health` needs body-sensor permissions).
+- **`wakelock_plus` 1.8.2** (fluttercommunity.dev): keeps the screen on while the run screen
+  is open.
+- **`audioplayers` 6.8.1** (blue-fire.xyz): low-latency playback of the five bundled cue
+  sounds, from the main isolate and from the service. Only `AssetSource` is used; its `http`
+  dependency exists for `UrlSource`, which the guardrail test keeps out of `lib/`.
+- **Not added: `flutter_local_notifications`.** The service's own notification covers
+  everything the timer needs, and the package would require core library desugaring.
+- **Voice** stays on `SinewPlatform.speak` (the `TextToSpeech` channel in `MainActivity`),
+  so it plays only while the app's isolate is alive. The service plays sound only; haptics
+  and voice need the app's activity engine.
+
 Deliberately not added yet:
 - **Timer and cue plugins** (`flutter_foreground_task`, `flutter_local_notifications`,
   `wakelock_plus`, an audio player, TTS) arrive in Phase 6 together with their native

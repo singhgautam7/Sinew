@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,12 +12,18 @@ import 'core/db/seeds/measurement_seed.dart';
 import 'core/db/user/user_db.dart';
 import 'core/error/error_handling.dart';
 import 'core/providers.dart';
+import 'core/routing/router.dart';
 import 'core/settings/app_settings.dart';
+import 'features/timer/controller/timer_bootstrap.dart';
+import 'features/timer/data/active_timer.dart';
+import 'core/db/repositories/runtime_state_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   installErrorHandlers();
+  // Receives what the timer's background service sends the app.
+  FlutterForegroundTask.initCommunicationPort();
   _registerFontLicences();
 
   // Open only what the first frame needs: settings decide the theme (read
@@ -36,6 +43,9 @@ Future<void> main() async {
     return;
   }
 
+  // A timer left running when the process died reopens on its run screen.
+  final String initialLocation = await _initialLocation(userDb);
+
   runApp(
     ProviderScope(
       retry: noRetry,
@@ -43,9 +53,25 @@ Future<void> main() async {
         prefsProvider.overrideWithValue(prefs),
         userDatabaseProvider.overrideWithValue(userDb),
       ],
-      child: const SinewApp(),
+      child: TimerBootstrap(child: SinewApp(initialLocation: initialLocation)),
     ),
   );
+}
+
+/// Where the app opens: Today, or the running timer if one was left going.
+Future<String> _initialLocation(UserDatabase db) async {
+  try {
+    final Map<String, dynamic>? json = await RuntimeStateRepository(db)
+        .read(RuntimeStateRepository.runningTimer);
+    final ActiveTimer? a = ActiveTimer.fromJson(json);
+    if (a != null &&
+        !a.run.snapshotAt(DateTime.now().millisecondsSinceEpoch).finished) {
+      return Routes.timerRun;
+    }
+  } on Object catch (e) {
+    debugPrint('Sinew: could not look for a running timer: $e');
+  }
+  return Routes.today;
 }
 
 /// Bundled fonts are OFL; their licences appear on the licences page.

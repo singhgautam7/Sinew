@@ -793,3 +793,95 @@ abstract final class TrainSpec {
   // Exercise history.
   static const int recentSessions = 20;
 }
+// ═════════════════════════════════════════════════════════════════════════
+// Timer feature (lib/features/timer/). Append-only section: sizes from the
+// Timer frames, and the cue and service timings that are not design values.
+// ═════════════════════════════════════════════════════════════════════════
+
+/// Timer home, setup and finished screens.
+abstract final class TimerUi {
+  // Home: the mode grid.
+  static const int tileColumns = 3;
+  static const double tileHeight = 92;
+  static const double tileGap = 8;
+  static const double presetPlay = IconSpec.tapTarget;
+
+  // Setup: the live total card and its bar strip.
+  static const double totalNumeral = 36;
+  static const double stripHeight = 40;
+  static const double stripBar = 7;
+  static const double stripGap = 3;
+  static const double stripLowShare = 0.45;
+  static const int stripBars = 12;
+
+  // Setup: cue tiles and the sticky start button.
+  static const double cueTileHeight = ToggleTileSpec.height;
+  static const double startBottom = 28;
+  static const double startClearance = 120;
+  static const double fieldDot = 10;
+
+  // Custom sequence rows.
+  static const double stepRowHeight = 56;
+  static const double stepBarWidth = 8;
+  static const double stepBarHeight = 32;
+  static const double stepTimeHeight = 36;
+
+  // Stopwatch.
+  static const double stopwatchNumeral = 96;
+  static const double stopwatchTracking = -3;
+  static const double stopwatchCentis = 32;
+  static const double stopwatchTop = 48;
+  static const double lapButton = 80;
+
+  // AMRAP: the time left above the counter.
+  static const double amrapClock = 120;
+  static const double amrapClockTracking = -5;
+  static const double amrapBarWidth = 300;
+  static const double amrapBarHeight = 10;
+
+  // Finished: the stat tiles and the timeline strip.
+  static const double timelineHeight = 28;
+  static const double timelineGap = 2;
+  static const int statColumns = 3;
+
+  // Running banner on Home.
+  static const double bannerIcon = 40;
+
+  /// Fewest and most seconds any duration field accepts.
+  static const double maxSeconds = 6 * 3600;
+  static const double maxRounds = 99;
+}
+
+/// Timings of the cue driver and the background service. Time itself always
+/// comes from timestamps; these only decide how often we look.
+abstract final class TimerTiming {
+  /// How often the controller checks for due cues while a run is live.
+  static const Duration cueTick = Duration(milliseconds: 100);
+
+  /// A cue older than this when we first look at it is dropped (the app was
+  /// suspended); the background service played it already.
+  static const int staleCueMs = 1000;
+
+  /// How often the app tells the service it is alive.
+  static const Duration heartbeat = Duration(seconds: 1);
+
+  /// The service takes over cues when the app has been silent this long.
+  static const int heartbeatLapseMs = 2500;
+
+  /// How often the service checks for due cues.
+  static const Duration serviceTick = Duration(milliseconds: 250);
+
+  /// The ringer mode is cached this long.
+  static const Duration ringerCache = Duration(seconds: 2);
+
+  /// The screen reader hears the time left at most this often.
+  static const Duration announceEvery = Duration(seconds: 30);
+
+  /// The finish notification stays this long before the service stops.
+  static const Duration finishLinger = Duration(seconds: 3);
+}
+
+/// The on / off option tile (`SinewToggleTile`).
+abstract final class ToggleTileSpec {
+  static const double height = 72;
+}

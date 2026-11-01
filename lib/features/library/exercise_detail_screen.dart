@@ -1,0 +1,729 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/models/enums.dart';
+import '../../core/models/exercise.dart';
+import '../../core/providers.dart';
+import '../../core/routing/router.dart';
+import '../../core/theme/app_theme.dart';
+import '../../core/widgets/app_button.dart';
+import '../../core/widgets/configs.dart';
+import '../../core/widgets/domain/exercise_tile.dart';
+import '../../core/widgets/domain/muscle_map.dart';
+import '../../core/widgets/sinew_app_bar.dart';
+import '../../core/widgets/sinew_dialogs.dart';
+import '../../core/widgets/sinew_form.dart';
+import '../../core/widgets/sinew_list.dart';
+import '../../core/widgets/sinew_snackbar.dart';
+import '../../core/widgets/sinew_states.dart';
+import 'library_labels.dart';
+import 'library_providers.dart';
+
+/// An exercise or a pose: names, facts, muscle map, steps and notes.
+/// Resolves custom, library and removed (tombstoned) ids.
+class ExerciseDetailScreen extends ConsumerStatefulWidget {
+  const ExerciseDetailScreen({super.key, required this.exerciseId});
+
+  final String exerciseId;
+
+  @override
+  ConsumerState<ExerciseDetailScreen> createState() =>
+      _ExerciseDetailScreenState();
+}
+
+class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual<AsyncValue<Exercise?>>(
+      libraryExerciseProvider(widget.exerciseId),
+      (AsyncValue<Exercise?>? _, AsyncValue<Exercise?> next) {
+        final Exercise? e = next.value;
+        if (e != null && e.category != 'removed') {
+          Future<void>.microtask(
+            () => ref
+                .read(recentExercisesProvider.notifier)
+                .add(widget.exerciseId),
+          );
+        }
+      },
+      fireImmediately: true,
+    );
+  }
+
+  Future<void> _archive(Exercise e) async {
+    final bool ok = await showSinewConfirmDialog(
+      context: context,
+      title: 'Archive ${e.name}?',
+      message: 'It is hidden from the picker and search. Your history keeps it and you can restore it later.',
+      confirmLabel: 'Archive',
+      destructive: true,
+    );
+    if (!ok || !mounted) return;
+    await ref
+        .read(customExerciseRepositoryProvider)
+        .setArchived(e.id, archived: true);
+    if (!mounted) return;
+    showSinewSnackBar(context, 'Archived ${e.name}');
+    ref.invalidate(libraryExerciseProvider(e.id));
+  }
+
+  Future<void> _restore(Exercise e) async {
+    await ref
+        .read(customExerciseRepositoryProvider)
+        .setArchived(e.id, archived: false);
+    if (!mounted) return;
+    ref.invalidate(libraryExerciseProvider(e.id));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AsyncValue<Exercise?> async = ref.watch(
+      libraryExerciseProvider(widget.exerciseId),
+    );
+    return async.when(
+      loading: () => const Scaffold(
+        appBar: SinewAppBar(showBack: true, showBrand: false),
+        body: Delayed(child: SinewLoader()),
+      ),
+      error: (Object e, StackTrace _) => Scaffold(
+        appBar: const SinewAppBar(showBack: true, showBrand: false),
+        body: SinewEmptyState(
+          icon: Icons.error_outline_rounded,
+          title: 'Could not open this exercise',
+          description: 'Something went wrong reading it.',
+          actionLabel: 'Try again',
+          actionIcon: Icons.refresh_rounded,
+          onAction: () =>
+              ref.invalidate(libraryExerciseProvider(widget.exerciseId)),
+        ),
+      ),
+      data: (Exercise? e) {
+        if (e == null) {
+          return const Scaffold(
+            appBar: SinewAppBar(showBack: true, showBrand: false),
+            body: SinewEmptyState(
+              icon: Icons.search_off_rounded,
+              title: 'Exercise not found',
+              description: 'It may have been removed from the library.',
+            ),
+          );
+        }
+        return _Detail(
+          exercise: e,
+          onArchive: () => _archive(e),
+          onRestore: () => _restore(e),
+        );
+      },
+    );
+  }
+}
+
+bool _isPose(Exercise e) => e.category == 'yoga' || e.category == 'mobility';
+
+class _Detail extends ConsumerWidget {
+  const _Detail({
+    required this.exercise,
+    required this.onArchive,
+    required this.onRestore,
+  });
+
+  final Exercise exercise;
+  final VoidCallback onArchive;
+  final VoidCallback onRestore;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Exercise e = exercise;
+    final TextTheme tt = context.text;
+    final ColorScheme cs = context.cs;
+    final Sex? sex = ref.watch(librarySexProvider).value;
+    final bool removed = e.category == 'removed';
+    final bool pose = _isPose(e);
+    final List<SinewOverflowItem> menu = <SinewOverflowItem>[
+      if (e.isCustom) ...<SinewOverflowItem>[
+        SinewOverflowItem(
+          icon: Icons.edit_outlined,
+          label: 'Edit',
+          onTap: () => context.push(Routes.editCustomExercise(e.id)),
+        ),
+        if (e.archived)
+          SinewOverflowItem(
+            icon: Icons.unarchive_outlined,
+            label: 'Restore',
+            onTap: onRestore,
+          )
+        else
+          SinewOverflowItem(
+            icon: Icons.archive_outlined,
+            label: 'Archive',
+            onTap: onArchive,
+            isDestructive: true,
+          ),
+      ],
+    ];
+    final String? subtitle = pose
+        ? <String>[
+            if (e.sanskritName != null) e.sanskritName!,
+            categoryLabel(e.category),
+          ].join(' · ')
+        : null;
+
+    return Scaffold(
+      appBar: SinewAppBar(
+        showBack: true,
+        showBrand: false,
+        overflowConfig: menu.isEmpty ? null : SinewOverflowConfig(items: menu),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          Space.screen,
+          Space.xs,
+          Space.screen,
+          Space.xl,
+        ),
+        children: <Widget>[
+          Semantics(
+            header: true,
+            child: Text(
+              e.name,
+              style: tt.headlineMedium!.copyWith(
+                color: cs.onSurface,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          if (subtitle != null)
+            Text(
+              subtitle,
+              style: tt.bodyLarge!.copyWith(color: cs.onSurfaceVariant),
+            ),
+          if (e.aliases.isNotEmpty)
+            Text(
+              'Also: ${e.aliases.join(', ')}',
+              style: tt.bodyMedium!.copyWith(color: cs.onSurfaceVariant),
+            ),
+          if (e.archived) ...<Widget>[
+            const SizedBox(height: Space.md),
+            const SinewCallout(
+              tone: SinewCalloutTone.info,
+              icon: Icons.archive_outlined,
+              child: Text(
+                'Archived. Hidden from search and the picker; your history keeps it.',
+              ),
+            ),
+          ],
+          if (removed) ...<Widget>[
+            const SizedBox(height: Space.md),
+            const SinewCallout(
+              tone: SinewCalloutTone.info,
+              icon: Icons.info_outline_rounded,
+              child: Text(
+                'This exercise was removed from the library. Your history keeps it.',
+              ),
+            ),
+          ],
+          const SizedBox(height: Space.md),
+          if (pose && !removed)
+            _PoseFacts(exercise: e)
+          else if (!removed)
+            _MetaChips(exercise: e),
+          if (!removed) ...<Widget>[
+            const SizedBox(height: Space.lg),
+            _MuscleCard(exercise: e, sex: sex, pose: pose),
+            if (pose) ...<Widget>[
+              const SizedBox(height: Space.lg),
+              _MetaChips(exercise: e),
+            ],
+            if (e.steps.isNotEmpty) ...<Widget>[
+              const SizedBox(height: Space.xl),
+              const SinewSectionHeader(title: 'Steps'),
+              _Steps(steps: e.steps),
+            ],
+            _Notes(
+              title: 'Tips',
+              icon: Icons.lightbulb_outline_rounded,
+              items: e.tips,
+            ),
+            _Notes(
+              title: 'Common mistakes',
+              icon: Icons.error_outline_rounded,
+              items: e.commonMistakes,
+            ),
+            _Notes(
+              title: 'Safety',
+              icon: Icons.health_and_safety_outlined,
+              items: e.safetyNotes,
+            ),
+            _Notes(
+              title: 'Not advised with',
+              icon: Icons.block_rounded,
+              items: e.contraindications,
+            ),
+            const SizedBox(height: Space.xl),
+            _Facts(exercise: e),
+          ],
+        ],
+      ),
+      bottomNavigationBar: _ActionBar(exercise: e),
+    );
+  }
+}
+
+class _ActionBar extends StatelessWidget {
+  const _ActionBar({required this.exercise});
+
+  final Exercise exercise;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme cs = context.cs;
+    return Container(
+      decoration: BoxDecoration(
+        color: cs.surface,
+        border: Border(
+          top: BorderSide(color: cs.outlineVariant, width: Strokes.hairline),
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        Space.screen,
+        Space.md,
+        Space.screen,
+        Space.lg + MediaQuery.of(context).padding.bottom,
+      ),
+      child: Row(
+        children: <Widget>[
+          if (exercise.isCustom) ...<Widget>[
+            Expanded(
+              child: AppButton(
+                label: 'Edit',
+                type: AppButtonType.outline,
+                icon: Icons.edit_outlined,
+                fullWidth: true,
+                onPressed: () =>
+                    context.push(Routes.editCustomExercise(exercise.id)),
+              ),
+            ),
+            const SizedBox(width: Space.md),
+          ],
+          Expanded(
+            flex: exercise.isCustom ? 1 : 1,
+            child: AppButton(
+              label: 'History',
+              type: AppButtonType.primary,
+              icon: Icons.history_rounded,
+              fullWidth: true,
+              onPressed: () =>
+                  context.push(Routes.exerciseHistory(exercise.id)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Fact {
+  const _Fact(this.icon, this.text);
+  final IconData icon;
+  final String text;
+}
+
+class _MetaChips extends StatelessWidget {
+  const _MetaChips({required this.exercise});
+
+  final Exercise exercise;
+
+  @override
+  Widget build(BuildContext context) {
+    final Exercise e = exercise;
+    final List<_Fact> facts = <_Fact>[
+      _Fact(categoryIcon(e.category), categoryLabel(e.category)),
+      if (e.equipment.isNotEmpty)
+        _Fact(
+          Icons.fitness_center_rounded,
+          e.equipment.map(equipmentLabel).join(', '),
+        ),
+      if (e.difficulty != null)
+        _Fact(Icons.stacked_bar_chart_rounded, difficultyLabel(e.difficulty!)),
+      _Fact(trackingTypeIcon(e.trackingType), trackingLabel(e.trackingType)),
+      if (e.unilateral)
+        const _Fact(Icons.swap_horiz_rounded, 'One side at a time'),
+    ];
+    return Wrap(
+      spacing: Space.sm - Space.xxs,
+      runSpacing: Space.sm - Space.xxs,
+      children: <Widget>[
+        for (final _Fact f in facts)
+          Container(
+            constraints: const BoxConstraints(minHeight: Sizes.chip - Space.xs),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Space.md - Space.xxs,
+              vertical: Space.xs,
+            ),
+            decoration: BoxDecoration(
+              color: context.cs.secondaryContainer,
+              borderRadius: Radii.chipR,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(f.icon, size: IconSpec.tiny, color: context.cs.primary),
+                const SizedBox(width: Space.xs),
+                Flexible(
+                  child: Text(
+                    f.text,
+                    style: context.text.labelLarge!.copyWith(
+                      color: context.cs.onSecondaryContainer,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Hold, level and sides at a glance (pose detail).
+class _PoseFacts extends StatelessWidget {
+  const _PoseFacts({required this.exercise});
+
+  final Exercise exercise;
+
+  @override
+  Widget build(BuildContext context) {
+    final Exercise e = exercise;
+    final int? hold = e.defaultHoldSec;
+    final List<(String, String)> cells = <(String, String)>[
+      ('Hold', hold == null ? 'Your pace' : durationLabel(hold)),
+      ('Level', e.difficulty == null ? 'Any' : difficultyLabel(e.difficulty!)),
+      ('Sides', e.unilateral ? 'Each side' : 'Both'),
+    ];
+    return Row(
+      children: <Widget>[
+        for (int i = 0; i < cells.length; i++) ...<Widget>[
+          if (i > 0) const SizedBox(width: Space.sm),
+          Expanded(
+            child: SinewCard(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Space.md,
+                vertical: Space.md,
+              ),
+              child: MergeSemantics(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      cells[i].$1,
+                      style: context.text.bodySmall!.copyWith(
+                        color: context.cs.onSurfaceVariant,
+                      ),
+                    ),
+                    Text(
+                      cells[i].$2,
+                      style: context.text.titleMedium!.copyWith(
+                        color: context.cs.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _MuscleCard extends StatelessWidget {
+  const _MuscleCard({
+    required this.exercise,
+    required this.sex,
+    required this.pose,
+  });
+
+  final Exercise exercise;
+  final Sex? sex;
+  final bool pose;
+
+  @override
+  Widget build(BuildContext context) {
+    final Exercise e = exercise;
+    final ColorScheme cs = context.cs;
+    final String label =
+        'Muscles. Primary: ${e.primaryMuscles.map(muscleLabel).join(', ')}. '
+        'Secondary: ${e.secondaryMuscles.map(muscleLabel).join(', ')}.';
+    final Widget legend = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        _Legend(
+          title: 'Primary',
+          muscles: e.primaryMuscles,
+          color: context.accents.musclePrimary,
+        ),
+        if (e.secondaryMuscles.isNotEmpty) ...<Widget>[
+          const SizedBox(height: Space.md),
+          _Legend(
+            title: 'Secondary',
+            muscles: e.secondaryMuscles,
+            color: context.accents.muscleSecondary,
+          ),
+        ],
+      ],
+    );
+    return SinewCard(
+      child: pose
+          ? Row(
+              children: <Widget>[
+                Container(
+                  width: LibrarySpec.poseMap,
+                  height: LibrarySpec.poseMap,
+                  decoration: BoxDecoration(
+                    color: cs.surface,
+                    borderRadius: Radii.thumbR,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: MuscleMap(
+                    primary: e.primaryMuscles,
+                    secondary: e.secondaryMuscles,
+                    fit: MuscleMapFit.crop,
+                    sex: sex,
+                    showLabels: false,
+                    semanticLabel: label,
+                  ),
+                ),
+                const SizedBox(width: Space.lg),
+                Expanded(child: legend),
+              ],
+            )
+          : Column(
+              children: <Widget>[
+                SizedBox(
+                  height: LibrarySpec.detailMapHeight,
+                  child: MuscleMap(
+                    primary: e.primaryMuscles,
+                    secondary: e.secondaryMuscles,
+                    sex: sex,
+                    semanticLabel: label,
+                  ),
+                ),
+                const SizedBox(height: Space.md),
+                Align(alignment: Alignment.centerLeft, child: legend),
+              ],
+            ),
+    );
+  }
+}
+
+class _Legend extends StatelessWidget {
+  const _Legend({
+    required this.title,
+    required this.muscles,
+    required this.color,
+  });
+
+  final String title;
+  final List<String> muscles;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme tt = context.text;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Container(
+              width: Space.md,
+              height: Space.md,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: Space.sm),
+            Text(
+              title,
+              style: tt.labelLarge!.copyWith(color: context.cs.onSurface),
+            ),
+          ],
+        ),
+        Text(
+          muscles.isEmpty ? 'None' : muscles.map(muscleLabel).join(', '),
+          style: tt.bodyMedium!.copyWith(color: context.cs.onSurfaceVariant),
+        ),
+      ],
+    );
+  }
+}
+
+class _Steps extends StatelessWidget {
+  const _Steps({required this.steps});
+
+  final List<String> steps;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme cs = context.cs;
+    final TextTheme tt = context.text;
+    return Column(
+      children: <Widget>[
+        for (int i = 0; i < steps.length; i++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: Space.md),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: LibrarySpec.stepBadge,
+                  height: LibrarySpec.stepBadge,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: cs.secondaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '${i + 1}',
+                    style: tt.labelLarge!.copyWith(
+                      color: cs.onSecondaryContainer,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: Space.md),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: Space.xs),
+                    child: Text(
+                      steps[i],
+                      style: tt.bodyLarge!.copyWith(color: cs.onSurface),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _Notes extends StatelessWidget {
+  const _Notes({required this.title, required this.icon, required this.items});
+
+  final String title;
+  final IconData icon;
+  final List<String> items;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) return const SizedBox.shrink();
+    final ColorScheme cs = context.cs;
+    return Padding(
+      padding: const EdgeInsets.only(top: Space.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SinewSectionHeader(title: title),
+          SinewGroup(
+            children: <Widget>[
+              for (final String t in items)
+                Padding(
+                  padding: const EdgeInsets.all(Space.cardPadding),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Icon(icon, size: IconSpec.glyph, color: cs.primary),
+                      const SizedBox(width: Space.md),
+                      Expanded(
+                        child: Text(
+                          t,
+                          style: context.text.bodyMedium!.copyWith(
+                            color: cs.onSurface,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// MET, default rest and hold, and where the entry comes from.
+class _Facts extends StatelessWidget {
+  const _Facts({required this.exercise});
+
+  final Exercise exercise;
+
+  @override
+  Widget build(BuildContext context) {
+    final Exercise e = exercise;
+    final ColorScheme cs = context.cs;
+    final TextTheme tt = context.text;
+    final List<(String, String)> rows = <(String, String)>[
+      if (e.metValue != null)
+        ('MET (energy estimate)', e.metValue!.toStringAsFixed(1)),
+      if (e.defaultRestSec != null)
+        ('Default rest', durationLabel(e.defaultRestSec!)),
+      if (e.defaultHoldSec != null)
+        ('Default hold', durationLabel(e.defaultHoldSec!)),
+    ];
+    final String? source = e.isCustom
+        ? 'Your own exercise'
+        : (e.source == null
+              ? null
+              : 'Source: ${e.source}${e.license == null ? '' : ', licence: ${e.license}'}');
+    if (rows.isEmpty && source == null) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (rows.isNotEmpty) ...<Widget>[
+          const SinewSectionHeader(title: 'Details'),
+          SinewGroup(
+            children: <Widget>[
+              for (final (String, String) r in rows)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Space.cardPadding,
+                    vertical: Space.md,
+                  ),
+                  child: MergeSemantics(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            r.$1,
+                            style: tt.bodyMedium!.copyWith(
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          r.$2,
+                          style: tt.titleSmall!.copyWith(color: cs.onSurface),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+        if (source != null) ...<Widget>[
+          const SizedBox(height: Space.md),
+          Text(
+            source,
+            style: tt.bodySmall!.copyWith(color: cs.onSurfaceVariant),
+          ),
+        ],
+      ],
+    );
+  }
+}

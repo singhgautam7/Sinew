@@ -42,6 +42,14 @@ Future<void> _pumpApp(
   await tester.pumpAndSettle();
 }
 
+/// Takes the app down inside the test. Tabs that watch the database cancel
+/// their streams then, and drift closes those on a zero timer, which has to
+/// fire before the test ends.
+Future<void> _unmount(WidgetTester tester) async {
+  await tester.pumpWidget(const SizedBox.shrink());
+  await tester.pump(Duration.zero);
+}
+
 void _usePhone(WidgetTester tester, {double textScale = 1}) {
   tester.view.physicalSize = const Size(360, 780);
   tester.view.devicePixelRatio = 1;
@@ -61,12 +69,16 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.descendant(
-          of: find.byType(SinewAppBar),
+          // The Train tab uses the large page header instead of the bar.
+          of: tab.label == 'Train'
+              ? find.byType(SinewPageHeader)
+              : find.byType(SinewAppBar),
           matching: find.text(tab.label),
         ),
         findsOneWidget,
       );
     }
+    await _unmount(tester);
   });
 
   testWidgets('every tab lays out at 200% text on a 360dp phone', (
@@ -80,6 +92,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: tab.label);
     }
+    await _unmount(tester);
   });
 
   testWidgets('debug screen reports the library as not bundled yet', (

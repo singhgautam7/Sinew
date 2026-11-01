@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'db/library/library_db.dart';
 import 'db/library/library_installer.dart';
 import 'db/repositories/exercise_repository.dart';
+import 'db/repositories/exercise_search_service.dart';
+import 'db/repositories/library_upgrade.dart';
 import 'db/repositories/measurement_repository.dart';
 import 'db/repositories/plate_inventory_repository.dart';
 import 'db/repositories/profile_repository.dart';
@@ -41,9 +45,16 @@ final FutureProvider<LibraryDatabase> libraryDatabaseProvider =
       final LibraryInstaller installer = await ref.watch(
         libraryInstallerProvider.future,
       );
-      final LibraryDatabase db = LibraryDatabase.openReadOnly(
-        await installer.ensureInstalled(),
+      // A library update may drop exercises the user already logged: keep
+      // their names as tombstones so history never goes blank.
+      final LibraryUpgrade upgrade = LibraryUpgrade(
+        custom: ref.watch(customExerciseRepositoryProvider),
       );
+      final File file = await installer.ensureInstalled(
+        beforeReplace: upgrade.snapshot,
+      );
+      await upgrade.complete(file);
+      final LibraryDatabase db = LibraryDatabase.openReadOnly(file);
       ref.onDispose(db.close);
       return db;
     });
@@ -99,5 +110,14 @@ final FutureProvider<ExerciseResolver> exerciseResolverProvider =
       (Ref ref) async => ExerciseResolver(
         custom: ref.watch(customExerciseRepositoryProvider),
         library: await ref.watch(libraryRepositoryProvider.future),
+      ),
+    );
+
+/// Library plus the user's own exercises in one search.
+final FutureProvider<ExerciseSearchService> exerciseSearchServiceProvider =
+    FutureProvider<ExerciseSearchService>(
+      (Ref ref) async => ExerciseSearchService(
+        library: await ref.watch(libraryRepositoryProvider.future),
+        custom: ref.watch(customExerciseRepositoryProvider),
       ),
     );

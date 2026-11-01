@@ -645,3 +645,40 @@ abstract final class ExerciseTileSpec {
   static const double actionGlyph = 20;
   static const double metaGlyph = 16;
 }
+
+// ═════════════════════════════════════════════════════════════════════════
+// Body feature (lib/features/body/). Append-only section.
+// ═════════════════════════════════════════════════════════════════════════
+
+/// Body screens: silhouette sizes, the ratio marker bar, range lengths.
+abstract final class BodySpec {
+  /// The silhouette on the overview and in the compare screen.
+  static const double overviewSilhouetteHeight = 340;
+  static const double compareSilhouetteHeight = 320;
+
+  /// The waist-to-height scale under its value: the bar and its 0.5 marker.
+  static const double ratioBarHeight = 8;
+  static const double ratioMarkerWidth = 3;
+  static const double ratioMarkerHeight = 20;
+
+  /// The scale runs from [ratioMin] to [ratioMax].
+  static const double ratioMin = 0.3;
+  static const double ratioMax = 0.7;
+
+  /// Width of a value and a change column in a table row.
+  static const double tableValueWidth = 72;
+  static const double tableDeltaWidth = 64;
+
+  /// Days covered by each chart range chip.
+  static const int daysMonth = 30;
+  static const int daysQuarter = 91;
+  static const int daysHalfYear = 182;
+  static const int daysYear = 365;
+
+  /// Earliest year the entry date picker offers.
+  static const int firstYear = 2000;
+
+  /// Decimals shown for ratios and for body measurements.
+  static const int ratioDecimals = 2;
+  static const int valueDecimals = 1;
+}

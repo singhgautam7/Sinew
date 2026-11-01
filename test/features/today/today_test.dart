@@ -148,21 +148,31 @@ void main() {
     await closeApp(tester);
   });
 
-  testWidgets('starting the planned routine opens it', (
+  testWidgets('starting the planned routine starts it and opens the workout', (
     WidgetTester tester,
   ) async {
     usePhone(tester);
-    await pumpSinew(
+    final Harness h = await pumpSinew(
       tester,
       clock: _now,
       seed: (UserDatabase db) async {
         await RoutineRepository(db).save(_routine('routine-a', 'Upper A', 0));
       },
     );
-    await tapText(tester, 'Start workout');
-    expect(currentPath(tester), Routes.routine('routine-a'));
-    // Train registers this route; until it does the router shows its own
-    // error page, which is not what this test is about.
+    final Finder start = find.text('Start workout');
+    await reveal(tester, start);
+    await tester.tap(start.first);
+    // The launcher writes to the database, which needs real time.
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    );
+    await tester.pump(const Duration(milliseconds: 400));
+    final WorkoutSession? active = await tester.runAsync<WorkoutSession?>(
+      () => SessionRepository(h.db).active(),
+    );
+    expect(active, isNotNull);
+    expect(active!.routineId, 'routine-a');
+    expect(currentPath(tester), Routes.workout);
     tester.takeException();
     await closeApp(tester);
   });

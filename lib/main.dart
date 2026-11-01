@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +22,8 @@ import 'core/db/repositories/runtime_state_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  // Not awaited: the first frame does not wait for the system bars.
+  unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
   installErrorHandlers();
   // Receives what the timer's background service sends the app.
   FlutterForegroundTask.initCommunicationPort();
@@ -29,13 +32,19 @@ Future<void> main() async {
   // Open only what the first frame needs: settings decide the theme (read
   // synchronously from here on, so no flash), the user database backs every
   // tab. The exercise library opens lazily on first use.
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   final UserDatabase userDb = UserDatabase();
+  final SharedPreferences prefs;
   try {
-    // Forces the open and the migration now, where a failure can be shown,
-    // rather than inside the first screen that reads.
-    await userDb.customSelect('SELECT 1').get();
-    // First run: the built-in measurement fields. Idempotent.
+    // Preferences and the database open side by side. The SELECT forces the
+    // open and the migration now, where a failure can be shown, rather than
+    // inside the first screen that reads.
+    final List<Object> opened = await Future.wait<Object>(<Future<Object>>[
+      SharedPreferences.getInstance(),
+      userDb.customSelect('SELECT 1').get(),
+    ]);
+    prefs = opened.first as SharedPreferences;
+    // First run: the built-in measurement fields. Idempotent, and a single
+    // read once seeded.
     await MeasurementSeed.seed(SeedRepository(userDb));
   } on Object catch (e, st) {
     debugPrint('Sinew: could not open the user database: $e\n$st');

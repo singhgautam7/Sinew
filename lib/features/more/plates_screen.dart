@@ -17,15 +17,10 @@ import '../../core/widgets/sinew_form.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_segmented_control.dart';
 import '../../core/widgets/sinew_states.dart';
+import '../../core/settings/haptics.dart';
 import '../../core/widgets/sinew_settings.dart';
 import '../../engines/plates/plates.dart';
 import 'profile_form.dart';
-
-/// The plate inventory, live.
-final StreamProvider<PlateInventory> plateInventoryProvider =
-    StreamProvider.autoDispose<PlateInventory>(
-      (Ref ref) => ref.watch(plateInventoryRepositoryProvider).watch(),
-    );
 
 /// Common pound plates. Stored as exact kilograms.
 const List<double> kLbPlateSizes = <double>[45, 35, 25, 10, 5, 2.5];
@@ -78,7 +73,9 @@ class PlatesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<PlateInventory> inv = ref.watch(plateInventoryProvider);
+    final AsyncValue<PlateInventory> inv = ref.watch(
+      currentPlateInventoryProvider,
+    );
     return Scaffold(
       appBar: const SinewAppBar(
         title: 'Plates and bars',
@@ -202,7 +199,7 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
                   targetKg: _targetKg,
                   stepKg: inv.machineStepKg,
                   unit: unit,
-                  haptics: false,
+                  haptics: ref.watch(hapticsEnabledProvider),
                 )
               else
                 PlateLoader(
@@ -214,7 +211,7 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
                   targetKg: _targetKg,
                   bar: bar,
                   unit: unit,
-                  haptics: false,
+                  haptics: ref.watch(hapticsEnabledProvider),
                 ),
               const SizedBox(height: Space.md),
               SingleChildScrollView(
@@ -250,7 +247,7 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
                   unit: Units.weightLabel(unit),
                   maxDecimals: 2,
                   semanticLabel: 'Target weight',
-                  haptics: false,
+                  haptics: ref.watch(hapticsEnabledProvider),
                   onChanged: (double v) =>
                       setState(() => _targetKg = Units.toKg(v, unit)),
                 ),
@@ -359,7 +356,7 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
                 unit: Units.weightLabel(unit),
                 maxDecimals: 2,
                 semanticLabel: 'Machine weight step',
-                haptics: false,
+                haptics: ref.watch(hapticsEnabledProvider),
                 onChanged: (double v) =>
                     _save(inv.copyWith(machineStepKg: Units.toKg(v, unit))),
               ),
@@ -371,7 +368,7 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
   }
 }
 
-class _PlateRow extends StatelessWidget {
+class _PlateRow extends ConsumerWidget {
   const _PlateRow({
     super.key,
     required this.kg,
@@ -386,7 +383,7 @@ class _PlateRow extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final PlateColor? colour = context.accents.plate(kg);
     final ColorScheme cs = context.cs;
     final String label = Units.formatWeight(kg, unit, maxDecimals: 2);
@@ -420,7 +417,7 @@ class _PlateRow extends StatelessWidget {
             max: 99,
             maxDecimals: 0,
             semanticLabel: '$label plates',
-            haptics: false,
+            haptics: ref.watch(hapticsEnabledProvider),
             onChanged: (double v) => onChanged(v.round()),
           ),
         ],
@@ -507,6 +504,7 @@ class _BarSheetState extends State<_BarSheet> {
         children: <Widget>[
           SinewTextField(
             key: const ValueKey<String>('bar-name'),
+            textInputAction: TextInputAction.next,
             label: 'Name',
             controller: _name,
             hint: 'Olympic bar',
@@ -516,6 +514,7 @@ class _BarSheetState extends State<_BarSheet> {
           const SizedBox(height: Space.lg),
           SinewTextField.number(
             key: const ValueKey<String>('bar-weight'),
+            textInputAction: TextInputAction.done,
             label: 'Weight',
             controller: _weight,
             suffixText: Units.weightLabel(widget.unit),
@@ -572,6 +571,7 @@ class _PlateSizeSheetState extends State<_PlateSizeSheet> {
       ),
       child: SinewTextField.number(
         key: const ValueKey<String>('plate-weight'),
+        textInputAction: TextInputAction.done,
         label: 'Weight',
         controller: _weight,
         suffixText: Units.weightLabel(widget.unit),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/settings/app_settings.dart';
+import '../../core/settings/haptics.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/theme_families.dart' show SinewPalette;
 import '../../core/theme/wallpaper_seed.dart';
@@ -53,7 +53,9 @@ class ThemeScreen extends ConsumerWidget {
                   family: current,
                   selected: m == s.themeMode,
                   onTap: () {
-                    HapticFeedback.selectionClick();
+                    SinewHaptics.selection(
+                      enabled: ref.read(hapticsEnabledProvider),
+                    );
                     ctl.setThemeMode(m);
                   },
                 ),
@@ -81,7 +83,9 @@ class ThemeScreen extends ConsumerWidget {
                   tone: previewTone,
                   selected: !dynamicOn && f.id == familyById(s.familyId).id,
                   onTap: () {
-                    HapticFeedback.selectionClick();
+                    SinewHaptics.selection(
+                      enabled: ref.read(hapticsEnabledProvider),
+                    );
                     ctl.setDynamicColor(value: false);
                     ctl.setFamily(f.id);
                   },

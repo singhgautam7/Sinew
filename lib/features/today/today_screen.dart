@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/db/repositories/session_repository.dart';
 import '../../core/models/enums.dart';
 import '../../core/models/timer_preset.dart';
 import '../../core/models/training.dart';
@@ -17,11 +16,14 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_icon_button.dart';
 import '../../core/widgets/domain/stat_card.dart';
 import '../../core/widgets/sinew_app_bar.dart';
+import '../../core/widgets/sinew_error_state.dart';
 import '../../core/widgets/sinew_grid.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_states.dart';
 import '../../engines/body_stats/body_stats.dart';
-import 'date_text.dart';
+import '../train/train_actions.dart';
+import '../../core/format/date_text.dart';
+import '../../core/format/number_text.dart';
 import 'today_providers.dart';
 import 'week_strip.dart';
 
@@ -69,12 +71,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       ),
       body: summary.when(
         loading: () => const Delayed(child: _TodaySkeleton()),
-        error: (Object e, StackTrace st) => SinewEmptyState(
-          icon: Icons.error_outline_rounded,
+        error: (Object e, StackTrace st) => SinewErrorState(
           title: 'Could not load Today',
           description: 'Your data is safe. Try again.',
-          actionLabel: 'Try again',
-          onAction: () => ref.invalidate(todaySummaryProvider),
+          onRetry: () => ref.invalidate(todaySummaryProvider),
         ),
         data: (TodaySummary s) => _TodayBody(summary: s),
       ),
@@ -269,13 +269,13 @@ class _CardLabel extends StatelessWidget {
 }
 
 /// The next routine in order, with the one big action.
-class _PlannedCard extends StatelessWidget {
+class _PlannedCard extends ConsumerWidget {
   const _PlannedCard({required this.routine});
 
   final Routine routine;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final int n = routine.items.length;
     return SinewCard(
       hero: true,
@@ -303,7 +303,8 @@ class _PlannedCard extends StatelessWidget {
             icon: Icons.play_arrow_rounded,
             type: AppButtonType.primary,
             fullWidth: true,
-            onPressed: () => context.push(Routes.routine(routine.id)),
+            onPressed: () =>
+                startWorkoutAndOpen(context, ref, routine: routine),
           ),
         ],
       ),
@@ -354,7 +355,7 @@ class _RestCard extends ConsumerWidget {
                 label: 'Start a workout',
                 icon: Icons.play_arrow_rounded,
                 type: AppButtonType.primary,
-                onPressed: () => startEmptyWorkout(context, ref),
+                onPressed: () => startWorkoutAndOpen(context, ref),
               ),
               if (next != null)
                 AppButton(
@@ -368,16 +369,6 @@ class _RestCard extends ConsumerWidget {
       ),
     );
   }
-}
-
-/// Starts (or resumes) an empty workout and opens the logging screen.
-Future<void> startEmptyWorkout(BuildContext context, WidgetRef ref) async {
-  try {
-    await ref.read(sessionRepositoryProvider).start();
-  } on ActiveSessionExists {
-    // Already running: just go back to it.
-  }
-  if (context.mounted) unawaited(context.push<void>(Routes.workout));
 }
 
 class _NewUserCard extends ConsumerWidget {
@@ -412,7 +403,7 @@ class _NewUserCard extends ConsumerWidget {
                 icon: Icons.play_arrow_rounded,
                 type: AppButtonType.primary,
                 fullWidth: true,
-                onPressed: () => startEmptyWorkout(context, ref),
+                onPressed: () => startWorkoutAndOpen(context, ref),
               ),
             ],
           ),
@@ -609,11 +600,12 @@ class _LastSession extends StatelessWidget {
     final List<(String, String)> facts = <(String, String)>[
       if (volume != null && volume > 0)
         (
-          _thousands(Units.fromKg(volume, unit)),
+          NumberText.thousands(Units.fromKg(volume, unit)),
           '${Units.weightLabel(unit)} volume',
         ),
       if (sets > 0) ('$sets', sets == 1 ? 'set' : 'sets'),
-      if (kcal != null && kcal > 0) ('${kcal.round()} kcal', 'est. burned'),
+      if (kcal != null && kcal > 0)
+        ('${kcal.round()} kcal', 'calories, estimate'),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -689,16 +681,6 @@ class _LastSession extends StatelessWidget {
   }
 }
 
-String _thousands(double v) {
-  final String s = v.round().toString();
-  final StringBuffer b = StringBuffer();
-  for (int i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 == 0) b.write(',');
-    b.write(s[i]);
-  }
-  return b.toString();
-}
-
 /// Weight, BMI and body fat from the newest entries, through the engine.
 class _BodyLatest extends ConsumerWidget {
   const _BodyLatest();
@@ -708,12 +690,16 @@ class _BodyLatest extends ConsumerWidget {
     final AsyncValue<TodayBody> body = ref.watch(todayBodyProvider);
     return body.when(
       loading: () => const Delayed(child: SinewSkeletonCard()),
-      error: (Object e, StackTrace st) => const SizedBox.shrink(),
+      error: (Object e, StackTrace st) => SinewErrorState(
+        title: 'Could not load your body numbers',
+        description: 'Your data is safe. Try again.',
+        onRetry: () => ref.invalidate(todayBodyProvider),
+      ),
       data: (TodayBody b) {
         if (!b.hasAny) return const _AddBodyNudge();
         final WeightUnit unit = b.profile.weightUnit;
         final BmiCutoffs cutoffs = b.profile.bmiCutoffs;
-        final bool heightMissing = b.profile.heightCm == null;
+        final bool heightMissing = b.heightCm == null;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[

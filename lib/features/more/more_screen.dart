@@ -36,7 +36,8 @@ class MoreScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final Profile profile = ref.watch(profileProvider).value ?? const Profile();
+    final Profile profile =
+        ref.watch(currentProfileProvider).value ?? const Profile();
     final AppSettings settings = ref.watch(settingsProvider);
     final DateTime? last = ref.watch(lastBackupAtProvider);
     final bool remind = ref.watch(shouldRemindBackupProvider).value ?? false;

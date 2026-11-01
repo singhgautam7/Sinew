@@ -157,9 +157,9 @@ class _QuickProfileScreenState extends ConsumerState<QuickProfileScreen> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                Space.lg,
+                Space.screen,
                 Space.sm,
-                Space.lg,
+                Space.screen,
                 0,
               ),
               child: Row(
@@ -225,6 +225,7 @@ class _QuickProfileScreenState extends ConsumerState<QuickProfileScreen> {
                   const SizedBox(height: Space.xl),
                   SinewTextField.number(
                     key: const ValueKey<String>('onboarding-year'),
+                    textInputAction: TextInputAction.next,
                     label: 'Birth year',
                     optional: true,
                     decimal: false,
@@ -237,6 +238,7 @@ class _QuickProfileScreenState extends ConsumerState<QuickProfileScreen> {
                   const SizedBox(height: Space.lg),
                   SinewTextField.number(
                     key: const ValueKey<String>('onboarding-height'),
+                    textInputAction: TextInputAction.next,
                     label: 'Height',
                     optional: true,
                     controller: _height,
@@ -248,6 +250,7 @@ class _QuickProfileScreenState extends ConsumerState<QuickProfileScreen> {
                   const SizedBox(height: Space.lg),
                   SinewTextField.number(
                     key: const ValueKey<String>('onboarding-weight'),
+                    textInputAction: TextInputAction.done,
                     label: 'Current weight',
                     optional: true,
                     controller: _weight,

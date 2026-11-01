@@ -5,6 +5,7 @@ import 'package:sinew/core/db/user/user_db.dart';
 import 'package:sinew/core/models/enums.dart';
 import 'package:sinew/core/models/profile.dart';
 import 'package:sinew/core/routing/router.dart';
+import 'package:sinew/core/widgets/app_button.dart';
 import 'package:sinew/core/widgets/domain/chart_card.dart';
 import 'package:sinew/core/widgets/domain/silhouette_view.dart';
 import 'package:sinew/core/widgets/sinew_scrubber.dart';
@@ -206,5 +207,19 @@ void main() {
     await tester.drag(find.byType(Scrollable).first, const Offset(0, -2000));
     await settle(tester);
     expect(tester.takeException(), isNull);
+  });
+
+  bodyTest('compare lives in the header, not a button the FAB can cover', (
+    WidgetTester tester,
+  ) async {
+    final UserDatabase database = await seededDb(tester);
+    await _seedHistory(tester, database);
+    await pumpBody(tester, database, profile: _male);
+    expect(find.bySemanticsLabel('Compare dates'), findsOneWidget);
+    expect(find.widgetWithText(AppButton, 'Compare dates'), findsNothing);
+    await tester.tap(find.byIcon(Icons.compare_rounded));
+    await settle(tester);
+    // The Compare screen is open.
+    expect(find.byType(SinewScrubber), findsOneWidget);
   });
 }

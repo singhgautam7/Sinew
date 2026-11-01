@@ -1,3 +1,4 @@
+import '../../core/format/date_text.dart';
 import '../../core/models/enums.dart';
 import '../../core/models/measurement.dart';
 import '../../core/models/profile.dart';
@@ -5,39 +6,16 @@ import '../../core/units/units.dart';
 import '../../core/widgets/domain/field_row.dart';
 import '../../core/widgets/domain/stat_card.dart';
 
-const List<String> _months = <String>[
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
-
 /// The true minus sign, as the design uses for decreases.
 const String kMinus = '−';
 
 /// "31 Oct", or "31 Oct 2025" when it is not this year.
-String bodyDateLabel(DateTime date, DateTime now) {
-  final DateTime d = date.toLocal();
-  final String base = '${d.day} ${_months[d.month - 1]}';
-  return d.year == now.toLocal().year ? base : '$base ${d.year}';
-}
+String bodyDateLabel(DateTime date, DateTime now) =>
+    DateText.dayMonthSmart(date, now);
 
 /// "Today, 31 Oct" for the current day, else [bodyDateLabel].
-String bodyDateLabelLong(DateTime date, DateTime now) {
-  final DateTime d = date.toLocal();
-  final DateTime n = now.toLocal();
-  final String base = bodyDateLabel(date, now);
-  final bool today = d.year == n.year && d.month == n.month && d.day == n.day;
-  return today ? 'Today, $base' : base;
-}
+String bodyDateLabelLong(DateTime date, DateTime now) =>
+    DateText.dayMonthLong(date, now);
 
 /// The date at local midnight, which is how entries are dated.
 DateTime dayOf(DateTime d) {

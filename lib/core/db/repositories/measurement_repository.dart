@@ -29,6 +29,45 @@ class MeasurementRepository {
       .into(_db.measurementFields)
       .insertOnConflictUpdate(_fieldRow(f.copyWith(updatedAt: _clock())));
 
+  /// Saves several fields (a left and right pair) in one transaction, so a
+  /// pair is never half created.
+  Future<void> saveFields(List<MeasurementField> fields) =>
+      _db.transaction(() async {
+        final DateTime now = _clock();
+        for (final MeasurementField f in fields) {
+          await _db
+              .into(_db.measurementFields)
+              .insertOnConflictUpdate(_fieldRow(f.copyWith(updatedAt: now)));
+        }
+      });
+
+  /// Removes several fields (both sides of a pair) in one transaction, by
+  /// the same rule as [removeField] applied to the group: when any of them
+  /// has data, all are archived together; otherwise all are deleted.
+  Future<FieldRemoval> removeFields(List<String> fieldIds) =>
+      _db.transaction(() async {
+        bool anyData = false;
+        for (final String id in fieldIds) {
+          anyData = anyData || await fieldHasData(id);
+        }
+        if (anyData) {
+          await (_db.update(
+            _db.measurementFields,
+          )..where(($MeasurementFieldsTable t) => t.id.isIn(fieldIds))).write(
+            MeasurementFieldsCompanion(
+              archived: const Value<bool>(true),
+              enabled: const Value<bool>(false),
+              updatedAt: Value<DateTime>(_clock()),
+            ),
+          );
+          return FieldRemoval.archived;
+        }
+        await (_db.delete(
+          _db.measurementFields,
+        )..where(($MeasurementFieldsTable t) => t.id.isIn(fieldIds))).go();
+        return FieldRemoval.deleted;
+      });
+
   /// Writes positions in the given order, in one transaction.
   Future<void> reorderFields(List<String> orderedIds) =>
       _db.transaction(() async {
@@ -146,32 +185,35 @@ class MeasurementRepository {
   }
 
   /// Latest value of every field, each from the newest entry that has it
-  /// (body stats read these).
+  /// (body stats read these). One grouped query: only the winning row per
+  /// field leaves the database. Ties on the same date go to the entry saved
+  /// last, then to the greater id, so the answer never depends on row order.
   Future<Map<String, ({double value, DateTime date})>> latestValues() async {
-    final List<TypedResult> rows =
-        await (_db.select(_db.measurementValues).join(
-              <Join<HasResultSet, dynamic>>[
-                innerJoin(
-                  _db.measurementEntries,
-                  _db.measurementEntries.id.equalsExp(
-                    _db.measurementValues.entryId,
-                  ),
-                ),
-              ],
-            )..orderBy(<OrderingTerm>[
-              OrderingTerm.desc(_db.measurementEntries.date),
-            ]))
-            .get();
-    final Map<String, ({double value, DateTime date})> out =
-        <String, ({double value, DateTime date})>{};
-    for (final TypedResult r in rows) {
-      final MeasurementValueRow v = r.readTable(_db.measurementValues);
-      out.putIfAbsent(
-        v.fieldId,
-        () => (value: v.value, date: r.readTable(_db.measurementEntries).date),
-      );
-    }
-    return out;
+    final List<QueryRow> rows = await _db
+        .customSelect(
+          'SELECT v.field_id AS field_id, v.value AS value, e.date AS date '
+          'FROM measurement_values v '
+          'JOIN measurement_entries e ON e.id = v.entry_id '
+          'WHERE NOT EXISTS ('
+          'SELECT 1 FROM measurement_values v2 '
+          'JOIN measurement_entries e2 ON e2.id = v2.entry_id '
+          'WHERE v2.field_id = v.field_id AND ('
+          'e2.date > e.date OR (e2.date = e.date AND ('
+          'e2.updated_at > e.updated_at OR (e2.updated_at = e.updated_at '
+          'AND e2.id > e.id)))))',
+          readsFrom: <ResultSetImplementation<HasResultSet, dynamic>>{
+            _db.measurementValues,
+            _db.measurementEntries,
+          },
+        )
+        .get();
+    return <String, ({double value, DateTime date})>{
+      for (final QueryRow r in rows)
+        r.read<String>('field_id'): (
+          value: r.read<double>('value'),
+          date: r.read<DateTime>('date'),
+        ),
+    };
   }
 
   /// One field's history, oldest first: what a progress chart draws.

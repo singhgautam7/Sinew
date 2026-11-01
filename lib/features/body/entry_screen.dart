@@ -13,6 +13,7 @@ import '../../core/widgets/configs.dart';
 import '../../core/widgets/domain/field_row.dart';
 import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_dialogs.dart';
+import '../../core/widgets/sinew_error_state.dart';
 import '../../core/widgets/sinew_form.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_snackbar.dart';
@@ -141,10 +142,21 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
       note: note.isEmpty ? null : note,
       updatedAt: now,
     );
-    await saveBodyEntry(ref, entry);
-    if (!mounted) return;
-    _dirty = false;
-    context.pop();
+    try {
+      await saveBodyEntry(ref, entry);
+      if (!mounted) return;
+      _dirty = false;
+      context.pop();
+    } on Object {
+      if (!mounted) return;
+      showSinewSnackBar(
+        context,
+        'Could not save this entry. Your values are still here.',
+        isError: true,
+      );
+    } finally {
+      if (mounted && _saving) setState(() => _saving = false);
+    }
   }
 
   Future<void> _delete() async {
@@ -192,7 +204,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
     final AsyncValue<List<MeasurementField>> fieldsAsync = ref.watch(
       bodyFieldsProvider,
     );
-    final AsyncValue<Profile> profileAsync = ref.watch(bodyProfileProvider);
+    final AsyncValue<Profile> profileAsync = ref.watch(currentProfileProvider);
     final AsyncValue<List<MeasurementEntry>> entriesAsync = ref.watch(
       bodyEntriesProvider,
     );
@@ -210,10 +222,14 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
       return Scaffold(
         appBar: SinewAppBar(title: title, showBack: true, closeIcon: true),
         body: error != null
-            ? const SinewEmptyState(
-                icon: Icons.error_outline_rounded,
+            ? SinewErrorState(
                 title: 'Could not load this entry',
-                description: 'Nothing was lost. Go back and try again.',
+                description: 'Nothing was lost. Try again.',
+                onRetry: () {
+                  ref.invalidate(bodyFieldsProvider);
+                  ref.invalidate(currentProfileProvider);
+                  ref.invalidate(bodyEntriesProvider);
+                },
               )
             : const Delayed(child: SinewLoader()),
       );
@@ -272,6 +288,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen> {
             ? signedDisplayDelta(unit, typed - prev.value)
             : null,
         autofocus: f.id == widget.focusFieldId,
+        textInputAction: TextInputAction.next,
         onChanged: (double? v) => setValue(f.id, v),
       );
     }

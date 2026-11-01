@@ -10,6 +10,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/widgets/domain/field_row.dart';
 import '../../core/widgets/domain/silhouette_view.dart';
 import '../../core/widgets/sinew_app_bar.dart';
+import '../../core/widgets/sinew_error_state.dart';
 import '../../core/widgets/sinew_chips.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_scrubber.dart';
@@ -73,10 +74,10 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
       return Scaffold(
         appBar: const SinewAppBar(title: 'Compare', showBack: true),
         body: async.hasError
-            ? const SinewEmptyState(
-                icon: Icons.error_outline_rounded,
+            ? SinewErrorState(
                 title: 'Could not load your entries',
-                description: 'Nothing was lost. Go back and try again.',
+                description: 'Nothing was lost. Try again.',
+                onRetry: () => ref.invalidate(bodyOverviewProvider),
               )
             : const Delayed(child: SinewLoader()),
       );

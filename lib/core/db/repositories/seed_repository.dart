@@ -26,57 +26,70 @@ class SeedRepository {
   Future<int> insertMissingMeasurementFields(
     List<MeasurementField> fields, {
     String markerKey = 'seed.measurementFields',
-  }) => _db.transaction(() async {
-    final RuntimeStateRow? marker =
+  }) async {
+    // Every cold start comes through here: one read, and no transaction at
+    // all once the marker already lists every built-in.
+    final RuntimeStateRow? current =
         await (_db.select(_db.runtimeStates)
               ..where(($RuntimeStatesTable t) => t.key.equals(markerKey)))
             .getSingleOrNull();
-    final Set<String> seeded = _readMarker(marker);
-    final Set<String> existing = <String>{
-      for (final MeasurementFieldRow r
-          in await _db.select(_db.measurementFields).get())
-        r.id,
-    };
-    int inserted = 0;
-    for (final MeasurementField f in fields) {
-      if (seeded.contains(f.id) || existing.contains(f.id)) continue;
-      await _db
-          .into(_db.measurementFields)
-          .insert(
-            MeasurementFieldsCompanion.insert(
-              id: f.id,
-              name: f.name,
-              unitType: f.unitType,
-              customUnit: Value<String?>(f.customUnit),
-              side: Value<BodySide>(f.side),
-              pairId: Value<String?>(f.pairId),
-              bodyAnchor: Value<BodyAnchor?>(f.bodyAnchor),
-              enabled: Value<bool>(f.enabled),
-              position: Value<int>(f.position),
-              builtIn: Value<bool>(f.builtIn),
-              archived: Value<bool>(f.archived),
-              updatedAt: _clock(),
-            ),
-          );
-      inserted++;
-    }
-    final Set<String> all = <String>{...seeded, ...fields.map((f) => f.id)};
-    if (inserted > 0 || all.length != seeded.length) {
-      await _db
-          .into(_db.runtimeStates)
-          .insertOnConflictUpdate(
-            RuntimeStatesCompanion.insert(
-              key: markerKey,
-              payload: jsonEncode(<String, Object?>{
-                'schemaVersion': markerSchemaVersion,
-                'ids': (all.toList()..sort()),
-              }),
-              updatedAt: _clock(),
-            ),
-          );
-    }
-    return inserted;
-  });
+    final Set<String> known = _readMarker(current);
+    if (fields.every((MeasurementField f) => known.contains(f.id))) return 0;
+    return _insertMissing(fields, markerKey);
+  }
+
+  Future<int> _insertMissing(List<MeasurementField> fields, String markerKey) =>
+      _db.transaction(() async {
+        final RuntimeStateRow? marker =
+            await (_db.select(_db.runtimeStates)
+                  ..where(($RuntimeStatesTable t) => t.key.equals(markerKey)))
+                .getSingleOrNull();
+        final Set<String> seeded = _readMarker(marker);
+        final Set<String> existing = <String>{
+          for (final MeasurementFieldRow r
+              in await _db.select(_db.measurementFields).get())
+            r.id,
+        };
+        int inserted = 0;
+        for (final MeasurementField f in fields) {
+          if (seeded.contains(f.id) || existing.contains(f.id)) continue;
+          await _db
+              .into(_db.measurementFields)
+              .insert(
+                MeasurementFieldsCompanion.insert(
+                  id: f.id,
+                  name: f.name,
+                  unitType: f.unitType,
+                  customUnit: Value<String?>(f.customUnit),
+                  side: Value<BodySide>(f.side),
+                  pairId: Value<String?>(f.pairId),
+                  bodyAnchor: Value<BodyAnchor?>(f.bodyAnchor),
+                  enabled: Value<bool>(f.enabled),
+                  position: Value<int>(f.position),
+                  builtIn: Value<bool>(f.builtIn),
+                  archived: Value<bool>(f.archived),
+                  updatedAt: _clock(),
+                ),
+              );
+          inserted++;
+        }
+        final Set<String> all = <String>{...seeded, ...fields.map((f) => f.id)};
+        if (inserted > 0 || all.length != seeded.length) {
+          await _db
+              .into(_db.runtimeStates)
+              .insertOnConflictUpdate(
+                RuntimeStatesCompanion.insert(
+                  key: markerKey,
+                  payload: jsonEncode(<String, Object?>{
+                    'schemaVersion': markerSchemaVersion,
+                    'ids': (all.toList()..sort()),
+                  }),
+                  updatedAt: _clock(),
+                ),
+              );
+        }
+        return inserted;
+      });
 
   static Set<String> _readMarker(RuntimeStateRow? row) {
     if (row == null) return <String>{};

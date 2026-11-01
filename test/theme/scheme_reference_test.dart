@@ -35,7 +35,7 @@ void _expectScheme(
 }
 
 void main() {
-  final MullFamily sinew = MullFamily.sinew;
+  const MullFamily sinew = MullFamily.sinew;
 
   group('Sinew scheme reproduces the handoff reference values', () {
     test('light, within $kTolerance per channel', () {

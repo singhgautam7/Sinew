@@ -227,7 +227,10 @@ abstract final class Sizes {
   // Header (app bar).
   static const double headerTop = 14;
   static const double headerRow = 48;
-  static const double headerSubtitle = 12;
+
+  /// Extra height a one-line bodyMedium subtitle adds to the header (20 for
+  /// the line, less the 4 the bottom padding shrinks by).
+  static const double headerSubtitle = 16;
   static const double headerGap = 6;
   static const double headerSubtitleLift = 4;
 

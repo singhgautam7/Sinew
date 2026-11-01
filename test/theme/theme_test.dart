@@ -7,8 +7,6 @@ import 'package:sinew/core/settings/app_settings.dart';
 import 'package:sinew/core/theme/accents.dart';
 import 'package:sinew/core/theme/app_theme.dart';
 import 'package:sinew/core/theme/oklch.dart';
-import 'package:sinew/core/theme/palette.dart';
-import 'package:sinew/core/theme/theme_families.dart';
 import 'package:sinew/core/theme/wallpaper_seed.dart';
 
 Future<ProviderContainer> _container({

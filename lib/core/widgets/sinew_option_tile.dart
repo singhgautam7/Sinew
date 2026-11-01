@@ -35,7 +35,7 @@ class SinewOptionTile extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: Radii.largeR,
           side: BorderSide(
-            color: selected ? cs.secondaryContainer : cs.outlineVariant,
+            color: selected ? cs.secondaryContainer : cs.outline,
           ),
         ),
         clipBehavior: Clip.antiAlias,

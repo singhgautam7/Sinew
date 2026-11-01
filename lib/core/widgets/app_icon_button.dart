@@ -116,8 +116,8 @@ class AppIconButton extends StatelessWidget {
             child: IgnorePointer(
               child: AnimatedSwitcher(
                 duration: Motion.of(context, Motion.segment),
-                switchInCurve: Motion.spring,
-                switchOutCurve: Curves.easeIn,
+                switchInCurve: Motion.curveOf(context, Motion.spring),
+                switchOutCurve: Motion.curveOf(context, Motion.accelerate),
                 transitionBuilder: (Widget child, Animation<double> anim) =>
                     ScaleTransition(scale: anim, child: child),
                 child: !hasBadge

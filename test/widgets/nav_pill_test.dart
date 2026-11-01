@@ -162,23 +162,36 @@ void main() {
     }
   });
 
-  testWidgets('geometry: 56 tall, 40 idle items two apart', (
+  testWidgets('geometry: 56 tall, 40 drawn indicators, 48 wide hit areas', (
     WidgetTester tester,
   ) async {
     await pumpThemed(tester, _bar(index: 0), scaffold: false);
     expect(tester.getSize(find.byType(SinewNavPill)).height, 56);
-    final double train = tester
-        .getSize(find.byKey(const ValueKey<String>('nav-Train')))
-        .width;
-    final double timer = tester
-        .getSize(find.byKey(const ValueKey<String>('nav-Timer')))
-        .width;
-    expect(train, 40);
-    expect(timer, 40);
-    final double gap =
-        tester.getTopLeft(find.byKey(const ValueKey<String>('nav-Timer'))).dx -
-        tester.getTopRight(find.byKey(const ValueKey<String>('nav-Train'))).dx;
-    expect(gap, 2);
+    for (final String l in <String>['Train', 'Timer', 'Body', 'More']) {
+      final Finder item = find.byKey(ValueKey<String>('nav-$l'));
+      // The hit area (the whole item) is at least 48 x 48 ...
+      expect(tester.getSize(item).width, greaterThanOrEqualTo(48));
+      expect(tester.getSize(item).height, greaterThanOrEqualTo(48));
+      // ... and the drawn indicator inside it is still 40.
+      final Finder drawn = find.descendant(
+        of: item,
+        matching: find.byType(AnimatedContainer),
+      );
+      expect(tester.getSize(drawn).width, 40);
+      expect(tester.getSize(drawn).height, 40);
+    }
+  });
+
+  testWidgets('a tap in the slop beside an idle indicator still selects it', (
+    WidgetTester tester,
+  ) async {
+    final List<int> picked = <int>[];
+    await pumpThemed(tester, _bar(onSelect: picked.add), scaffold: false);
+    final Rect r = tester.getRect(
+      find.byKey(const ValueKey<String>('nav-Train')),
+    );
+    await tester.tapAt(Offset(r.left + 2, r.center.dy));
+    expect(picked, <int>[1]);
   });
 
   testWidgets('the label drops at large text and the pill never overflows', (
@@ -199,7 +212,7 @@ void main() {
     await pumpThemed(tester, _bar(index: 3), scaffold: false);
     expect(
       tester.getSize(find.byType(SinewNavPill)).width,
-      lessThanOrEqualTo(360 - 32),
+      lessThanOrEqualTo(360 - 24),
     );
     expect(_inPill(find.text('Body')), findsOneWidget);
   });

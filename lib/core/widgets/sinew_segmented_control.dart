@@ -37,80 +37,87 @@ class SinewSegmentedControl<T> extends StatelessWidget {
 
     // The outline is a foreground decoration so the selected segment's fill
     // sits inside it instead of painting over the stadium edge.
+    // Minimum height, so large text grows the control instead of clipping.
     final Widget bar = Container(
-      height: Sizes.segmented,
+      constraints: const BoxConstraints(minHeight: Sizes.segmented),
       decoration: const BoxDecoration(borderRadius: Radii.fullR),
       foregroundDecoration: BoxDecoration(
         borderRadius: Radii.fullR,
         border: Border.all(color: cs.outline),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Row(
-        mainAxisSize: compact ? MainAxisSize.min : MainAxisSize.max,
-        children: List<Widget>.generate(values.length, (int i) {
-          final bool isSelected = values[i] == selected;
-          final Color fg = isSelected
-              ? cs.onSecondaryContainer
-              : cs.onSurface.withValues(
-                  alpha: enabled ? 1.0 : Opacities.disabled,
-                );
-          final Widget segment = Semantics(
-            button: true,
-            selected: isSelected,
-            enabled: enabled,
-            label: labels[i],
-            excludeSemantics: true,
-            onTap: enabled ? () => onSelected(values[i]) : null,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: compact ? MainAxisSize.min : MainAxisSize.max,
+          children: List<Widget>.generate(values.length, (int i) {
+            final bool isSelected = values[i] == selected;
+            final Color fg = isSelected
+                ? cs.onSecondaryContainer
+                : cs.onSurface.withValues(
+                    alpha: enabled ? 1.0 : Opacities.disabled,
+                  );
+            final Widget segment = Semantics(
+              button: true,
+              selected: isSelected,
+              enabled: enabled,
+              label: labels[i],
+              excludeSemantics: true,
               onTap: enabled ? () => onSelected(values[i]) : null,
-              child: AnimatedContainer(
-                duration: Motion.of(context, Motion.segment),
-                curve: Motion.curveOf(context, Motion.decelerate),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? (enabled
-                            ? cs.secondaryContainer
-                            : cs.onSurface.withValues(
-                                alpha: Opacities.disabledFill,
-                              ))
-                      : Colors.transparent,
-                  border: i == 0
-                      ? null
-                      : Border(left: BorderSide(color: cs.outline)),
-                ),
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(
-                  horizontal: compact ? Space.md + Space.xxs : Space.sm,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    if (isSelected &&
-                        showCheck &&
-                        values.length < Sizes.segmentedNoCheckFrom) ...<Widget>[
-                      Icon(
-                        Icons.check_rounded,
-                        size: IconSpec.small,
-                        color: fg,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: enabled ? () => onSelected(values[i]) : null,
+                child: AnimatedContainer(
+                  duration: Motion.of(context, Motion.segment),
+                  curve: Motion.curveOf(context, Motion.decelerate),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (enabled
+                              ? cs.secondaryContainer
+                              : cs.onSurface.withValues(
+                                  alpha: Opacities.disabledFill,
+                                ))
+                        : Colors.transparent,
+                    border: i == 0
+                        ? null
+                        : Border(left: BorderSide(color: cs.outline)),
+                  ),
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: compact ? Space.md + Space.xxs : Space.sm,
+                    vertical: Space.xs,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      if (isSelected &&
+                          showCheck &&
+                          values.length <
+                              Sizes.segmentedNoCheckFrom) ...<Widget>[
+                        Icon(
+                          Icons.check_rounded,
+                          size: IconSpec.small,
+                          color: fg,
+                        ),
+                        const SizedBox(width: Space.xs + Space.xxs),
+                      ],
+                      Flexible(
+                        child: Text(
+                          labels[i],
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: tt.labelLarge?.copyWith(color: fg),
+                        ),
                       ),
-                      const SizedBox(width: Space.xs + Space.xxs),
                     ],
-                    Flexible(
-                      child: Text(
-                        labels[i],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: tt.labelLarge?.copyWith(color: fg),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          );
-          return compact ? segment : Expanded(child: segment);
-        }),
+            );
+            return compact ? segment : Expanded(child: segment);
+          }),
+        ),
       ),
     );
     return MinTapTarget(child: bar);

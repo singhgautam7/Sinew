@@ -89,6 +89,11 @@ class _SinewExtendedFabState extends State<SinewExtendedFab> {
   Widget build(BuildContext context) {
     final ColorScheme cs = context.cs;
     final bool reduced = Motion.reduced(context);
+    // Above this text scale the label would not fit beside the icon on a
+    // phone: collapse to the icon, keeping the label for a11y and tooltip.
+    final bool iconOnly =
+        MediaQuery.textScalerOf(context).scale(Sizes.fabCollapseProbe) >
+        Sizes.fabCollapseProbe * Sizes.fabCollapseScale;
     return ValueListenableBuilder<bool>(
       valueListenable: sinewFabVisible,
       builder: (BuildContext context, bool visible, Widget? child) =>
@@ -115,27 +120,43 @@ class _SinewExtendedFabState extends State<SinewExtendedFab> {
             onTap: widget.onPressed,
             child: Container(
               height: Sizes.fab,
-              padding: const EdgeInsets.only(
-                left: Sizes.fabPadLeft,
-                right: Sizes.fabPadRight,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(
-                    widget.icon,
-                    size: IconSpec.size,
-                    color: cs.onPrimaryContainer,
-                  ),
-                  const SizedBox(width: Sizes.fabGap),
-                  Text(
-                    widget.label,
-                    style: context.text.labelLarge!.copyWith(
-                      color: cs.onPrimaryContainer,
+              width: iconOnly ? Sizes.fab : null,
+              padding: iconOnly
+                  ? null
+                  : const EdgeInsets.only(
+                      left: Sizes.fabPadLeft,
+                      right: Sizes.fabPadRight,
                     ),
-                  ),
-                ],
-              ),
+              child: iconOnly
+                  ? Tooltip(
+                      message: widget.label,
+                      child: Icon(
+                        widget.icon,
+                        size: IconSpec.size,
+                        color: cs.onPrimaryContainer,
+                      ),
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(
+                          widget.icon,
+                          size: IconSpec.size,
+                          color: cs.onPrimaryContainer,
+                        ),
+                        const SizedBox(width: Sizes.fabGap),
+                        Flexible(
+                          child: Text(
+                            widget.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: context.text.labelLarge!.copyWith(
+                              color: cs.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
             ),
           ),
         ),

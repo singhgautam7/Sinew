@@ -73,11 +73,18 @@ class AppShell extends ConsumerWidget {
     // Going back up lays out every row on the way, so never jump: longer trips
     // get more frames and an even-speed curve keeps the rows per frame small.
     final double screens = (p.pixels - p.minScrollExtent) / p.viewportDimension;
-    final int ms = (250 + screens * 40).clamp(250, 800).round();
+    if (Motion.reduced(nav)) {
+      p.jumpTo(p.minScrollExtent);
+      return;
+    }
+    final int ms =
+        (Motion.scrollTopBaseMs + screens * Motion.scrollTopPerScreenMs)
+            .clamp(Motion.scrollTopBaseMs, Motion.scrollTopMaxMs)
+            .round();
     p.animateTo(
       p.minScrollExtent,
       duration: Duration(milliseconds: ms),
-      curve: Curves.easeInOutSine,
+      curve: Motion.scrollTop,
     );
   }
 

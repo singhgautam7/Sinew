@@ -3,7 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sinew/core/db/repositories/library_types.dart';
 import 'package:sinew/core/models/enums.dart';
 import 'package:sinew/core/models/exercise.dart';
+import 'package:sinew/core/db/repositories/routine_repository.dart';
+import 'package:sinew/core/models/training.dart';
 import 'package:sinew/core/routing/router.dart';
+import 'package:sinew/core/widgets/app_button.dart';
 import 'package:sinew/core/widgets/sinew_chips.dart';
 
 import 'library_harness.dart';
@@ -139,10 +142,88 @@ void main() {
       expect(find.textContaining('Bench Press'), findsWidgets);
       expect(find.text('Primary'), findsOneWidget);
       expect(find.text('Chest'), findsWidgets);
+      await tester.scrollUntilVisible(
+        find.text('STEPS'),
+        300,
+        scrollable: vScroll.first,
+      );
       expect(find.text('STEPS'), findsOneWidget);
       await tester.tap(find.text('History'));
       await tester.pumpAndSettle();
       expect(find.text('history $id'), findsOneWidget);
+    });
+
+    libraryTest('Add to routine appends the exercise with its defaults', (
+      WidgetTester tester,
+      LibraryEnv env,
+    ) async {
+      final RoutineRepository routines = RoutineRepository(env.userDb);
+      final DateTime now = DateTime.utc(2026, 1, 1);
+      final Routine r = await routines.save(
+        Routine(id: 'r1', name: 'Push day', createdAt: now, updatedAt: now),
+      );
+      final String id = await idOf(env, 'bench press');
+      final Exercise? ex = await env.repo.byId(id);
+      await pumpLibraryRoute(tester, env, Routes.exercise(id));
+      await tester.tap(find.widgetWithText(AppButton, 'Add to routine'));
+      await tester.pumpAndSettle();
+      expect(find.text('Push day'), findsOneWidget);
+      expect(find.text('New routine'), findsOneWidget);
+      await tester.tap(find.text('Push day'));
+      // The save runs on real async I/O.
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 300)),
+      );
+      // Not pumpAndSettle: it would run past the snackbar's 7 s life.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final Routine saved = (await tester.runAsync<Routine?>(
+        () => routines.byId(r.id),
+      ))!;
+      expect(saved.items, hasLength(1));
+      expect(saved.items.single.exerciseId, id);
+      expect(saved.items.single.targetSets, 3);
+      expect(saved.items.single.restSec, ex?.defaultRestSec);
+      expect(find.text('Added to Push day'), findsOneWidget);
+
+      await tester.tap(find.text('Open'));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pumpAndSettle();
+      expect(find.text('routine page r1'), findsOneWidget);
+    });
+
+    libraryTest('Add to routine offers New routine', (
+      WidgetTester tester,
+      LibraryEnv env,
+    ) async {
+      final String id = await idOf(env, 'bench press');
+      await pumpLibraryRoute(tester, env, Routes.exercise(id));
+      await tester.tap(find.widgetWithText(AppButton, 'Add to routine'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(AppButton, 'New routine'));
+      await tester.pumpAndSettle();
+      expect(find.text('new routine page'), findsOneWidget);
+    });
+
+    libraryTest('a pose offers Add to flow or routine', (
+      WidgetTester tester,
+      LibraryEnv env,
+    ) async {
+      final String id = await idOf(env, 'big toe pose');
+      await pumpLibraryRoute(tester, env, Routes.exercise(id));
+      expect(find.text('Add to flow or routine'), findsOneWidget);
+    });
+
+    libraryTest('the search field shows the library count', (
+      WidgetTester tester,
+      LibraryEnv env,
+    ) async {
+      await pumpLibraryRoute(tester, env, Routes.library);
+      expect(
+        find.textContaining(RegExp(r'Search [\d,]+ exercises')),
+        findsOneWidget,
+      );
     });
 
     libraryTest('a yoga pose uses the pose layout', (

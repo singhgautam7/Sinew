@@ -143,6 +143,13 @@ abstract final class Motion {
   static const Curve accelerate = Curves.easeInCubic;
   static const Curve standard = Curves.easeInOut;
 
+  /// Re-tapping the active tab: scroll to the top. Even-speed curve, longer
+  /// trips get more time (milliseconds: base + screens * per screen, capped).
+  static const Curve scrollTop = Curves.easeInOutSine;
+  static const int scrollTopBaseMs = 250;
+  static const int scrollTopPerScreenMs = 40;
+  static const int scrollTopMaxMs = 800;
+
   /// Under OS reduced motion: transforms become cross-fades, springs go linear.
   static const Duration reducedFade = Duration(milliseconds: 90);
 
@@ -188,6 +195,9 @@ abstract final class Sizes {
   static const double navPillHeight = 56;
   static const double navItem = 40;
   static const double navItemGap = 2;
+
+  /// Transparent hit slop per side so an unselected item is 48 wide.
+  static const double navHitInset = 4;
   static const double navPadding = 8;
 
   /// Border of the pill, both sides.
@@ -268,6 +278,10 @@ abstract final class Sizes {
   static const double fabPadLeft = 16;
   static const double fabPadRight = 20;
   static const double fabGap = 8;
+
+  /// Text scale above which the extended FAB collapses to its icon.
+  static const double fabCollapseScale = 1.3;
+  static const double fabCollapseProbe = 14;
 
   /// Gap between the nav pill and an extended FAB above it.
   static const double fabNavGap = 22;

@@ -121,7 +121,19 @@ void main() {
         const SinewChip(label: 'Strength', selected: true),
       );
       expect(find.byIcon(Icons.check_rounded), findsOneWidget);
-      expect(tester.getSize(find.byType(SinewChip)).height, 32);
+      // Drawn 32 high inside a 48 high hit area.
+      expect(tester.getSize(find.byType(SinewChip)).height, 48);
+      expect(
+        tester
+            .getSize(
+              find.descendant(
+                of: find.byType(SinewChip),
+                matching: find.byType(InkWell),
+              ),
+            )
+            .height,
+        32,
+      );
     });
 
     testWidgets('unselected has no check and taps through', (

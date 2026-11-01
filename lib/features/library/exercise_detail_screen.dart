@@ -17,6 +17,7 @@ import '../../core/widgets/sinew_form.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_snackbar.dart';
 import '../../core/widgets/sinew_states.dart';
+import 'add_to_routine.dart';
 import 'library_labels.dart';
 import 'library_providers.dart';
 
@@ -65,8 +66,12 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen> {
         .read(customExerciseRepositoryProvider)
         .setArchived(e.id, archived: true);
     if (!mounted) return;
-    showSinewSnackBar(context, 'Archived ${e.name}');
     ref.invalidate(libraryExerciseProvider(e.id));
+    showSinewUndoSnackBar(
+      context,
+      'Archived ${e.name}',
+      onUndo: () => _restore(e),
+    );
   }
 
   Future<void> _restore(Exercise e) async {
@@ -271,14 +276,15 @@ class _Detail extends ConsumerWidget {
   }
 }
 
-class _ActionBar extends StatelessWidget {
+class _ActionBar extends ConsumerWidget {
   const _ActionBar({required this.exercise});
 
   final Exercise exercise;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme cs = context.cs;
+    final bool removed = exercise.category == 'removed';
     return Container(
       decoration: BoxDecoration(
         color: cs.surface,
@@ -292,31 +298,48 @@ class _ActionBar extends StatelessWidget {
         Space.screen,
         Space.lg + MediaQuery.of(context).padding.bottom,
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          if (exercise.isCustom) ...<Widget>[
-            Expanded(
-              child: AppButton(
-                label: 'Edit',
-                type: AppButtonType.outline,
-                icon: Icons.edit_outlined,
-                fullWidth: true,
-                onPressed: () =>
-                    context.push(Routes.editCustomExercise(exercise.id)),
-              ),
-            ),
-            const SizedBox(width: Space.md),
-          ],
-          Expanded(
-            flex: exercise.isCustom ? 1 : 1,
-            child: AppButton(
-              label: 'History',
+          if (!removed) ...<Widget>[
+            AppButton(
+              label: _isPose(exercise)
+                  ? 'Add to flow or routine'
+                  : 'Add to routine',
               type: AppButtonType.primary,
-              icon: Icons.history_rounded,
+              icon: Icons.playlist_add_rounded,
               fullWidth: true,
-              onPressed: () =>
-                  context.push(Routes.exerciseHistory(exercise.id)),
+              onPressed: () => addExerciseToRoutineFlow(context, ref, exercise),
             ),
+            const SizedBox(height: Space.sm),
+          ],
+          Row(
+            children: <Widget>[
+              if (exercise.isCustom) ...<Widget>[
+                Expanded(
+                  child: AppButton(
+                    label: 'Edit',
+                    type: AppButtonType.outline,
+                    icon: Icons.edit_outlined,
+                    fullWidth: true,
+                    onPressed: () =>
+                        context.push(Routes.editCustomExercise(exercise.id)),
+                  ),
+                ),
+                const SizedBox(width: Space.md),
+              ],
+              Expanded(
+                child: AppButton(
+                  label: 'History',
+                  type: AppButtonType.outline,
+                  icon: Icons.history_rounded,
+                  fullWidth: true,
+                  onPressed: () =>
+                      context.push(Routes.exerciseHistory(exercise.id)),
+                ),
+              ),
+            ],
           ),
         ],
       ),

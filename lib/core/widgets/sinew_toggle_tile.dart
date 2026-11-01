@@ -31,7 +31,7 @@ class SinewToggleTile extends StatelessWidget {
     final ColorScheme cs = context.cs;
     final Color bg = value ? cs.primaryContainer : cs.surfaceContainer;
     final Color fg = value ? cs.onPrimaryContainer : cs.onSurfaceVariant;
-    final Color border = value ? cs.primary : cs.outlineVariant;
+    final Color border = value ? cs.primary : cs.outline;
     return Semantics(
       button: true,
       toggled: value,

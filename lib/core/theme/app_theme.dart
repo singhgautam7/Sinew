@@ -181,7 +181,7 @@ abstract final class AppTheme {
         side: WidgetStateBorderSide.resolveWith(
           (Set<WidgetState> s) => s.contains(WidgetState.selected)
               ? BorderSide.none
-              : BorderSide(color: cs.outlineVariant),
+              : BorderSide(color: cs.outline),
         ),
         checkmarkColor: cs.onSecondaryContainer,
         labelStyle: labelLarge.copyWith(color: cs.onSurfaceVariant),
@@ -244,7 +244,7 @@ abstract final class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: cs.onSurface,
-          side: BorderSide(color: cs.outlineVariant),
+          side: BorderSide(color: cs.outline),
           shape: stadium,
           minimumSize: buttonMin,
           padding: buttonPad,
@@ -410,6 +410,10 @@ extension SinewThemeContext on BuildContext {
     letterSpacing: SinewType.sectionTracking,
     color: Theme.of(this).colorScheme.onSurfaceVariant,
   );
+
+  /// labelLarge at w700, in the on-surface colour.
+  TextStyle get labelBold =>
+      SinewType.labelBold.copyWith(color: Theme.of(this).colorScheme.onSurface);
 
   /// Numeric readout (JetBrains Mono), in the on-surface colour.
   TextStyle get mono =>

@@ -214,6 +214,9 @@ void main() {
       find.byType(ListView),
       const Offset(0, -200),
     );
+    // Clear the bottom bar before tapping.
+    await tester.drag(find.byType(ListView), const Offset(0, -200));
+    await tester.pump();
     await tester.tap(find.byKey(const ValueKey<String>('effort-7')));
     await env.settle(tester);
     expect((await env.sessions.byId(done.id))!.perceivedEffort, 7);

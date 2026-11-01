@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/db/repositories/library_types.dart';
+import '../../core/models/enums.dart';
 import '../../core/models/exercise.dart';
 import '../../core/routing/router.dart';
 import '../../core/theme/app_theme.dart';
@@ -180,7 +181,7 @@ class _FlowBody extends ConsumerWidget {
           icon: Icons.play_arrow_rounded,
           fullWidth: true,
           onPressed: () => context.push(
-            '${Routes.timerSetup('yogaFlow')}?flow=${Uri.encodeQueryComponent(flow.id)}',
+            Routes.timerSetup(TimerMode.yogaFlow.name, flowId: flow.id),
           ),
         ),
       ),

@@ -58,9 +58,16 @@ abstract final class Routes {
 
   // ── Timer ───────────────────────────────────────────────────────────────
   /// Setup for a mode (`TimerMode.name`), optionally from a saved preset.
-  static String timerSetup(String mode, {String? presetId}) => presetId == null
-      ? '/timer/setup/$mode'
-      : '/timer/setup/$mode?preset=$presetId';
+  static String timerSetup(String mode, {String? presetId, String? flowId}) {
+    final Map<String, String> q = <String, String>{
+      'preset': ?presetId,
+      'flow': ?flowId,
+    };
+    return Uri(
+      path: '/timer/setup/$mode',
+      queryParameters: q.isEmpty ? null : q,
+    ).toString();
+  }
 
   /// The running timer (root, nav hidden).
   static const String timerRun = '/timer-run';

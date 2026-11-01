@@ -42,6 +42,13 @@ Future<void> _pumpApp(
   await tester.pumpAndSettle();
 }
 
+/// Body watches database streams; unmounting lets their clean-up timers fire
+/// before the framework checks for stray timers.
+Future<void> _unmount(WidgetTester tester) async {
+  await tester.pumpWidget(const SizedBox());
+  await tester.pump(const Duration(milliseconds: 50));
+}
+
 void _usePhone(WidgetTester tester, {double textScale = 1}) {
   tester.view.physicalSize = const Size(360, 780);
   tester.view.devicePixelRatio = 1;
@@ -61,12 +68,16 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.descendant(
-          of: find.byType(SinewAppBar),
+          // The Body tab opens with a page header, not an app bar.
+          of: tab.label == 'Body'
+              ? find.byType(SinewPageHeader)
+              : find.byType(SinewAppBar),
           matching: find.text(tab.label),
         ),
         findsOneWidget,
       );
     }
+    await _unmount(tester);
   });
 
   testWidgets('every tab lays out at 200% text on a 360dp phone', (
@@ -80,6 +91,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: tab.label);
     }
+    await _unmount(tester);
   });
 
   testWidgets('debug screen reports the library as not bundled yet', (
@@ -154,7 +166,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       find.descendant(
-        of: find.byType(SinewAppBar),
+        of: find.byType(SinewPageHeader),
         matching: find.text('Body'),
       ),
       findsOneWidget,
@@ -169,6 +181,7 @@ void main() {
       ),
       findsOneWidget,
     );
+    await _unmount(tester);
   });
 
   testWidgets('re-tapping the current tab keeps it on screen', (

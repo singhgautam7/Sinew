@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/routing/router.dart';
@@ -16,6 +17,6 @@ final List<RouteBase> todayRootRoutes = <RouteBase>[
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
     path: Routes.search,
-    builder: (context, state) => const SearchScreen(),
+    builder: (BuildContext c, GoRouterState s) => const SearchScreen(),
   ),
 ];

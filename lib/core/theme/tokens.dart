@@ -663,6 +663,10 @@ abstract final class TodaySpec {
   /// The glyph disc in a hero or empty card.
   static const double heroGlyph = 48;
 
+  /// The brand mark: corner radius and glyph as a share of the tile.
+  static const double brandRadiusRatio = 0.3;
+  static const double brandGlyphRatio = 0.55;
+
   /// Longest line of body text on a first-run screen.
   static const double readableWidth = 420;
 
@@ -699,4 +703,14 @@ abstract final class MoreSpec {
 
   /// Rest time step in Settings, in seconds.
   static const int restStep = 15;
+}
+
+/// Settings screen choices.
+abstract final class SettingsSpec {
+  /// 0.85 to 1.3 in steps of 0.05.
+  static const int textScaleDivisions = 9;
+
+  /// Weight step presets, in the unit's own terms.
+  static const List<double> kgSteps = <double>[1, 1.25, 2.5, 5];
+  static const List<double> lbSteps = <double>[2.5, 5, 10];
 }

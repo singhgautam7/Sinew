@@ -84,8 +84,13 @@ void main() {
     testWidgets('pulses while animations are on', (WidgetTester tester) async {
       await pumpThemed(tester, const SinewSkeleton(width: 100, height: 16));
       await tester.pump(const Duration(milliseconds: 600));
-      final Opacity o = tester.widget(find.byType(Opacity));
-      expect(o.opacity, lessThan(1));
+      final FadeTransition o = tester.widget(
+        find.descendant(
+          of: find.byType(SinewSkeleton),
+          matching: find.byType(FadeTransition),
+        ),
+      );
+      expect(o.opacity.value, lessThan(1));
     });
 
     testWidgets('holds still under reduced motion', (
@@ -97,8 +102,13 @@ void main() {
         disableAnimations: true,
       );
       await tester.pump(const Duration(milliseconds: 600));
-      final Opacity o = tester.widget(find.byType(Opacity));
-      expect(o.opacity, 1);
+      final FadeTransition o = tester.widget(
+        find.descendant(
+          of: find.byType(SinewSkeleton),
+          matching: find.byType(FadeTransition),
+        ),
+      );
+      expect(o.opacity.value, 1);
       await tester.pumpAndSettle();
     });
 

@@ -231,6 +231,25 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testApp('re-tapping the current tab jumps to the top under reduced motion', (
+    WidgetTester tester,
+  ) async {
+    _usePhone(tester);
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await _pumpApp(tester);
+    final Finder scrollable = find.byType(Scrollable).first;
+    final ScrollableState state = tester.state<ScrollableState>(scrollable);
+    state.position.jumpTo(state.position.maxScrollExtent);
+    await tester.pump();
+    expect(state.position.pixels, greaterThan(0));
+    await tester.tap(find.byKey(const ValueKey<String>('nav-Today')));
+    // One frame is enough: no animation to wait for.
+    await tester.pump();
+    expect(state.position.pixels, 0);
+  });
+
   testApp('the pill drops its label at 200% text but keeps five tabs', (
     WidgetTester tester,
   ) async {

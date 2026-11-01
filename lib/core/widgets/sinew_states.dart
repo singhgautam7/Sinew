@@ -84,26 +84,20 @@ class SinewEmptyState extends StatelessWidget {
   }
 }
 
-/// A muted rounded rectangle that pulses opacity (no shimmer sweep): the one
-/// loading primitive. Under reduced motion it holds still at full opacity.
-class SinewSkeleton extends StatefulWidget {
-  const SinewSkeleton({
-    super.key,
-    this.width,
-    required this.height,
-    this.borderRadius = Radii.medium,
-  });
+/// Owns one pulse animation shared by every [SinewSkeleton] below it, so a
+/// screen of skeletons runs one controller and one opacity layer per bar via
+/// `FadeTransition`, not one ticker and one rebuilt `Opacity` each. Skeleton
+/// rows and cards add it themselves; a bare [SinewSkeleton] adds its own.
+class SinewSkeletonPulse extends StatefulWidget {
+  const SinewSkeletonPulse({super.key, required this.child});
 
-  /// Null fills the available width.
-  final double? width;
-  final double height;
-  final double borderRadius;
+  final Widget child;
 
   @override
-  State<SinewSkeleton> createState() => _SinewSkeletonState();
+  State<SinewSkeletonPulse> createState() => _SinewSkeletonPulseState();
 }
 
-class _SinewSkeletonState extends State<SinewSkeleton>
+class _SinewSkeletonPulseState extends State<SinewSkeletonPulse>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _opacity;
@@ -136,20 +130,74 @@ class _SinewSkeletonState extends State<SinewSkeleton>
   }
 
   @override
+  Widget build(BuildContext context) =>
+      _PulseScope(opacity: _opacity, child: widget.child);
+}
+
+class _PulseScope extends InheritedWidget {
+  const _PulseScope({required this.opacity, required super.child});
+
+  final Animation<double> opacity;
+
+  static Animation<double>? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_PulseScope>()?.opacity;
+
+  @override
+  bool updateShouldNotify(_PulseScope old) => opacity != old.opacity;
+}
+
+/// A muted rounded rectangle that pulses opacity (no shimmer sweep): the one
+/// loading primitive. Under reduced motion it holds still at full opacity.
+class SinewSkeleton extends StatelessWidget {
+  const SinewSkeleton({
+    super.key,
+    this.width,
+    required this.height,
+    this.borderRadius = Radii.medium,
+  });
+
+  /// Null fills the available width.
+  final double? width;
+  final double height;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget bar = _SkeletonBar(
+      width: width,
+      height: height,
+      borderRadius: borderRadius,
+    );
+    // Outside a shared pulse (a lone skeleton) it brings its own.
+    return _PulseScope.maybeOf(context) == null
+        ? SinewSkeletonPulse(child: bar)
+        : bar;
+  }
+}
+
+class _SkeletonBar extends StatelessWidget {
+  const _SkeletonBar({
+    required this.width,
+    required this.height,
+    required this.borderRadius,
+  });
+
+  final double? width;
+  final double height;
+  final double borderRadius;
+
+  @override
   Widget build(BuildContext context) {
     final ColorScheme cs = context.cs;
     return ExcludeSemantics(
-      child: AnimatedBuilder(
-        animation: _opacity,
-        builder: (BuildContext context, Widget? _) => Opacity(
-          opacity: _opacity.value,
-          child: Container(
-            width: widget.width,
-            height: widget.height,
-            decoration: BoxDecoration(
-              color: cs.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-            ),
+      child: FadeTransition(
+        opacity: _PulseScope.maybeOf(context)!,
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
       ),
@@ -173,45 +221,47 @@ class SinewSkeletonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(minHeight: Space.listItem2),
-      padding: const EdgeInsets.symmetric(
-        horizontal: Space.md,
-        vertical: Space.row,
-      ),
-      child: Row(
-        children: <Widget>[
-          if (thumbnail) ...<Widget>[
-            const SinewSkeleton(
-              width: _thumb,
-              height: _thumb,
-              borderRadius: Radii.thumb,
+    return SinewSkeletonPulse(
+      child: Container(
+        constraints: const BoxConstraints(minHeight: Space.listItem2),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Space.md,
+          vertical: Space.row,
+        ),
+        child: Row(
+          children: <Widget>[
+            if (thumbnail) ...<Widget>[
+              const SinewSkeleton(
+                width: _thumb,
+                height: _thumb,
+                borderRadius: Radii.thumb,
+              ),
+              const SizedBox(width: Space.md),
+            ],
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  FractionallySizedBox(
+                    widthFactor: _titleBar,
+                    child: SinewSkeleton(
+                      height: _titleHeight,
+                      borderRadius: Radii.extraSmall,
+                    ),
+                  ),
+                  SizedBox(height: Space.sm),
+                  FractionallySizedBox(
+                    widthFactor: _metaBar,
+                    child: SinewSkeleton(
+                      height: _metaHeight,
+                      borderRadius: Radii.extraSmall,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(width: Space.md),
           ],
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                FractionallySizedBox(
-                  widthFactor: _titleBar,
-                  child: SinewSkeleton(
-                    height: _titleHeight,
-                    borderRadius: Radii.extraSmall,
-                  ),
-                ),
-                SizedBox(height: Space.sm),
-                FractionallySizedBox(
-                  widthFactor: _metaBar,
-                  child: SinewSkeleton(
-                    height: _metaHeight,
-                    borderRadius: Radii.extraSmall,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -232,26 +282,28 @@ class SinewSkeletonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme cs = context.cs;
-    return Container(
-      height: height,
-      padding: const EdgeInsets.all(Space.cardPadding),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        borderRadius: Radii.cardR,
-        border: Border.all(color: cs.outlineVariant),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          for (int i = 0; i < lines; i++) ...<Widget>[
-            if (i > 0) const SizedBox(height: Space.md),
-            FractionallySizedBox(
-              widthFactor: 1 - i * _step,
-              child: const SinewSkeleton(height: _bar),
-            ),
+    return SinewSkeletonPulse(
+      child: Container(
+        height: height,
+        padding: const EdgeInsets.all(Space.cardPadding),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainer,
+          borderRadius: Radii.cardR,
+          border: Border.all(color: cs.outlineVariant),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            for (int i = 0; i < lines; i++) ...<Widget>[
+              if (i > 0) const SizedBox(height: Space.md),
+              FractionallySizedBox(
+                widthFactor: 1 - i * _step,
+                child: const SinewSkeleton(height: _bar),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

@@ -143,9 +143,10 @@ class _SnackBarWidget extends StatefulWidget {
 class _SnackBarWidgetState extends State<_SnackBarWidget>
     with TickerProviderStateMixin {
   late final AnimationController _slideCtrl;
-  late final Animation<double> _slideAnim;
+  late final CurvedAnimation _slideAnim;
   late final AnimationController _timerCtrl;
   bool _actionFired = false;
+  bool _entered = false;
 
   // Drag-to-dismiss state in logical pixels. Vertical only upward, since the
   // snackbar lives at the top of the screen.
@@ -158,7 +159,6 @@ class _SnackBarWidgetState extends State<_SnackBarWidget>
     _slideAnim = CurvedAnimation(parent: _slideCtrl, curve: Motion.decelerate);
     _timerCtrl = AnimationController(vsync: this, duration: widget.duration);
     widget.controller._attach(this);
-    _slideCtrl.forward();
     _timerCtrl.forward();
   }
 
@@ -169,7 +169,21 @@ class _SnackBarWidgetState extends State<_SnackBarWidget>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Honour reduced motion for both directions of the slide.
+    _slideCtrl.duration = Motion.of(context, Motion.snackEnter);
+    _slideCtrl.reverseDuration = Motion.of(context, Motion.snackExit);
+    _slideAnim.curve = Motion.curveOf(context, Motion.decelerate);
+    if (!_entered) {
+      _entered = true;
+      _slideCtrl.forward();
+    }
+  }
+
+  @override
   void dispose() {
+    _slideAnim.dispose();
     _slideCtrl.dispose();
     _timerCtrl.dispose();
     super.dispose();

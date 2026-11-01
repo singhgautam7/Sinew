@@ -100,6 +100,16 @@ Future<void> pumpLibraryRoute(
             Scaffold(body: Text('history ${s.pathParameters['id']}')),
       ),
       GoRoute(
+        path: Routes.newRoutine,
+        builder: (BuildContext c, GoRouterState s) =>
+            const Scaffold(body: Text('new routine page')),
+      ),
+      GoRoute(
+        path: '/train/routine/:id',
+        builder: (BuildContext c, GoRouterState s) =>
+            Scaffold(body: Text('routine page ${s.pathParameters['id']}')),
+      ),
+      GoRoute(
         path: '/timer/setup/:mode',
         builder: (BuildContext c, GoRouterState s) => Scaffold(
           body: Text(

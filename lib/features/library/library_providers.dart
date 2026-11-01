@@ -91,6 +91,29 @@ final FutureProviderFamily<int, MatchQuery> matchCountProvider = FutureProvider
       return svc.count(query: q.query, filters: q.filters);
     });
 
+/// The search field's placeholder: "Search 2,890 exercises" once the library
+/// count is known, a neutral line until then.
+final Provider<String> librarySearchHintProvider = Provider.autoDispose<String>(
+  (Ref ref) {
+    final int? total = ref
+        .watch(matchCountProvider((query: '', filters: const LibraryFilters())))
+        .value;
+    if (total == null) return 'Search exercises and poses';
+    return 'Search ${groupThousands(total)} exercises';
+  },
+);
+
+/// 2890 -> "2,890" (no locale data needed, the app ships English only).
+String groupThousands(int n) {
+  final String text = n.abs().toString();
+  final StringBuffer out = StringBuffer(n < 0 ? '-' : '');
+  for (int i = 0; i < text.length; i++) {
+    if (i > 0 && (text.length - i) % 3 == 0) out.write(',');
+    out.write(text[i]);
+  }
+  return out.toString();
+}
+
 /// The last [LibrarySpec] recent ids viewed, newest first, in prefs.
 class RecentExercisesNotifier extends Notifier<List<String>> {
   static const String prefsKey = 'library.recent';

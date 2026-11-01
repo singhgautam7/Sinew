@@ -246,7 +246,7 @@ class _ExercisePickerSheetState extends ConsumerState<ExercisePickerSheet> {
             child: SinewSearchField(
               controller: _controller,
               onChanged: _onQuery,
-              hint: 'Search exercises and poses',
+              hint: ref.watch(librarySearchHintProvider),
             ),
           ),
           const SizedBox(height: Space.xs),

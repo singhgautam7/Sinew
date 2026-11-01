@@ -71,7 +71,7 @@ class _LibraryFilterSheetState extends ConsumerState<LibraryFilterSheet> {
         child: const Text('Reset'),
       ),
       bottom: AppButton(
-        label: count == null ? 'Show exercises' : 'Show ${_exercises(count)}',
+        label: count == null ? 'Show results' : 'Show ${_exercises(count)}',
         type: AppButtonType.primary,
         fullWidth: true,
         onPressed: () => Navigator.of(context).pop(_f),
@@ -201,7 +201,7 @@ class _Group extends StatelessWidget {
         children: <Widget>[
           Text(title.toUpperCase(), style: context.sectionHeader),
           const SizedBox(height: Space.sm),
-          Wrap(spacing: Space.sm, runSpacing: Space.sm, children: children),
+          Wrap(spacing: Space.sm, children: children),
         ],
       ),
     );

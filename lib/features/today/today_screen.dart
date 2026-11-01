@@ -44,8 +44,12 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     // live stream: re-read them when the tab comes back.
     final bool active = TickerMode.valuesOf(context).enabled;
     if (_wasActive == false && active) {
-      ref.invalidate(todayBodyProvider);
-      ref.invalidate(todaySummaryProvider);
+      // Not while building: providers may not be invalidated mid-frame.
+      scheduleMicrotask(() {
+        if (!mounted) return;
+        ref.invalidate(todayBodyProvider);
+        ref.invalidate(todaySummaryProvider);
+      });
     }
     _wasActive = active;
   }
@@ -523,14 +527,15 @@ class _QuickTimers extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: context.text.titleMedium,
                     ),
-                    Text(
-                      presetSummary(p),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: context.text.bodySmall!.copyWith(
-                        color: context.cs.onSurfaceVariant,
+                    if (presetSummary(p) != p.name)
+                      Text(
+                        presetSummary(p),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.text.bodySmall!.copyWith(
+                          color: context.cs.onSurfaceVariant,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

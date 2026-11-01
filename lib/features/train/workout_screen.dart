@@ -60,8 +60,8 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     super.initState();
     _nav = ref.read(navHideReasonsProvider.notifier);
     _wake = ref.read(screenWakeProvider);
+    holdNavHidden(_nav, const <NavHideReason>[NavHideReason.activeWorkout]);
     Future<void>.microtask(() {
-      _nav.hide(NavHideReason.activeWorkout);
       unawaited(_wake.keepOn(on: true));
       unawaited(ref.read(trainRestProvider.notifier).restore());
     });
@@ -74,16 +74,13 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
 
   @override
   void dispose() {
-    final NavHideReasons nav = _nav;
-    final ScreenWake wake = _wake;
     // Minimising the workout gives the screen back; a rest that is still
     // running keeps going in the background.
-    Future<void>.microtask(() {
-      nav
-        ..show(NavHideReason.activeWorkout)
-        ..show(NavHideReason.restTimer);
-      unawaited(wake.keepOn(on: false));
-    });
+    releaseNav(_nav, const <NavHideReason>[
+      NavHideReason.activeWorkout,
+      NavHideReason.restTimer,
+    ]);
+    unawaited(_wake.keepOn(on: false));
     super.dispose();
   }
 
@@ -1204,6 +1201,7 @@ class _PlateStage extends ConsumerWidget {
           children: <Widget>[
             for (int i = 0; i < bars.length; i++)
               SinewChip(
+                shrink: true,
                 label: bars[i].name,
                 selected: i == pick,
                 onTap: () => onBarChoice(i),

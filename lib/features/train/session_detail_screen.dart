@@ -95,6 +95,8 @@ class SessionDetailScreen extends ConsumerWidget {
     );
     if (!yes || !context.mounted) return;
     final SessionRepository repo = ref.read(sessionRepositoryProvider);
+    // The screen is gone by the time Undo is tapped: keep the container.
+    final ProviderContainer container = ProviderScope.containerOf(context);
     final OverlayState? overlay = Navigator.of(
       context,
       rootNavigator: true,
@@ -103,7 +105,7 @@ class SessionDetailScreen extends ConsumerWidget {
     final WorkoutSession full = await repo.byId(s.id) ?? s;
     await repo.delete(s.id);
     await recomputePrFlags(repo);
-    ref.invalidate(trainFinishedTreesProvider);
+    container.invalidate(trainFinishedTreesProvider);
     if (!context.mounted) return;
     context.pop();
     if (overlay != null && overlay.mounted) {
@@ -115,7 +117,7 @@ class SessionDetailScreen extends ConsumerWidget {
         onAction: () async {
           await repo.saveTree(full);
           await recomputePrFlags(repo);
-          ref.invalidate(trainFinishedTreesProvider);
+          container.invalidate(trainFinishedTreesProvider);
         },
       );
     }

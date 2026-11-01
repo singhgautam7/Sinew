@@ -670,11 +670,8 @@ abstract final class TrainSpec {
 
   // Active workout.
   static const double progressSegment = 4;
-  static const double plateStageHeight = 150;
-  static const double plateStageMachine = 180;
   static const double headerGlyph = 24;
   static const double exerciseBarGap = 6;
-  static const double restBarHeight = 64;
   static const double restBarProgress = 4;
   static const double restRing = 280;
   static const double restRingStroke = 12;
@@ -688,7 +685,6 @@ abstract final class TrainSpec {
   // Summary.
   static const double summaryBadge = 72;
   static const double summaryBadgeGlyph = 40;
-  static const double statTileMinWidth = 140;
   static const double mapPreview = 96;
   static const double mapPreviewHeight = 100;
 

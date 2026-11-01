@@ -74,14 +74,13 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
   void initState() {
     super.initState();
     _nav = ref.read(navHideReasonsProvider.notifier);
-    Future<void>.microtask(() => _nav.hide(NavHideReason.fullScreen));
+    holdNavHidden(_nav, const <NavHideReason>[NavHideReason.fullScreen]);
     unawaited(_load());
   }
 
   @override
   void dispose() {
-    final NavHideReasons nav = _nav;
-    Future<void>.microtask(() => nav.show(NavHideReason.fullScreen));
+    releaseNav(_nav, const <NavHideReason>[NavHideReason.fullScreen]);
     _name.dispose();
     _notes.dispose();
     super.dispose();
@@ -776,6 +775,7 @@ class _ItemCard extends StatelessWidget {
                     children: <Widget>[
                       if (!isLast)
                         SinewChip(
+                          shrink: true,
                           label: item.supersetGroup == null
                               ? 'Superset with next'
                               : 'Unlink superset',
@@ -783,11 +783,13 @@ class _ItemCard extends StatelessWidget {
                           onTap: onSuperset,
                         ),
                       SinewChip(
+                        shrink: true,
                         label: 'Swap',
                         icon: Icons.swap_horiz_rounded,
                         onTap: onSwap,
                       ),
                       SinewChip(
+                        shrink: true,
                         label: 'Remove',
                         icon: Icons.delete_outline_rounded,
                         onTap: onDelete,

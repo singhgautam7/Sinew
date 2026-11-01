@@ -150,13 +150,15 @@ class _WeekHeader extends StatelessWidget {
       padding: const EdgeInsets.only(top: Space.xl, bottom: Space.sm),
       child: Semantics(
         header: true,
-        child: Row(
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: Space.md,
+          runSpacing: Space.xxs,
           children: <Widget>[
-            Expanded(
-              child: Text(
-                weekLabel(week.start, now).toUpperCase(),
-                style: context.sectionHeader,
-              ),
+            Text(
+              weekLabel(week.start, now).toUpperCase(),
+              style: context.sectionHeader,
             ),
             Text(
               '${plural(week.sessions.length, 'session')} · '

@@ -133,6 +133,13 @@ class CustomExerciseRepository {
         );
       });
 
+  /// Every custom exercise including archived ones, for backup.
+  Future<List<Exercise>> all() async =>
+      (await _db.select(_db.customExercises).get()).map(_map).toList();
+
+  /// The row for [e] exactly as given (no `updatedAt` stamping), for restore.
+  static CustomExercisesCompanion companion(Exercise e) => _row(e);
+
   static CustomExercisesCompanion _row(Exercise e) =>
       CustomExercisesCompanion.insert(
         id: e.id,

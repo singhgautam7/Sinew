@@ -9,7 +9,7 @@ import '../../core/widgets/sinew_form.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_option_tile.dart';
 import '../../core/widgets/sinew_states.dart';
-import '../today/date_text.dart';
+import '../../core/format/date_text.dart';
 import 'backup_io.dart';
 import 'backup_service.dart';
 
@@ -72,9 +72,10 @@ class _RestorePanelState extends ConsumerState<RestorePanel> {
       setState(() => _step = _Step.idle);
       return;
     }
-    final BackupParseResult result = ref
+    final BackupParseResult result = await ref
         .read(backupServiceProvider)
-        .parse(file.text);
+        .parseAsync(file.text);
+    if (!mounted) return;
     setState(() {
       _file = file;
       switch (result) {
@@ -446,6 +447,12 @@ class _Done extends StatelessWidget {
               if (summary.settingsApplied > 0)
                 Text(
                   '${summary.settingsApplied} settings applied.',
+                  style: context.text.bodyMedium,
+                ),
+              if (summary.settingsFailed)
+                Text(
+                  'Your data was restored, but the settings were skipped. '
+                  'Set them again in Settings.',
                   style: context.text.bodyMedium,
                 ),
             ],

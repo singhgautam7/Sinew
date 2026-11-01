@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
-import 'date_text.dart';
+import '../../core/format/date_text.dart';
 
 /// Seven days, a filled disc for each day with a workout and a ring on today.
 /// Colour is never the only cue: the disc also carries a check, and every day

@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 
-/// The only place in the app that names a raw colour.
-///
-/// PLACEHOLDER DERIVATION (Phase 1): every role is derived from a seed through
-/// Material's tonal-spot scheme. Phase 3 replaces [SinewColors.derive] with the
-/// full palette from the design handoff; the role names are the contract that
-/// widgets code against, so the swap is one file.
-abstract final class SinewSeeds {
-  /// Sinew's brand seed, used when dynamic colour is off or unavailable.
-  static const Color brand = Color(0xFF6E8A16);
-
-  /// Fixed status hues, harmonised into each scheme by re-seeding.
-  static const Color success = Color(0xFF2E7D32);
-  static const Color warning = Color(0xFFB26A00);
-
-  /// True black and pure white for the AMOLED tone and the inverse ground.
-  static const Color black = Color(0xFF000000);
-  static const Color white = Color(0xFFFFFFFF);
-}
+import 'theme_families.dart';
+import 'tokens.dart';
 
 /// Which variant of a scheme is being rendered.
 enum Tone { light, dark, amoled }
 
-/// The role tokens. Nothing in a screen names a raw colour; it reads
-/// `context.colors.<role>`. A theme swap is a single map replacement.
+/// Brand colours (icon, splash). Not part of the colour scheme.
+abstract final class SinewBrand {
+  static const Color dark = Color(0xFF3B4707);
+  static const Color mid = Color(0xFF6D8817);
+  static const Color tint = Color(0xFFE4ECC7);
+  static const Color splashDarkTint = Color(0xFF2A3310);
+}
+
+/// The role map: the names screens code against. Built from the Material
+/// scheme of the active family (or wallpaper seed), so a theme swap is a
+/// single map replacement and nothing in a screen names a raw colour.
+///
+/// Read as `context.colors.<role>`. For anything a role does not cover, the
+/// full Material scheme is `context.cs` and the fixed accents (plates, phases,
+/// muscles, heat, series) are `context.accents`.
 @immutable
 class SinewColors extends ThemeExtension<SinewColors> {
   const SinewColors({
@@ -48,8 +45,10 @@ class SinewColors extends ThemeExtension<SinewColors> {
     required this.onTertiaryContainer,
     required this.success,
     required this.successContainer,
+    required this.onSuccessContainer,
     required this.warning,
     required this.warningContainer,
+    required this.onWarningContainer,
     required this.danger,
     required this.dangerContainer,
     required this.onDangerContainer,
@@ -68,10 +67,10 @@ class SinewColors extends ThemeExtension<SinewColors> {
   /// Cards, rows, sheets.
   final Color surfaceContainer;
 
-  /// Nav pill, chips, fields.
+  /// Fields, chips, icon buttons.
   final Color surfaceContainerHigh;
 
-  /// 1px borders. Depth lives here.
+  /// 1px borders. Depth lives here (the scheme's `outlineVariant`).
   final Color outline;
 
   /// Hairline between rows inside one container.
@@ -93,53 +92,38 @@ class SinewColors extends ThemeExtension<SinewColors> {
   /// Personal records, completed sets.
   final Color success;
   final Color successContainer;
+  final Color onSuccessContainer;
 
   /// Estimated values, approaching limits.
   final Color warning;
   final Color warningContainer;
+  final Color onWarningContainer;
   final Color danger;
   final Color dangerContainer;
   final Color onDangerContainer;
   final Color inverseSurface;
   final Color onInverseSurface;
 
-  /// Only the nav pill casts one.
+  /// Only the nav pill ever casts one.
   final Color shadow;
   final Color scrim;
 
   bool get isDark => tone != Tone.light;
 
-  /// Derives every role from one seed. Memoised by `AppTheme`, never called
-  /// per frame.
-  factory SinewColors.derive(Color seed, Tone tone) {
-    final Brightness b = tone == Tone.light
-        ? Brightness.light
-        : Brightness.dark;
-    final ColorScheme s = ColorScheme.fromSeed(seedColor: seed, brightness: b);
-    final ColorScheme ok = ColorScheme.fromSeed(
-      seedColor: SinewSeeds.success,
-      brightness: b,
-    );
-    final ColorScheme warn = ColorScheme.fromSeed(
-      seedColor: SinewSeeds.warning,
-      brightness: b,
-    );
-    final bool amoled = tone == Tone.amoled;
+  /// Maps a palette onto the role names.
+  factory SinewColors.fromPalette(SinewPalette p, Tone tone) {
+    final ColorScheme s = p.scheme;
     return SinewColors(
       tone: tone,
-      surface: amoled ? SinewSeeds.black : s.surface,
-      surfaceContainerLow: amoled
-          ? s.surfaceContainerLowest
-          : s.surfaceContainerLow,
-      surfaceContainer: amoled ? s.surfaceContainerLow : s.surfaceContainer,
-      surfaceContainerHigh: amoled
-          ? s.surfaceContainer
-          : s.surfaceContainerHigh,
+      surface: s.surface,
+      surfaceContainerLow: s.surfaceContainerLow,
+      surfaceContainer: s.surfaceContainer,
+      surfaceContainerHigh: s.surfaceContainerHigh,
       outline: s.outlineVariant,
-      divider: s.outlineVariant.withValues(alpha: 0.6),
+      divider: s.outlineVariant,
       onSurface: s.onSurface,
       onSurfaceVariant: s.onSurfaceVariant,
-      onSurfaceMuted: s.onSurface.withValues(alpha: 0.38),
+      onSurfaceMuted: s.onSurface.withValues(alpha: Opacities.disabled),
       primary: s.primary,
       onPrimary: s.onPrimary,
       primaryContainer: s.primaryContainer,
@@ -149,10 +133,12 @@ class SinewColors extends ThemeExtension<SinewColors> {
       tertiary: s.tertiary,
       tertiaryContainer: s.tertiaryContainer,
       onTertiaryContainer: s.onTertiaryContainer,
-      success: ok.primary,
-      successContainer: ok.primaryContainer,
-      warning: warn.primary,
-      warningContainer: warn.primaryContainer,
+      success: p.money[0],
+      successContainer: p.money[2],
+      onSuccessContainer: p.money[3],
+      warning: p.money[8],
+      warningContainer: p.money[10],
+      onWarningContainer: p.money[11],
       danger: s.error,
       dangerContainer: s.errorContainer,
       onDangerContainer: s.onErrorContainer,
@@ -163,43 +149,7 @@ class SinewColors extends ThemeExtension<SinewColors> {
     );
   }
 
-  /// The Material [ColorScheme] filled from these roles, so any stock widget
-  /// lands on the same colours as the rest of the app.
-  ColorScheme toColorScheme(Color seed) {
-    final ColorScheme base = ColorScheme.fromSeed(
-      seedColor: seed,
-      brightness: isDark ? Brightness.dark : Brightness.light,
-    );
-    return base.copyWith(
-      primary: primary,
-      onPrimary: onPrimary,
-      primaryContainer: primaryContainer,
-      onPrimaryContainer: onPrimaryContainer,
-      secondaryContainer: secondaryContainer,
-      onSecondaryContainer: onSecondaryContainer,
-      tertiary: tertiary,
-      tertiaryContainer: tertiaryContainer,
-      onTertiaryContainer: onTertiaryContainer,
-      surface: surface,
-      onSurface: onSurface,
-      surfaceContainerLow: surfaceContainerLow,
-      surfaceContainer: surfaceContainer,
-      surfaceContainerHigh: surfaceContainerHigh,
-      onSurfaceVariant: onSurfaceVariant,
-      outline: outline,
-      outlineVariant: divider,
-      error: danger,
-      errorContainer: dangerContainer,
-      onErrorContainer: onDangerContainer,
-      inverseSurface: inverseSurface,
-      onInverseSurface: onInverseSurface,
-      shadow: shadow,
-      scrim: scrim,
-    );
-  }
-
-  /// Roles are derived from a seed, never edited one by one: a different
-  /// palette is a new [SinewColors.derive].
+  /// Roles are derived from a palette, never edited one by one.
   @override
   SinewColors copyWith() => this;
 
@@ -229,8 +179,10 @@ class SinewColors extends ThemeExtension<SinewColors> {
       onTertiaryContainer: l(onTertiaryContainer, other.onTertiaryContainer),
       success: l(success, other.success),
       successContainer: l(successContainer, other.successContainer),
+      onSuccessContainer: l(onSuccessContainer, other.onSuccessContainer),
       warning: l(warning, other.warning),
       warningContainer: l(warningContainer, other.warningContainer),
+      onWarningContainer: l(onWarningContainer, other.onWarningContainer),
       danger: l(danger, other.danger),
       dangerContainer: l(dangerContainer, other.dangerContainer),
       onDangerContainer: l(onDangerContainer, other.onDangerContainer),

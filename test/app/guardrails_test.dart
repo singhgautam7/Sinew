@@ -66,11 +66,11 @@ void main() {
   });
 
   group('token rule', () {
-    test('no raw colour outside lib/core/theme/palette.dart', () {
+    test('no raw colour outside lib/core/theme/', () {
       final RegExp hex = RegExp(r'Color\(0x|Color\.fromARGB|Color\.fromRGBO');
       final List<String> hits = <String>[
         for (final File f in _dartFiles('lib'))
-          if (!f.path.endsWith('core/theme/palette.dart') &&
+          if (!f.path.contains('core/theme/') &&
               hex.hasMatch(f.readAsStringSync()))
             f.path,
       ];

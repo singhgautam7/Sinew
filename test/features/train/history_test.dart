@@ -36,7 +36,7 @@ void main() {
       start: weekStart(now).subtract(const Duration(days: 3)),
       sets: <(double, int)>[(50, 8)],
     );
-    await env.pump(tester, Routes.history);
+    await env.pump(tester, Routes.history, height: 1600);
     expect(find.text('THIS WEEK'), findsOneWidget);
     expect(find.text('LAST WEEK'), findsOneWidget);
     expect(find.text('Push today'), findsOneWidget);
@@ -65,7 +65,7 @@ void main() {
     expect(find.text('Session 44'), findsOneWidget);
     await tester.dragUntilVisible(
       find.text('Session 00'),
-      find.byType(ListView),
+      find.byType(CustomScrollView),
       const Offset(0, -300),
     );
     expect(find.text('Session 00'), findsOneWidget);

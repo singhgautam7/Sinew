@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/db/repositories/session_repository.dart' show SessionHeader;
 import '../../core/db/repositories/library_types.dart';
 import '../../core/models/measurement.dart';
 import '../../core/models/training.dart';
@@ -166,7 +167,7 @@ class _Corpus {
   const _Corpus(this.routines, this.sessions, this.fields);
 
   final List<Routine> routines;
-  final List<WorkoutSession> sessions;
+  final List<SessionHeader> sessions;
   final List<MeasurementField> fields;
 }
 
@@ -175,14 +176,10 @@ final FutureProvider<_Corpus> _corpusProvider =
       final List<Routine> routines = await ref
           .watch(routineRepositoryProvider)
           .allWithItems();
-      final List<WorkoutSession> sessions =
-          (await ref.watch(sessionRepositoryProvider).allWithTree())
-              .where((WorkoutSession s) => s.endedAt != null)
-              .toList()
-            ..sort(
-              (WorkoutSession a, WorkoutSession b) =>
-                  b.startedAt.compareTo(a.startedAt),
-            );
+      // Names, dates and exercise ids only: no sets are read for search.
+      final List<SessionHeader> sessions =
+          (await ref.watch(sessionRepositoryProvider).sessionHeaders()).reversed
+              .toList();
       final List<MeasurementField> fields = await ref
           .watch(measurementRepositoryProvider)
           .fields();
@@ -268,14 +265,12 @@ final searchResultsProvider = FutureProvider.autoDispose
       }
 
       final List<SearchHit> workouts = <SearchHit>[];
-      for (final WorkoutSession s in corpus.sessions) {
+      for (final SessionHeader s in corpus.sessions) {
         final DateTime d = s.startedAt.toLocal();
         final String label = s.name ?? 'Workout';
         final String dateWords =
             '${DateText.dayMonth(d)} ${DateText.month(d)} ${DateText.weekday(d)} ${d.year}';
-        final String? via = includes(
-          s.exercises.map((SessionExercise e) => e.exerciseId),
-        );
+        final String? via = includes(s.exerciseIds);
         if (matchesQuery(q, '$label $dateWords') || via != null) {
           workouts.add(
             SearchHit(

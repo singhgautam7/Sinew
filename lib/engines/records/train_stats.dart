@@ -182,3 +182,27 @@ List<String> topMuscles(Map<String, double> load, {int count = 2}) {
       });
   return ids.take(count).toList();
 }
+
+/// The muscles the weekly card calls out when they got no work, most
+/// commonly missed first.
+const List<String> kWatchedMuscles = <String>[
+  'forearms',
+  'calves',
+  'glutes',
+  'trapezius',
+  'hamstrings',
+  'core',
+  'lats',
+  'chest',
+  'shoulders',
+  'quadriceps',
+  'biceps',
+  'triceps',
+];
+
+/// Up to [count] watched muscles with no load at all.
+List<String> untrainedMuscles(Map<String, double> load, {int count = 2}) =>
+    <String>[
+      for (final String m in kWatchedMuscles)
+        if ((load[m] ?? 0) <= 0) m,
+    ].take(count).toList();

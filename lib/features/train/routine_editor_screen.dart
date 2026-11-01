@@ -12,6 +12,10 @@ import '../../core/models/profile.dart';
 import '../../core/models/training.dart';
 import '../../core/providers.dart';
 import '../../core/routing/nav_visibility.dart';
+import '../../core/settings/app_settings.dart';
+import '../../core/settings/haptics.dart';
+import '../../engines/records/train_stats.dart';
+import 'routine_actions.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/picker_palette.dart';
 import '../../core/units/units.dart';
@@ -31,7 +35,6 @@ import 'routine_style.dart';
 import 'train_format.dart';
 import 'train_providers.dart';
 import 'train_widgets.dart';
-import 'train_screen.dart' show estimateRoutineMinutes;
 
 /// One row of the editor: the item plus UI-only state.
 class _Row {
@@ -293,8 +296,16 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
       destructive: true,
     );
     if (!yes || !mounted) return;
-    await ref.read(routineRepositoryProvider).delete(_id);
-    await ref.read(routineStyleStoreProvider).remove(_id);
+    final Routine? existing = _existing;
+    if (existing == null) return;
+    // Deleted with Undo; the snackbar outlives this screen.
+    await deleteRoutineWithUndo(
+      context,
+      ref,
+      existing.copyWith(
+        items: _items.isEmpty ? existing.items : existing.items,
+      ),
+    );
     if (!mounted) return;
     _dirty = false;
     context.pop();
@@ -428,7 +439,12 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
       _rows.map((_Row r) => r.item.exerciseId),
       _exercises,
     );
-    final int minutes = estimateRoutineMinutes(_items);
+    final int minutes = estimateRoutineMinutes(
+      _items,
+      defaultRestSec: ref.watch(
+        settingsProvider.select((AppSettings s) => s.restSeconds),
+      ),
+    );
     return CustomScrollView(
       slivers: <Widget>[
         SliverPadding(
@@ -512,6 +528,18 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                   exercise: _exerciseOf(row.item.exerciseId),
                   weightUnit: profile.weightUnit,
                   distanceUnit: profile.distanceUnit,
+                  weightStep: profile.weightUnit == WeightUnit.kg
+                      ? ref.watch(
+                          settingsProvider.select(
+                            (AppSettings s) => s.incrementKg,
+                          ),
+                        )
+                      : ref.watch(
+                          settingsProvider.select(
+                            (AppSettings s) => s.incrementLb,
+                          ),
+                        ),
+                  haptics: ref.watch(hapticsEnabledProvider),
                   isLast: i == _rows.length - 1,
                   onToggle: () => setState(() => row.expanded = !row.expanded),
                   onChanged: (RoutineItem item) => setState(() {
@@ -652,6 +680,8 @@ class _ItemCard extends StatelessWidget {
     required this.exercise,
     required this.weightUnit,
     required this.distanceUnit,
+    required this.weightStep,
+    required this.haptics,
     required this.isLast,
     required this.onToggle,
     required this.onChanged,
@@ -665,6 +695,10 @@ class _ItemCard extends StatelessWidget {
   final Exercise exercise;
   final WeightUnit weightUnit;
   final DistanceUnit distanceUnit;
+
+  /// The weight stepper's step in the profile's unit (Settings).
+  final double weightStep;
+  final bool haptics;
   final bool isLast;
   final VoidCallback onToggle;
   final ValueChanged<RoutineItem> onChanged;
@@ -847,6 +881,7 @@ class _ItemCard extends StatelessWidget {
     final Widget sets = _Target(
       label: 'Sets',
       child: NumericStepper(
+        haptics: haptics,
         value: item.targetSets.toDouble(),
         min: 1,
         max: TrainSpec.maxSets.toDouble(),
@@ -859,6 +894,7 @@ class _ItemCard extends StatelessWidget {
     Widget reps(String label) => _Target(
       label: label,
       child: NumericStepper(
+        haptics: haptics,
         value: (item.targetReps ?? 0).toDouble(),
         max: 100,
         maxDecimals: 0,
@@ -877,6 +913,7 @@ class _ItemCard extends StatelessWidget {
     }) => _Target(
       label: label,
       child: NumericStepper(
+        haptics: haptics,
         value: (value ?? 0).toDouble(),
         step: step.toDouble(),
         max: 3600,
@@ -889,6 +926,7 @@ class _ItemCard extends StatelessWidget {
     final Widget rest = _Target(
       label: 'Rest',
       child: NumericStepper(
+        haptics: haptics,
         value: (item.restSec ?? 0).toDouble(),
         step: 15,
         max: TrainSpec.maxRestSec.toDouble(),
@@ -905,8 +943,9 @@ class _ItemCard extends StatelessWidget {
         _Target(
           label: 'Weight',
           child: NumericStepper(
+            haptics: haptics,
             value: Units.fromKg(item.targetWeightKg ?? 0, weightUnit),
-            step: weightUnit == WeightUnit.kg ? 2.5 : 5,
+            step: weightStep,
             max: 1000,
             unit: Units.weightLabel(weightUnit),
             semanticLabel: 'Weight for ${exercise.name}',
@@ -938,6 +977,7 @@ class _ItemCard extends StatelessWidget {
         _Target(
           label: 'Distance',
           child: NumericStepper(
+            haptics: haptics,
             value: Units.fromMetres(item.targetDistanceM ?? 0, distanceUnit),
             step: 0.5,
             max: 1000,

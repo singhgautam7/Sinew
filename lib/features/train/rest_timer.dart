@@ -156,8 +156,9 @@ class RestController extends Notifier<RestState?> {
 final NotifierProvider<RestController, RestState?> trainRestProvider =
     NotifierProvider<RestController, RestState?>(RestController.new);
 
-/// Repaints [builder] while a rest runs: per frame when [smooth] (the ring),
-/// otherwise when the shown second changes. Also drives `tick()`.
+/// Repaints [builder] while a rest runs: per frame when [smooth] (the ring of
+/// the expanded view, driven by a ticker), otherwise when the shown second
+/// changes, checked every 250 ms. Also drives `tick()`.
 class RestTicker extends ConsumerStatefulWidget {
   const RestTicker({super.key, required this.builder, this.smooth = false});
 
@@ -175,18 +176,31 @@ class RestTicker extends ConsumerStatefulWidget {
 
 class _RestTickerState extends ConsumerState<RestTicker>
     with SingleTickerProviderStateMixin {
-  late final Ticker _ticker;
+  /// Per frame, only for the smooth ring of the expanded view.
+  Ticker? _ticker;
+
+  /// Four repaints a second are plenty for the inline bar (a shown second
+  /// changes at most that late).
+  Timer? _timer;
   int _shownSec = -1;
 
   @override
   void initState() {
     super.initState();
-    _ticker = createTicker(_onTick)..start();
+    if (widget.smooth) {
+      _ticker = createTicker(_onTick)..start();
+    } else {
+      _timer = Timer.periodic(
+        const Duration(milliseconds: 250),
+        (Timer _) => _onTick(Duration.zero),
+      );
+    }
   }
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _ticker?.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -359,7 +373,12 @@ class _RestButton extends StatelessWidget {
         EdgeInsets.symmetric(horizontal: Space.xs),
       ),
     );
-    final Widget child = Text(label, maxLines: 1, textAlign: TextAlign.center);
+    final Widget child = Text(
+      label,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Space.xxs),
       child: Semantics(

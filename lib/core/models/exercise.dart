@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'enums.dart';
+import 'utc_date_time.dart';
 
 part 'exercise.freezed.dart';
 part 'exercise.g.dart';
@@ -44,8 +45,8 @@ abstract class Exercise with _$Exercise {
 
     /// Custom exercises only: hidden from pickers but kept for history.
     @Default(false) bool archived,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    @NullableUtcDateTimeConverter() DateTime? createdAt,
+    @NullableUtcDateTimeConverter() DateTime? updatedAt,
   }) = _Exercise;
 
   factory Exercise.fromJson(Map<String, dynamic> json) =>

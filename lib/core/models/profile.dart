@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'enums.dart';
+import 'utc_date_time.dart';
 
 part 'profile.freezed.dart';
 part 'profile.g.dart';
@@ -17,7 +18,7 @@ abstract class Profile with _$Profile {
     @Default(LengthUnit.cm) LengthUnit lengthUnit,
     @Default(DistanceUnit.km) DistanceUnit distanceUnit,
     @Default(BmiCutoffs.who) BmiCutoffs bmiCutoffs,
-    DateTime? updatedAt,
+    @NullableUtcDateTimeConverter() DateTime? updatedAt,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, dynamic> json) =>

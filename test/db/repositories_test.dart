@@ -42,7 +42,7 @@ void main() {
 
     test('round-trips every field', () async {
       final ProfileRepository repo = ProfileRepository(db, clock: clock);
-      final Profile p = Profile(
+      const Profile p = Profile(
         sex: Sex.female,
         birthYear: 1994,
         heightCm: 168.5,
@@ -51,11 +51,12 @@ void main() {
         lengthUnit: LengthUnit.inch,
         distanceUnit: DistanceUnit.mi,
         bmiCutoffs: BmiCutoffs.asian,
-        updatedAt: DateTime.utc(2026, 2, 2),
       );
       await repo.save(p);
       final Profile back = await repo.get();
-      expect(back.copyWith(updatedAt: back.updatedAt?.toUtc()), p);
+      // A save always stamps the time of the edit.
+      expect(back.updatedAt, isNotNull);
+      expect(back.copyWith(updatedAt: null), p);
     });
   });
 

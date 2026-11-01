@@ -6,22 +6,22 @@ part of 'measurement.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_MeasurementField _$MeasurementFieldFromJson(Map<String, dynamic> json) =>
-    _MeasurementField(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      unitType: $enumDecode(_$MeasurementUnitTypeEnumMap, json['unitType']),
-      customUnit: json['customUnit'] as String?,
-      side:
-          $enumDecodeNullable(_$BodySideEnumMap, json['side']) ?? BodySide.none,
-      pairId: json['pairId'] as String?,
-      bodyAnchor: $enumDecodeNullable(_$BodyAnchorEnumMap, json['bodyAnchor']),
-      enabled: json['enabled'] as bool? ?? true,
-      position: (json['position'] as num?)?.toInt() ?? 0,
-      builtIn: json['builtIn'] as bool? ?? false,
-      archived: json['archived'] as bool? ?? false,
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-    );
+_MeasurementField _$MeasurementFieldFromJson(
+  Map<String, dynamic> json,
+) => _MeasurementField(
+  id: json['id'] as String,
+  name: json['name'] as String,
+  unitType: $enumDecode(_$MeasurementUnitTypeEnumMap, json['unitType']),
+  customUnit: json['customUnit'] as String?,
+  side: $enumDecodeNullable(_$BodySideEnumMap, json['side']) ?? BodySide.none,
+  pairId: json['pairId'] as String?,
+  bodyAnchor: $enumDecodeNullable(_$BodyAnchorEnumMap, json['bodyAnchor']),
+  enabled: json['enabled'] as bool? ?? true,
+  position: (json['position'] as num?)?.toInt() ?? 0,
+  builtIn: json['builtIn'] as bool? ?? false,
+  archived: json['archived'] as bool? ?? false,
+  updatedAt: const UtcDateTimeConverter().fromJson(json['updatedAt'] as String),
+);
 
 Map<String, dynamic> _$MeasurementFieldToJson(_MeasurementField instance) =>
     <String, dynamic>{
@@ -36,7 +36,7 @@ Map<String, dynamic> _$MeasurementFieldToJson(_MeasurementField instance) =>
       'position': instance.position,
       'builtIn': instance.builtIn,
       'archived': instance.archived,
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'updatedAt': const UtcDateTimeConverter().toJson(instance.updatedAt),
     };
 
 const _$MeasurementUnitTypeEnumMap = {
@@ -70,21 +70,23 @@ const _$BodyAnchorEnumMap = {
 _MeasurementEntry _$MeasurementEntryFromJson(Map<String, dynamic> json) =>
     _MeasurementEntry(
       id: json['id'] as String,
-      date: DateTime.parse(json['date'] as String),
+      date: const UtcDateTimeConverter().fromJson(json['date'] as String),
       values:
           (json['values'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, (e as num).toDouble()),
           ) ??
           const <String, double>{},
       note: json['note'] as String?,
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      updatedAt: const UtcDateTimeConverter().fromJson(
+        json['updatedAt'] as String,
+      ),
     );
 
 Map<String, dynamic> _$MeasurementEntryToJson(_MeasurementEntry instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'date': instance.date.toIso8601String(),
+      'date': const UtcDateTimeConverter().toJson(instance.date),
       'values': instance.values,
       'note': instance.note,
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'updatedAt': const UtcDateTimeConverter().toJson(instance.updatedAt),
     };

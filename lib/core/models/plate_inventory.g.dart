@@ -24,20 +24,21 @@ _PlateInventory _$PlateInventoryFromJson(
       const <PlateStock>[],
   unit: $enumDecodeNullable(_$WeightUnitEnumMap, json['unit']) ?? WeightUnit.kg,
   machineStepKg: (json['machineStepKg'] as num?)?.toDouble() ?? 5.0,
-  updatedAt: json['updatedAt'] == null
-      ? null
-      : DateTime.parse(json['updatedAt'] as String),
+  updatedAt: const NullableUtcDateTimeConverter().fromJson(
+    json['updatedAt'] as String?,
+  ),
 );
 
-Map<String, dynamic> _$PlateInventoryToJson(_PlateInventory instance) =>
-    <String, dynamic>{
-      'schemaVersion': instance.schemaVersion,
-      'bars': instance.bars,
-      'plates': instance.plates,
-      'unit': _$WeightUnitEnumMap[instance.unit]!,
-      'machineStepKg': instance.machineStepKg,
-      'updatedAt': instance.updatedAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$PlateInventoryToJson(
+  _PlateInventory instance,
+) => <String, dynamic>{
+  'schemaVersion': instance.schemaVersion,
+  'bars': instance.bars,
+  'plates': instance.plates,
+  'unit': _$WeightUnitEnumMap[instance.unit]!,
+  'machineStepKg': instance.machineStepKg,
+  'updatedAt': const NullableUtcDateTimeConverter().toJson(instance.updatedAt),
+};
 
 const _$WeightUnitEnumMap = {WeightUnit.kg: 'kg', WeightUnit.lb: 'lb'};
 

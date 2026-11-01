@@ -23,7 +23,7 @@ _TimerPreset _$TimerPresetFromJson(Map<String, dynamic> json) => _TimerPreset(
       : TimerCues.fromJson(json['cues'] as Map<String, dynamic>),
   position: (json['position'] as num?)?.toInt() ?? 0,
   builtIn: json['builtIn'] as bool? ?? false,
-  updatedAt: DateTime.parse(json['updatedAt'] as String),
+  updatedAt: const UtcDateTimeConverter().fromJson(json['updatedAt'] as String),
 );
 
 Map<String, dynamic> _$TimerPresetToJson(_TimerPreset instance) =>
@@ -36,7 +36,7 @@ Map<String, dynamic> _$TimerPresetToJson(_TimerPreset instance) =>
       'cues': instance.cues,
       'position': instance.position,
       'builtIn': instance.builtIn,
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'updatedAt': const UtcDateTimeConverter().toJson(instance.updatedAt),
     };
 
 const _$TimerModeEnumMap = {

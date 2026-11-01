@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'enums.dart';
+import 'utc_date_time.dart';
 
 part 'timer_preset.freezed.dart';
 part 'timer_preset.g.dart';
@@ -19,7 +20,7 @@ abstract class TimerPreset with _$TimerPreset {
     @Default(TimerCues()) TimerCues cues,
     @Default(0) int position,
     @Default(false) bool builtIn,
-    required DateTime updatedAt,
+    @UtcDateTimeConverter() required DateTime updatedAt,
   }) = _TimerPreset;
 
   factory TimerPreset.fromJson(Map<String, dynamic> json) =>

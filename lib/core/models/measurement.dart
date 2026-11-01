@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'enums.dart';
+import 'utc_date_time.dart';
 
 part 'measurement.freezed.dart';
 part 'measurement.g.dart';
@@ -26,7 +27,7 @@ abstract class MeasurementField with _$MeasurementField {
     @Default(0) int position,
     @Default(false) bool builtIn,
     @Default(false) bool archived,
-    required DateTime updatedAt,
+    @UtcDateTimeConverter() required DateTime updatedAt,
   }) = _MeasurementField;
 
   factory MeasurementField.fromJson(Map<String, dynamic> json) =>
@@ -39,10 +40,10 @@ abstract class MeasurementField with _$MeasurementField {
 abstract class MeasurementEntry with _$MeasurementEntry {
   const factory MeasurementEntry({
     required String id,
-    required DateTime date,
+    @UtcDateTimeConverter() required DateTime date,
     @Default(<String, double>{}) Map<String, double> values,
     String? note,
-    required DateTime updatedAt,
+    @UtcDateTimeConverter() required DateTime updatedAt,
   }) = _MeasurementEntry;
 
   factory MeasurementEntry.fromJson(Map<String, dynamic> json) =>

@@ -8,6 +8,7 @@ import '../../models/plate_inventory.dart';
 import '../../models/profile.dart';
 import '../../models/timer_preset.dart';
 import '../../models/training.dart';
+import '../../../engines/records/records.dart';
 import '../ids.dart';
 import '../user/user_db.dart';
 import 'backup_snapshot.dart';
@@ -224,8 +225,53 @@ class BackupRepository {
       count('timerPresets', write);
     }
 
+    // Merging or replacing changes which set beat which: recompute the PR
+    // flags in this same transaction so history never shows stale badges.
+    if (replace || (written['sessions'] ?? 0) > 0) await _recomputePrFlags();
+
     return BackupWriteResult(written: written, kept: kept);
   });
+
+  /// Recomputes `is_pr` over every finished session ([Records.prSetIds]) and
+  /// writes only the sets whose flag changed, as one batch. A running
+  /// session is left alone.
+  Future<void> _recomputePrFlags() async {
+    final List<WorkoutSession> finished = <WorkoutSession>[
+      for (final WorkoutSession s in await SessionRepository(_db).allWithTree())
+        if (s.endedAt != null) s,
+    ];
+    final Set<String> pr = Records.prSetIds(finished);
+    final List<String> setPr = <String>[];
+    final List<String> setNotPr = <String>[];
+    for (final WorkoutSession s in finished) {
+      for (final SessionExercise e in s.exercises) {
+        for (final SetEntry set in e.sets) {
+          final bool should = set.completed && pr.contains(set.id);
+          if (should == set.isPR) continue;
+          (should ? setPr : setNotPr).add(set.id);
+        }
+      }
+    }
+    if (setPr.isEmpty && setNotPr.isEmpty) return;
+    await _db.batch((Batch b) {
+      for (final (List<String> ids, bool flag) in <(List<String>, bool)>[
+        (setPr, true),
+        (setNotPr, false),
+      ]) {
+        for (int i = 0; i < ids.length; i += 500) {
+          final List<String> chunk = ids.sublist(
+            i,
+            i + 500 > ids.length ? ids.length : i + 500,
+          );
+          b.update(
+            _db.setEntries,
+            SetEntriesCompanion(isPr: Value<bool>(flag)),
+            where: ($SetEntriesTable t) => t.id.isIn(chunk),
+          );
+        }
+      }
+    });
+  }
 
   /// Deletes the user's data, children before parents. (Foreign keys cascade
   /// too; being explicit keeps this independent of the pragma.)
@@ -312,11 +358,11 @@ class BackupRepository {
     await (_db.delete(
       _db.routineItems,
     )..where(($RoutineItemsTable t) => t.routineId.equals(r.id))).go();
-    for (final RoutineItem i in r.items) {
-      await _db
-          .into(_db.routineItems)
-          .insert(RoutineRepository.itemRow(r.id, i));
-    }
+    await _db.batch((Batch b) {
+      b.insertAll(_db.routineItems, <RoutineItemsCompanion>[
+        for (final RoutineItem i in r.items) RoutineRepository.itemRow(r.id, i),
+      ]);
+    });
   }
 
   Future<void> _putField(MeasurementField f) => _db
@@ -352,17 +398,16 @@ class BackupRepository {
     await (_db.delete(
       _db.measurementValues,
     )..where(($MeasurementValuesTable t) => t.entryId.equals(e.id))).go();
-    for (final MapEntry<String, double> v in e.values.entries) {
-      await _db
-          .into(_db.measurementValues)
-          .insert(
-            MeasurementValuesCompanion.insert(
-              entryId: e.id,
-              fieldId: v.key,
-              value: v.value,
-            ),
-          );
-    }
+    await _db.batch((Batch b) {
+      b.insertAll(_db.measurementValues, <MeasurementValuesCompanion>[
+        for (final MapEntry<String, double> v in e.values.entries)
+          MeasurementValuesCompanion.insert(
+            entryId: e.id,
+            fieldId: v.key,
+            value: v.value,
+          ),
+      ]);
+    });
   }
 
   Future<void> _putPreset(TimerPreset p) => _db

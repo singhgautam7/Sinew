@@ -69,12 +69,12 @@ _Exercise _$ExerciseFromJson(Map<String, dynamic> json) => _Exercise(
   license: json['license'] as String?,
   isCustom: json['isCustom'] as bool? ?? false,
   archived: json['archived'] as bool? ?? false,
-  createdAt: json['createdAt'] == null
-      ? null
-      : DateTime.parse(json['createdAt'] as String),
-  updatedAt: json['updatedAt'] == null
-      ? null
-      : DateTime.parse(json['updatedAt'] as String),
+  createdAt: const NullableUtcDateTimeConverter().fromJson(
+    json['createdAt'] as String?,
+  ),
+  updatedAt: const NullableUtcDateTimeConverter().fromJson(
+    json['updatedAt'] as String?,
+  ),
 );
 
 Map<String, dynamic> _$ExerciseToJson(_Exercise instance) => <String, dynamic>{
@@ -106,8 +106,8 @@ Map<String, dynamic> _$ExerciseToJson(_Exercise instance) => <String, dynamic>{
   'license': instance.license,
   'isCustom': instance.isCustom,
   'archived': instance.archived,
-  'createdAt': instance.createdAt?.toIso8601String(),
-  'updatedAt': instance.updatedAt?.toIso8601String(),
+  'createdAt': const NullableUtcDateTimeConverter().toJson(instance.createdAt),
+  'updatedAt': const NullableUtcDateTimeConverter().toJson(instance.updatedAt),
 };
 
 const _$TrackingTypeEnumMap = {

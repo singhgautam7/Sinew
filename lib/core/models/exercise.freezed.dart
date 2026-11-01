@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$Exercise {
 
  String get id; String get name; List<String> get aliases; String? get sanskritName; String get category; String? get subcategory;@JsonKey(unknownEnumValue: TrackingType.unknown) TrackingType get trackingType; List<String> get primaryMuscles; List<String> get secondaryMuscles; List<String> get equipment; Difficulty? get difficulty; bool get unilateral; String? get mechanic; String? get force; List<String> get steps; List<String> get tips; List<String> get commonMistakes; List<String> get safetyNotes; List<String> get contraindications; double? get metValue; int? get defaultRestSec; int? get defaultHoldSec; String? get variationOf; List<String> get tags; String? get source; String? get license; bool get isCustom;/// Custom exercises only: hidden from pickers but kept for history.
- bool get archived; DateTime? get createdAt; DateTime? get updatedAt;
+ bool get archived;@NullableUtcDateTimeConverter() DateTime? get createdAt;@NullableUtcDateTimeConverter() DateTime? get updatedAt;
 /// Create a copy of Exercise
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $ExerciseCopyWith<$Res>  {
   factory $ExerciseCopyWith(Exercise value, $Res Function(Exercise) _then) = _$ExerciseCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, List<String> aliases, String? sanskritName, String category, String? subcategory,@JsonKey(unknownEnumValue: TrackingType.unknown) TrackingType trackingType, List<String> primaryMuscles, List<String> secondaryMuscles, List<String> equipment, Difficulty? difficulty, bool unilateral, String? mechanic, String? force, List<String> steps, List<String> tips, List<String> commonMistakes, List<String> safetyNotes, List<String> contraindications, double? metValue, int? defaultRestSec, int? defaultHoldSec, String? variationOf, List<String> tags, String? source, String? license, bool isCustom, bool archived, DateTime? createdAt, DateTime? updatedAt
+ String id, String name, List<String> aliases, String? sanskritName, String category, String? subcategory,@JsonKey(unknownEnumValue: TrackingType.unknown) TrackingType trackingType, List<String> primaryMuscles, List<String> secondaryMuscles, List<String> equipment, Difficulty? difficulty, bool unilateral, String? mechanic, String? force, List<String> steps, List<String> tips, List<String> commonMistakes, List<String> safetyNotes, List<String> contraindications, double? metValue, int? defaultRestSec, int? defaultHoldSec, String? variationOf, List<String> tags, String? source, String? license, bool isCustom, bool archived,@NullableUtcDateTimeConverter() DateTime? createdAt,@NullableUtcDateTimeConverter() DateTime? updatedAt
 });
 
 
@@ -189,7 +189,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  List<String> aliases,  String? sanskritName,  String category,  String? subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown)  TrackingType trackingType,  List<String> primaryMuscles,  List<String> secondaryMuscles,  List<String> equipment,  Difficulty? difficulty,  bool unilateral,  String? mechanic,  String? force,  List<String> steps,  List<String> tips,  List<String> commonMistakes,  List<String> safetyNotes,  List<String> contraindications,  double? metValue,  int? defaultRestSec,  int? defaultHoldSec,  String? variationOf,  List<String> tags,  String? source,  String? license,  bool isCustom,  bool archived,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  List<String> aliases,  String? sanskritName,  String category,  String? subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown)  TrackingType trackingType,  List<String> primaryMuscles,  List<String> secondaryMuscles,  List<String> equipment,  Difficulty? difficulty,  bool unilateral,  String? mechanic,  String? force,  List<String> steps,  List<String> tips,  List<String> commonMistakes,  List<String> safetyNotes,  List<String> contraindications,  double? metValue,  int? defaultRestSec,  int? defaultHoldSec,  String? variationOf,  List<String> tags,  String? source,  String? license,  bool isCustom,  bool archived, @NullableUtcDateTimeConverter()  DateTime? createdAt, @NullableUtcDateTimeConverter()  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Exercise() when $default != null:
 return $default(_that.id,_that.name,_that.aliases,_that.sanskritName,_that.category,_that.subcategory,_that.trackingType,_that.primaryMuscles,_that.secondaryMuscles,_that.equipment,_that.difficulty,_that.unilateral,_that.mechanic,_that.force,_that.steps,_that.tips,_that.commonMistakes,_that.safetyNotes,_that.contraindications,_that.metValue,_that.defaultRestSec,_that.defaultHoldSec,_that.variationOf,_that.tags,_that.source,_that.license,_that.isCustom,_that.archived,_that.createdAt,_that.updatedAt);case _:
@@ -210,7 +210,7 @@ return $default(_that.id,_that.name,_that.aliases,_that.sanskritName,_that.categ
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  List<String> aliases,  String? sanskritName,  String category,  String? subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown)  TrackingType trackingType,  List<String> primaryMuscles,  List<String> secondaryMuscles,  List<String> equipment,  Difficulty? difficulty,  bool unilateral,  String? mechanic,  String? force,  List<String> steps,  List<String> tips,  List<String> commonMistakes,  List<String> safetyNotes,  List<String> contraindications,  double? metValue,  int? defaultRestSec,  int? defaultHoldSec,  String? variationOf,  List<String> tags,  String? source,  String? license,  bool isCustom,  bool archived,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  List<String> aliases,  String? sanskritName,  String category,  String? subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown)  TrackingType trackingType,  List<String> primaryMuscles,  List<String> secondaryMuscles,  List<String> equipment,  Difficulty? difficulty,  bool unilateral,  String? mechanic,  String? force,  List<String> steps,  List<String> tips,  List<String> commonMistakes,  List<String> safetyNotes,  List<String> contraindications,  double? metValue,  int? defaultRestSec,  int? defaultHoldSec,  String? variationOf,  List<String> tags,  String? source,  String? license,  bool isCustom,  bool archived, @NullableUtcDateTimeConverter()  DateTime? createdAt, @NullableUtcDateTimeConverter()  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Exercise():
 return $default(_that.id,_that.name,_that.aliases,_that.sanskritName,_that.category,_that.subcategory,_that.trackingType,_that.primaryMuscles,_that.secondaryMuscles,_that.equipment,_that.difficulty,_that.unilateral,_that.mechanic,_that.force,_that.steps,_that.tips,_that.commonMistakes,_that.safetyNotes,_that.contraindications,_that.metValue,_that.defaultRestSec,_that.defaultHoldSec,_that.variationOf,_that.tags,_that.source,_that.license,_that.isCustom,_that.archived,_that.createdAt,_that.updatedAt);case _:
@@ -230,7 +230,7 @@ return $default(_that.id,_that.name,_that.aliases,_that.sanskritName,_that.categ
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  List<String> aliases,  String? sanskritName,  String category,  String? subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown)  TrackingType trackingType,  List<String> primaryMuscles,  List<String> secondaryMuscles,  List<String> equipment,  Difficulty? difficulty,  bool unilateral,  String? mechanic,  String? force,  List<String> steps,  List<String> tips,  List<String> commonMistakes,  List<String> safetyNotes,  List<String> contraindications,  double? metValue,  int? defaultRestSec,  int? defaultHoldSec,  String? variationOf,  List<String> tags,  String? source,  String? license,  bool isCustom,  bool archived,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  List<String> aliases,  String? sanskritName,  String category,  String? subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown)  TrackingType trackingType,  List<String> primaryMuscles,  List<String> secondaryMuscles,  List<String> equipment,  Difficulty? difficulty,  bool unilateral,  String? mechanic,  String? force,  List<String> steps,  List<String> tips,  List<String> commonMistakes,  List<String> safetyNotes,  List<String> contraindications,  double? metValue,  int? defaultRestSec,  int? defaultHoldSec,  String? variationOf,  List<String> tags,  String? source,  String? license,  bool isCustom,  bool archived, @NullableUtcDateTimeConverter()  DateTime? createdAt, @NullableUtcDateTimeConverter()  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Exercise() when $default != null:
 return $default(_that.id,_that.name,_that.aliases,_that.sanskritName,_that.category,_that.subcategory,_that.trackingType,_that.primaryMuscles,_that.secondaryMuscles,_that.equipment,_that.difficulty,_that.unilateral,_that.mechanic,_that.force,_that.steps,_that.tips,_that.commonMistakes,_that.safetyNotes,_that.contraindications,_that.metValue,_that.defaultRestSec,_that.defaultHoldSec,_that.variationOf,_that.tags,_that.source,_that.license,_that.isCustom,_that.archived,_that.createdAt,_that.updatedAt);case _:
@@ -245,7 +245,7 @@ return $default(_that.id,_that.name,_that.aliases,_that.sanskritName,_that.categ
 @JsonSerializable()
 
 class _Exercise implements Exercise {
-  const _Exercise({required this.id, required this.name,  List<String> aliases = const <String>[], this.sanskritName, required this.category, this.subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown) required this.trackingType,  List<String> primaryMuscles = const <String>[],  List<String> secondaryMuscles = const <String>[],  List<String> equipment = const <String>[], this.difficulty, this.unilateral = false, this.mechanic, this.force,  List<String> steps = const <String>[],  List<String> tips = const <String>[],  List<String> commonMistakes = const <String>[],  List<String> safetyNotes = const <String>[],  List<String> contraindications = const <String>[], this.metValue, this.defaultRestSec, this.defaultHoldSec, this.variationOf,  List<String> tags = const <String>[], this.source, this.license, this.isCustom = false, this.archived = false, this.createdAt, this.updatedAt}): _aliases = aliases,_primaryMuscles = primaryMuscles,_secondaryMuscles = secondaryMuscles,_equipment = equipment,_steps = steps,_tips = tips,_commonMistakes = commonMistakes,_safetyNotes = safetyNotes,_contraindications = contraindications,_tags = tags;
+  const _Exercise({required this.id, required this.name,  List<String> aliases = const <String>[], this.sanskritName, required this.category, this.subcategory, @JsonKey(unknownEnumValue: TrackingType.unknown) required this.trackingType,  List<String> primaryMuscles = const <String>[],  List<String> secondaryMuscles = const <String>[],  List<String> equipment = const <String>[], this.difficulty, this.unilateral = false, this.mechanic, this.force,  List<String> steps = const <String>[],  List<String> tips = const <String>[],  List<String> commonMistakes = const <String>[],  List<String> safetyNotes = const <String>[],  List<String> contraindications = const <String>[], this.metValue, this.defaultRestSec, this.defaultHoldSec, this.variationOf,  List<String> tags = const <String>[], this.source, this.license, this.isCustom = false, this.archived = false, @NullableUtcDateTimeConverter() this.createdAt, @NullableUtcDateTimeConverter() this.updatedAt}): _aliases = aliases,_primaryMuscles = primaryMuscles,_secondaryMuscles = secondaryMuscles,_equipment = equipment,_steps = steps,_tips = tips,_commonMistakes = commonMistakes,_safetyNotes = safetyNotes,_contraindications = contraindications,_tags = tags;
   factory _Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
 
 @override final  String id;
@@ -337,8 +337,8 @@ class _Exercise implements Exercise {
 @override@JsonKey() final  bool isCustom;
 /// Custom exercises only: hidden from pickers but kept for history.
 @override@JsonKey() final  bool archived;
-@override final  DateTime? createdAt;
-@override final  DateTime? updatedAt;
+@override@NullableUtcDateTimeConverter() final  DateTime? createdAt;
+@override@NullableUtcDateTimeConverter() final  DateTime? updatedAt;
 
 /// Create a copy of Exercise
 /// with the given fields replaced by the non-null parameter values.
@@ -375,7 +375,7 @@ abstract mixin class _$ExerciseCopyWith<$Res> implements $ExerciseCopyWith<$Res>
   factory _$ExerciseCopyWith(_Exercise value, $Res Function(_Exercise) _then) = __$ExerciseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, List<String> aliases, String? sanskritName, String category, String? subcategory,@JsonKey(unknownEnumValue: TrackingType.unknown) TrackingType trackingType, List<String> primaryMuscles, List<String> secondaryMuscles, List<String> equipment, Difficulty? difficulty, bool unilateral, String? mechanic, String? force, List<String> steps, List<String> tips, List<String> commonMistakes, List<String> safetyNotes, List<String> contraindications, double? metValue, int? defaultRestSec, int? defaultHoldSec, String? variationOf, List<String> tags, String? source, String? license, bool isCustom, bool archived, DateTime? createdAt, DateTime? updatedAt
+ String id, String name, List<String> aliases, String? sanskritName, String category, String? subcategory,@JsonKey(unknownEnumValue: TrackingType.unknown) TrackingType trackingType, List<String> primaryMuscles, List<String> secondaryMuscles, List<String> equipment, Difficulty? difficulty, bool unilateral, String? mechanic, String? force, List<String> steps, List<String> tips, List<String> commonMistakes, List<String> safetyNotes, List<String> contraindications, double? metValue, int? defaultRestSec, int? defaultHoldSec, String? variationOf, List<String> tags, String? source, String? license, bool isCustom, bool archived,@NullableUtcDateTimeConverter() DateTime? createdAt,@NullableUtcDateTimeConverter() DateTime? updatedAt
 });
 
 

@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$PlateInventory {
 
  int get schemaVersion; List<Bar> get bars; List<PlateStock> get plates; WeightUnit get unit;/// Machine weight-stack increment, kilograms.
- double get machineStepKg; DateTime? get updatedAt;
+ double get machineStepKg;@NullableUtcDateTimeConverter() DateTime? get updatedAt;
 /// Create a copy of PlateInventory
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $PlateInventoryCopyWith<$Res>  {
   factory $PlateInventoryCopyWith(PlateInventory value, $Res Function(PlateInventory) _then) = _$PlateInventoryCopyWithImpl;
 @useResult
 $Res call({
- int schemaVersion, List<Bar> bars, List<PlateStock> plates, WeightUnit unit, double machineStepKg, DateTime? updatedAt
+ int schemaVersion, List<Bar> bars, List<PlateStock> plates, WeightUnit unit, double machineStepKg,@NullableUtcDateTimeConverter() DateTime? updatedAt
 });
 
 
@@ -165,7 +165,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  List<Bar> bars,  List<PlateStock> plates,  WeightUnit unit,  double machineStepKg,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  List<Bar> bars,  List<PlateStock> plates,  WeightUnit unit,  double machineStepKg, @NullableUtcDateTimeConverter()  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlateInventory() when $default != null:
 return $default(_that.schemaVersion,_that.bars,_that.plates,_that.unit,_that.machineStepKg,_that.updatedAt);case _:
@@ -186,7 +186,7 @@ return $default(_that.schemaVersion,_that.bars,_that.plates,_that.unit,_that.mac
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  List<Bar> bars,  List<PlateStock> plates,  WeightUnit unit,  double machineStepKg,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  List<Bar> bars,  List<PlateStock> plates,  WeightUnit unit,  double machineStepKg, @NullableUtcDateTimeConverter()  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _PlateInventory():
 return $default(_that.schemaVersion,_that.bars,_that.plates,_that.unit,_that.machineStepKg,_that.updatedAt);case _:
@@ -206,7 +206,7 @@ return $default(_that.schemaVersion,_that.bars,_that.plates,_that.unit,_that.mac
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  List<Bar> bars,  List<PlateStock> plates,  WeightUnit unit,  double machineStepKg,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  List<Bar> bars,  List<PlateStock> plates,  WeightUnit unit,  double machineStepKg, @NullableUtcDateTimeConverter()  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _PlateInventory() when $default != null:
 return $default(_that.schemaVersion,_that.bars,_that.plates,_that.unit,_that.machineStepKg,_that.updatedAt);case _:
@@ -221,7 +221,7 @@ return $default(_that.schemaVersion,_that.bars,_that.plates,_that.unit,_that.mac
 @JsonSerializable()
 
 class _PlateInventory implements PlateInventory {
-  const _PlateInventory({this.schemaVersion = PlateInventory.currentSchemaVersion,  List<Bar> bars = const <Bar>[],  List<PlateStock> plates = const <PlateStock>[], this.unit = WeightUnit.kg, this.machineStepKg = 5.0, this.updatedAt}): _bars = bars,_plates = plates;
+  const _PlateInventory({this.schemaVersion = PlateInventory.currentSchemaVersion,  List<Bar> bars = const <Bar>[],  List<PlateStock> plates = const <PlateStock>[], this.unit = WeightUnit.kg, this.machineStepKg = 5.0, @NullableUtcDateTimeConverter() this.updatedAt}): _bars = bars,_plates = plates;
   factory _PlateInventory.fromJson(Map<String, dynamic> json) => _$PlateInventoryFromJson(json);
 
 @override@JsonKey() final  int schemaVersion;
@@ -242,7 +242,7 @@ class _PlateInventory implements PlateInventory {
 @override@JsonKey() final  WeightUnit unit;
 /// Machine weight-stack increment, kilograms.
 @override@JsonKey() final  double machineStepKg;
-@override final  DateTime? updatedAt;
+@override@NullableUtcDateTimeConverter() final  DateTime? updatedAt;
 
 /// Create a copy of PlateInventory
 /// with the given fields replaced by the non-null parameter values.
@@ -279,7 +279,7 @@ abstract mixin class _$PlateInventoryCopyWith<$Res> implements $PlateInventoryCo
   factory _$PlateInventoryCopyWith(_PlateInventory value, $Res Function(_PlateInventory) _then) = __$PlateInventoryCopyWithImpl;
 @override @useResult
 $Res call({
- int schemaVersion, List<Bar> bars, List<PlateStock> plates, WeightUnit unit, double machineStepKg, DateTime? updatedAt
+ int schemaVersion, List<Bar> bars, List<PlateStock> plates, WeightUnit unit, double machineStepKg,@NullableUtcDateTimeConverter() DateTime? updatedAt
 });
 
 

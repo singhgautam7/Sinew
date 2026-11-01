@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Profile {
 
- Sex? get sex; int? get birthYear; double? get heightCm; ActivityLevel get activityLevel; WeightUnit get weightUnit; LengthUnit get lengthUnit; DistanceUnit get distanceUnit; BmiCutoffs get bmiCutoffs; DateTime? get updatedAt;
+ Sex? get sex; int? get birthYear; double? get heightCm; ActivityLevel get activityLevel; WeightUnit get weightUnit; LengthUnit get lengthUnit; DistanceUnit get distanceUnit; BmiCutoffs get bmiCutoffs;@NullableUtcDateTimeConverter() DateTime? get updatedAt;
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $ProfileCopyWith<$Res>  {
   factory $ProfileCopyWith(Profile value, $Res Function(Profile) _then) = _$ProfileCopyWithImpl;
 @useResult
 $Res call({
- Sex? sex, int? birthYear, double? heightCm, ActivityLevel activityLevel, WeightUnit weightUnit, LengthUnit lengthUnit, DistanceUnit distanceUnit, BmiCutoffs bmiCutoffs, DateTime? updatedAt
+ Sex? sex, int? birthYear, double? heightCm, ActivityLevel activityLevel, WeightUnit weightUnit, LengthUnit lengthUnit, DistanceUnit distanceUnit, BmiCutoffs bmiCutoffs,@NullableUtcDateTimeConverter() DateTime? updatedAt
 });
 
 
@@ -167,7 +167,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Sex? sex,  int? birthYear,  double? heightCm,  ActivityLevel activityLevel,  WeightUnit weightUnit,  LengthUnit lengthUnit,  DistanceUnit distanceUnit,  BmiCutoffs bmiCutoffs,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Sex? sex,  int? birthYear,  double? heightCm,  ActivityLevel activityLevel,  WeightUnit weightUnit,  LengthUnit lengthUnit,  DistanceUnit distanceUnit,  BmiCutoffs bmiCutoffs, @NullableUtcDateTimeConverter()  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
 return $default(_that.sex,_that.birthYear,_that.heightCm,_that.activityLevel,_that.weightUnit,_that.lengthUnit,_that.distanceUnit,_that.bmiCutoffs,_that.updatedAt);case _:
@@ -188,7 +188,7 @@ return $default(_that.sex,_that.birthYear,_that.heightCm,_that.activityLevel,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Sex? sex,  int? birthYear,  double? heightCm,  ActivityLevel activityLevel,  WeightUnit weightUnit,  LengthUnit lengthUnit,  DistanceUnit distanceUnit,  BmiCutoffs bmiCutoffs,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Sex? sex,  int? birthYear,  double? heightCm,  ActivityLevel activityLevel,  WeightUnit weightUnit,  LengthUnit lengthUnit,  DistanceUnit distanceUnit,  BmiCutoffs bmiCutoffs, @NullableUtcDateTimeConverter()  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Profile():
 return $default(_that.sex,_that.birthYear,_that.heightCm,_that.activityLevel,_that.weightUnit,_that.lengthUnit,_that.distanceUnit,_that.bmiCutoffs,_that.updatedAt);case _:
@@ -208,7 +208,7 @@ return $default(_that.sex,_that.birthYear,_that.heightCm,_that.activityLevel,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Sex? sex,  int? birthYear,  double? heightCm,  ActivityLevel activityLevel,  WeightUnit weightUnit,  LengthUnit lengthUnit,  DistanceUnit distanceUnit,  BmiCutoffs bmiCutoffs,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Sex? sex,  int? birthYear,  double? heightCm,  ActivityLevel activityLevel,  WeightUnit weightUnit,  LengthUnit lengthUnit,  DistanceUnit distanceUnit,  BmiCutoffs bmiCutoffs, @NullableUtcDateTimeConverter()  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
 return $default(_that.sex,_that.birthYear,_that.heightCm,_that.activityLevel,_that.weightUnit,_that.lengthUnit,_that.distanceUnit,_that.bmiCutoffs,_that.updatedAt);case _:
@@ -223,7 +223,7 @@ return $default(_that.sex,_that.birthYear,_that.heightCm,_that.activityLevel,_th
 @JsonSerializable()
 
 class _Profile implements Profile {
-  const _Profile({this.sex, this.birthYear, this.heightCm, this.activityLevel = ActivityLevel.moderate, this.weightUnit = WeightUnit.kg, this.lengthUnit = LengthUnit.cm, this.distanceUnit = DistanceUnit.km, this.bmiCutoffs = BmiCutoffs.who, this.updatedAt});
+  const _Profile({this.sex, this.birthYear, this.heightCm, this.activityLevel = ActivityLevel.moderate, this.weightUnit = WeightUnit.kg, this.lengthUnit = LengthUnit.cm, this.distanceUnit = DistanceUnit.km, this.bmiCutoffs = BmiCutoffs.who, @NullableUtcDateTimeConverter() this.updatedAt});
   factory _Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
 
 @override final  Sex? sex;
@@ -234,7 +234,7 @@ class _Profile implements Profile {
 @override@JsonKey() final  LengthUnit lengthUnit;
 @override@JsonKey() final  DistanceUnit distanceUnit;
 @override@JsonKey() final  BmiCutoffs bmiCutoffs;
-@override final  DateTime? updatedAt;
+@override@NullableUtcDateTimeConverter() final  DateTime? updatedAt;
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
@@ -271,7 +271,7 @@ abstract mixin class _$ProfileCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   factory _$ProfileCopyWith(_Profile value, $Res Function(_Profile) _then) = __$ProfileCopyWithImpl;
 @override @useResult
 $Res call({
- Sex? sex, int? birthYear, double? heightCm, ActivityLevel activityLevel, WeightUnit weightUnit, LengthUnit lengthUnit, DistanceUnit distanceUnit, BmiCutoffs bmiCutoffs, DateTime? updatedAt
+ Sex? sex, int? birthYear, double? heightCm, ActivityLevel activityLevel, WeightUnit weightUnit, LengthUnit lengthUnit, DistanceUnit distanceUnit, BmiCutoffs bmiCutoffs,@NullableUtcDateTimeConverter() DateTime? updatedAt
 });
 
 

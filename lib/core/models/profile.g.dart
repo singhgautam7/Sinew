@@ -25,9 +25,9 @@ _Profile _$ProfileFromJson(Map<String, dynamic> json) => _Profile(
   bmiCutoffs:
       $enumDecodeNullable(_$BmiCutoffsEnumMap, json['bmiCutoffs']) ??
       BmiCutoffs.who,
-  updatedAt: json['updatedAt'] == null
-      ? null
-      : DateTime.parse(json['updatedAt'] as String),
+  updatedAt: const NullableUtcDateTimeConverter().fromJson(
+    json['updatedAt'] as String?,
+  ),
 );
 
 Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
@@ -39,7 +39,7 @@ Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
   'lengthUnit': _$LengthUnitEnumMap[instance.lengthUnit]!,
   'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit]!,
   'bmiCutoffs': _$BmiCutoffsEnumMap[instance.bmiCutoffs]!,
-  'updatedAt': instance.updatedAt?.toIso8601String(),
+  'updatedAt': const NullableUtcDateTimeConverter().toJson(instance.updatedAt),
 };
 
 const _$SexEnumMap = {Sex.male: 'male', Sex.female: 'female'};

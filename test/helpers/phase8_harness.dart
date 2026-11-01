@@ -92,6 +92,7 @@ Future<Harness> makeHarness({
   DateTime Function()? clock,
   List<Override> extra = const <Override>[],
   UserDatabase? database,
+  Color? wallpaper,
 }) async {
   SharedPreferences.setMockInitialValues(<String, Object>{
     AppSettings.kOnboarded: onboarded,
@@ -116,7 +117,7 @@ Future<Harness> makeHarness({
     overrides: <Override>[
       prefsProvider.overrideWithValue(p),
       userDatabaseProvider.overrideWithValue(db),
-      seedSourceProvider.overrideWithValue(() async => null),
+      seedSourceProvider.overrideWithValue(() async => wallpaper),
       backupFileIoProvider.overrideWithValue(io),
       if (clock != null) todayClockOverride(clock),
       if (libDb != null)
@@ -149,8 +150,10 @@ Future<Harness> pumpSinew(
   Future<void> Function(UserDatabase db)? seed,
   List<Override> extra = const <Override>[],
   bool settle = true,
+  Color? wallpaper,
 }) async {
   final Harness h = await makeHarness(
+    wallpaper: wallpaper,
     prefs: prefs,
     onboarded: onboarded,
     seedMeasurements: seedMeasurements,

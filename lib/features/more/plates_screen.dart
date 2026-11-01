@@ -217,25 +217,28 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
                   haptics: false,
                 ),
               const SizedBox(height: Space.md),
-              Wrap(
-                spacing: Space.sm,
-                runSpacing: Space.sm,
-                children: <Widget>[
-                  for (int i = 0; i < bars.length; i++)
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: <Widget>[
+                    for (int i = 0; i < bars.length; i++) ...<Widget>[
+                      SinewChip(
+                        label: bars[i].name,
+                        selected: !machine && i == barIndex,
+                        onTap: () => setState(() {
+                          _barIndex = i;
+                          _machine = false;
+                        }),
+                      ),
+                      const SizedBox(width: Space.sm),
+                    ],
                     SinewChip(
-                      label: bars[i].name,
-                      selected: !machine && i == barIndex,
-                      onTap: () => setState(() {
-                        _barIndex = i;
-                        _machine = false;
-                      }),
+                      label: 'Machine',
+                      selected: machine,
+                      onTap: () => setState(() => _machine = true),
                     ),
-                  SinewChip(
-                    label: 'Machine',
-                    selected: machine,
-                    onTap: () => setState(() => _machine = true),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: Space.md),
               Center(
@@ -314,6 +317,9 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
           children: <Widget>[
             for (final double kg in plateRows(inv, unit))
               _PlateRow(
+                key: ValueKey<String>(
+                  'plate-${Units.trim(kg, maxDecimals: 4)}',
+                ),
                 kg: kg,
                 unit: unit,
                 count: _countOf(inv, kg),
@@ -345,6 +351,7 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
                 ),
               ),
               NumericStepper(
+                key: const ValueKey<String>('machine-step'),
                 value: Units.fromKg(inv.machineStepKg, unit),
                 step: unit == WeightUnit.kg ? 0.5 : 1,
                 min: unit == WeightUnit.kg ? 0.5 : 1,
@@ -366,6 +373,7 @@ class _PlatesBodyState extends ConsumerState<_PlatesBody> {
 
 class _PlateRow extends StatelessWidget {
   const _PlateRow({
+    super.key,
     required this.kg,
     required this.unit,
     required this.count,

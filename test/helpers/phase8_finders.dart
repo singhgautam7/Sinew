@@ -5,16 +5,36 @@ import 'package:go_router/go_router.dart';
 import 'package:sinew/app.dart';
 import 'package:sinew/core/widgets/app_button.dart';
 
-/// Builds [f] if it is below the fold, then scrolls it into view.
-Future<void> reveal(WidgetTester tester, Finder f) async {
-  if (f.evaluate().isEmpty) {
-    await tester.scrollUntilVisible(
-      f,
-      150,
-      scrollable: find.byType(Scrollable).first,
-    );
+bool _exists(Finder f) {
+  try {
+    return f.evaluate().isNotEmpty;
+  } on StateError {
+    return false;
   }
-  await tester.ensureVisible(f);
+}
+
+/// Builds [f] if it is off screen (scrolling down, then up), then brings it
+/// into view.
+Future<void> reveal(WidgetTester tester, Finder f) async {
+  if (!_exists(f)) {
+    final Finder scrollable = find.byType(Scrollable).first;
+    try {
+      await tester.scrollUntilVisible(
+        f,
+        150,
+        scrollable: scrollable,
+        maxScrolls: 30,
+      );
+    } on StateError {
+      await tester.scrollUntilVisible(
+        f,
+        -150,
+        scrollable: scrollable,
+        maxScrolls: 60,
+      );
+    }
+  }
+  await tester.ensureVisible(f.first);
   await tester.pump();
 }
 
@@ -31,18 +51,18 @@ Future<void> typeInto(WidgetTester tester, String key, String text) async {
 
 /// Scrolls [finder] into view and taps it.
 Future<void> tapText(WidgetTester tester, String text) async {
-  final Finder f = find.text(text).first;
-  await reveal(tester, f);
-  await tester.tap(f);
+  final Finder all = find.text(text);
+  await reveal(tester, all);
+  await tester.tap(all.first);
   await tester.pumpAndSettle();
 }
 
 /// Taps the [AppButton] labelled [label] (not a tile or a title that shares
 /// the text).
 Future<void> tapButton(WidgetTester tester, String label) async {
-  final Finder f = find.widgetWithText(AppButton, label).first;
-  await reveal(tester, f);
-  await tester.tap(f);
+  final Finder all = find.widgetWithText(AppButton, label);
+  await reveal(tester, all);
+  await tester.tap(all.first);
   await tester.pumpAndSettle();
 }
 
@@ -59,3 +79,10 @@ String currentPath(WidgetTester tester) {
 /// The root container, for reading providers.
 ProviderContainer rootContainer(WidgetTester tester) =>
     ProviderScope.containerOf(tester.element(find.byType(SinewApp)));
+
+/// Navigates with `go` and waits for the new screen.
+Future<void> goTo(WidgetTester tester, String path) async {
+  final BuildContext ctx = tester.element(find.byType(Navigator).first);
+  GoRouter.of(ctx).go(path);
+  await tester.pumpAndSettle();
+}

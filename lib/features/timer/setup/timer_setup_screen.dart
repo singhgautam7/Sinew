@@ -12,6 +12,7 @@ import '../../../core/models/enums.dart';
 import '../../../core/models/timer_preset.dart';
 import '../../../core/providers.dart';
 import '../../../core/routing/router.dart';
+import '../../../core/settings/app_settings.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_icon_button.dart';
@@ -27,6 +28,7 @@ import '../../../core/widgets/sinew_toggle_tile.dart';
 import '../../../engines/timer/timer_engine.dart';
 import '../controller/timer_presets_provider.dart';
 import '../controller/timer_session.dart';
+import '../data/timer_cues.dart';
 import '../data/timer_modes.dart';
 import '../data/timer_presets.dart';
 import '../widgets/labelled_row.dart';
@@ -75,6 +77,10 @@ class _TimerSetupScreenState extends ConsumerState<TimerSetupScreen> {
   }
 
   Future<void> _load() async {
+    // New setups start with the cues chosen in Settings > Timer; a saved
+    // preset below replaces them with its own.
+    final AppSettings settings = ref.read(settingsProvider);
+    _model = _model.copyWith(cues: seedCues(_model.cues, settings));
     try {
       final String? presetId = widget.presetId;
       if (presetId != null) {
@@ -98,7 +104,11 @@ class _TimerSetupScreenState extends ConsumerState<TimerSetupScreen> {
         if (flow != null) {
           _title = flow.name;
           _name.text = flow.name;
-          _model = SetupModel.fromConfig(flowConfig(flow));
+          final YogaFlowConfig config = flowConfig(flow);
+          _model = SetupModel.fromConfig(
+            config,
+            cues: seedCues(config.defaultCues, settings),
+          );
         }
       }
     } on Object {
@@ -267,18 +277,41 @@ class _TimerSetupScreenState extends ConsumerState<TimerSetupScreen> {
                     _CuesBlock(model: _model, onChanged: _set),
                   ],
                 ),
+                // A scrim under the button: the cue switches scroll behind
+                // it and must not show through its edges.
                 Positioned(
-                  left: Space.screen,
-                  right: Space.screen,
-                  bottom: TimerUi.startBottom,
-                  child: SafeArea(
-                    top: false,
-                    child: AppButton(
-                      label: canStart ? 'Start · $total' : 'Start',
-                      icon: Icons.play_arrow_rounded,
-                      type: AppButtonType.primary,
-                      fullWidth: true,
-                      onPressed: canStart ? _start : null,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: <Color>[
+                          context.cs.surface.withValues(alpha: 0),
+                          context.cs.surface,
+                        ],
+                        stops: const <double>[0, TimerHomeSpec.scrimSolidFrom],
+                      ),
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          Space.screen,
+                          Space.xl,
+                          Space.screen,
+                          TimerUi.startBottom,
+                        ),
+                        child: AppButton(
+                          label: canStart ? 'Start · $total' : 'Start',
+                          icon: Icons.play_arrow_rounded,
+                          type: AppButtonType.primary,
+                          fullWidth: true,
+                          onPressed: canStart ? _start : null,
+                        ),
+                      ),
                     ),
                   ),
                 ),

@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/timer_preset.dart';
+import '../../../engines/timer/timer_engine.dart';
 import '../../../core/providers.dart';
+import '../../../core/settings/app_settings.dart';
+import '../data/timer_cues.dart';
 import '../data/timer_presets.dart';
 
 /// Inserts the built-in presets the first time the Timer is used. Idempotent:
@@ -13,6 +16,8 @@ final FutureProvider<void> timerPresetSeedProvider = FutureProvider<void>((
     presets: ref.read(timerPresetRepositoryProvider),
     state: ref.read(runtimeStateRepositoryProvider),
     now: DateTime.now().toUtc(),
+    cuesFor: (TimerConfig c) =>
+        seedCues(c.defaultCues, ref.read(settingsProvider)),
   );
 });
 

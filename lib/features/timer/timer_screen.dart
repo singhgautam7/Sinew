@@ -141,8 +141,13 @@ class _ModeGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     // Big text turns three columns into two or one so a label never clips.
     final double scale = MediaQuery.textScalerOf(context).scale(1);
+    // A 360dp phone fits three columns only if "Countdown" is shorter than
+    // the tile at 1x text, which it is not: below TimerHomeSpec.narrowWidth
+    // there are two columns.
+    final bool narrow =
+        MediaQuery.sizeOf(context).width < TimerHomeSpec.narrowWidth;
     final int columns = scale <= 1.15
-        ? TimerUi.tileColumns
+        ? (narrow ? 2 : TimerUi.tileColumns)
         : (scale <= 1.6 ? 2 : 1);
     final List<Widget> rows = <Widget>[];
     for (int i = 0; i < kTimerModes.length; i += columns) {

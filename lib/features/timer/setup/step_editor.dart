@@ -237,6 +237,7 @@ class _StepSheetState extends ConsumerState<_StepSheet> {
                 : (_exerciseName ?? _exerciseId!),
             subtitle: _exerciseId == null ? 'Optional' : 'Tap to change',
             onTap: _pick,
+            clearLabel: 'Remove link to ${_exerciseName ?? _exerciseId}',
             onClear: _exerciseId == null
                 ? null
                 : () => setState(() {
@@ -259,6 +260,7 @@ class SinewListRowButton extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     this.onClear,
+    this.clearLabel = 'Remove',
   });
 
   final IconData icon;
@@ -266,6 +268,10 @@ class SinewListRowButton extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
   final VoidCallback? onClear;
+
+  /// What the clear button says to a screen reader and in its tooltip: it
+  /// names what is removed ("Remove link to Downward dog").
+  final String clearLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -301,7 +307,7 @@ class SinewListRowButton extends StatelessWidget {
                 ),
                 if (onClear != null)
                   IconButton(
-                    tooltip: 'Remove',
+                    tooltip: clearLabel,
                     constraints: const BoxConstraints(
                       minWidth: IconSpec.tapTarget,
                       minHeight: IconSpec.tapTarget,

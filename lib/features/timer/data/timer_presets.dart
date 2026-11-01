@@ -31,26 +31,42 @@ TimerPreset _builtIn(
   TimerConfig config,
   int position,
   DateTime now,
+  TimerCues Function(TimerConfig config) cuesFor,
 ) => TimerPreset(
   id: id,
   name: name,
   mode: config.mode,
   steps: compile(config),
-  cues: config.defaultCues,
+  cues: cuesFor(config),
   position: position,
   builtIn: true,
   updatedAt: now,
 );
 
-/// The five presets of the brief.
-List<TimerPreset> builtInPresets(DateTime now) => <TimerPreset>[
-  _builtIn(BuiltInPresetIds.tabata, 'Tabata', const TabataConfig(), 0, now),
+TimerCues _plainCues(TimerConfig config) => config.defaultCues;
+
+/// The five presets of the brief. [cuesFor] gives each one its cues (the
+/// seed passes Settings > Timer through [seedCues]); by default the mode's
+/// own.
+List<TimerPreset> builtInPresets(
+  DateTime now, {
+  TimerCues Function(TimerConfig config) cuesFor = _plainCues,
+}) => <TimerPreset>[
+  _builtIn(
+    BuiltInPresetIds.tabata,
+    'Tabata',
+    const TabataConfig(),
+    0,
+    now,
+    cuesFor,
+  ),
   _builtIn(
     BuiltInPresetIds.emom,
     'EMOM 10',
     const EmomConfig(rounds: 10),
     1,
     now,
+    cuesFor,
   ),
   _builtIn(
     BuiltInPresetIds.amrap,
@@ -58,6 +74,7 @@ List<TimerPreset> builtInPresets(DateTime now) => <TimerPreset>[
     const AmrapConfig(capSec: 12 * 60),
     2,
     now,
+    cuesFor,
   ),
   _builtIn(
     BuiltInPresetIds.boxing,
@@ -65,6 +82,7 @@ List<TimerPreset> builtInPresets(DateTime now) => <TimerPreset>[
     const BoxingConfig(),
     3,
     now,
+    cuesFor,
   ),
   _builtIn(
     BuiltInPresetIds.countdown,
@@ -72,15 +90,21 @@ List<TimerPreset> builtInPresets(DateTime now) => <TimerPreset>[
     const CountdownConfig(durationSec: 300),
     4,
     now,
+    cuesFor,
   ),
 ];
 
 /// Inserts the built-in presets that were never inserted before. Safe to call
 /// on every visit: it reads the record first and writes only what is missing.
+///
+/// A preset whose row exists but cannot be read (written by a newer build) is
+/// left alone and counted as seeded: [TimerPresetRepository.byId] returns null
+/// for it too, so absence is asked of [TimerPresetRepository.exists].
 Future<void> seedBuiltInPresets({
   required TimerPresetRepository presets,
   required RuntimeStateRepository state,
   required DateTime now,
+  TimerCues Function(TimerConfig config) cuesFor = _plainCues,
 }) async {
   final Map<String, dynamic>? seeded = await state.read(kPresetsSeededKey);
   final Set<String> done = <String>{
@@ -89,13 +113,13 @@ Future<void> seedBuiltInPresets({
         if (id is String) id,
   };
   final List<TimerPreset> missing = <TimerPreset>[
-    for (final TimerPreset p in builtInPresets(now))
+    for (final TimerPreset p in builtInPresets(now, cuesFor: cuesFor))
       if (!done.contains(p.id)) p,
   ];
   if (missing.isEmpty) return;
   for (final TimerPreset p in missing) {
     // A restore may already hold the preset; never overwrite it.
-    if (await presets.byId(p.id) == null) await presets.save(p);
+    if (!await presets.exists(p.id)) await presets.save(p);
     done.add(p.id);
   }
   await state.write(kPresetsSeededKey, <String, dynamic>{

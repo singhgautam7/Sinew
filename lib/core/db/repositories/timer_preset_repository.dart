@@ -26,6 +26,15 @@ class TimerPresetRepository {
     return row == null ? null : _decode(row);
   }
 
+  /// True when a row with [id] exists, readable or not. [byId] returns null
+  /// for both an absent preset and one written by a newer build; the built-in
+  /// seed must tell them apart so it never overwrites the second.
+  Future<bool> exists(String id) async =>
+      await (_db.select(
+        _db.timerPresets,
+      )..where(($TimerPresetsTable t) => t.id.equals(id))).getSingleOrNull() !=
+      null;
+
   Future<void> save(TimerPreset preset) {
     final TimerPreset p = preset.copyWith(
       schemaVersion: TimerPreset.currentSchemaVersion,

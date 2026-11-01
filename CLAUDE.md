@@ -110,10 +110,15 @@ How it is enforced:
 
 - `lib/core/widgets/` is the design-system library, built in Phase 3 before any feature
   screen, and consumed everywhere. If you are about to copy a widget, extract it instead.
-- Source for shared widgets and most app-level code is **Kuber** (bottom nav, header, theme
-  selection page, gestures, About, Settings, Permissions, button, overflow button, bottom
-  sheet, More > Data). Mull is the reference for theming approach, motion and folder
-  conventions. Where the two differ, the design handoff decides; ask if it is silent.
+- **Kuber is the source of truth** for shared widgets and app-level code: the theme
+  families and `AppTheme`, the nav pill (`KuberNavPill`), app bar and page header, buttons,
+  overflow menu, bottom sheets, settings sections and rows, Theme, About, Permissions,
+  More, data management and backup, snackbars, empty/loading/skeleton states, segmented
+  control, charts, info sheets and the icon/colour picker. Port them (Riverpod 3, drift,
+  bundled fonts, English strings) rather than redesigning. The design handoff
+  (`specs/design/sinew-design-references/project/HANDOFF.md`) was itself drawn from
+  Kuber's code and decides where it differs. Mull is the reference for motion and folder
+  conventions only.
 - Phase 1 has only `PhasePlaceholder` (removed screen by screen) and a stock
   `NavigationBar` in `core/routing/app_shell.dart` (replaced by the pill in Phase 3).
 
@@ -172,7 +177,8 @@ specs/                      data (exercises.json, schema), design handoff (Phase
 
 ## Standing instructions
 
-- Read `specs/design/<folder>/HANDOFF.md` before any UI work. If it is missing when a UI
+- Read `specs/design/sinew-design-references/project/HANDOFF.md` and the relevant
+  `Sinew N … .dc.html` frames before any UI work. If it is missing when a UI
   phase starts, stop and say so.
 - Mull (`github.com/singhgautam7/Mull`) and Kuber (`github.com/singhgautam7/Kuber`) are
   read-only references. Never modify them.

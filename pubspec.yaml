@@ -98,3 +98,29 @@ flutter:
       fonts:
         - asset: assets/fonts/InstrumentSerif-Italic.ttf
           style: italic
+
+# Launcher icon and splash. `flutter_launcher_icons` is deliberately not used
+# (it would rasterise the adaptive vector drawables and lose the monochrome
+# layer), as in Kuber. The adaptive icon is hand-written vectors in
+# android/app/src/main/res/drawable/; legacy PNGs and the splash art come from
+# `flutter test tool/generate_icons_test.dart`. See docs/ICON.md.
+flutter_native_splash:
+  # The icon's own ground: the splash reads as the launcher icon holding still.
+  # Dark mode uses the dark scheme surface under the #2A3310 circle.
+  color: "#E4ECC7"
+  color_dark: "#161811"
+  image: assets/icon/splash.png
+  image_dark: assets/icon/splash_dark.png
+  android_12:
+    # Android 12 masks its splash icon to a circle and shows only the middle of
+    # it, so this art is the glyph alone on transparent and the ground is the
+    # colour below.
+    image: assets/icon/splash_android12.png
+    image_dark: assets/icon/splash_android12_dark.png
+    icon_background_color: "#E4ECC7"
+    icon_background_color_dark: "#2A3310"
+    color: "#E4ECC7"
+    color_dark: "#161811"
+  android: true
+  ios: false
+  web: false

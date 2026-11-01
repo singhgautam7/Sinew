@@ -645,3 +645,58 @@ abstract final class ExerciseTileSpec {
   static const double actionGlyph = 20;
   static const double metaGlyph = 16;
 }
+
+// ──────────────────────────────────────────────────────────────────────────
+// Phase 8: Today, first run, search, More, backup, theme, about.
+// Append-only; every number below is used by the screens named.
+// ──────────────────────────────────────────────────────────────────────────
+
+/// Today, search and the first-run screens.
+abstract final class TodaySpec {
+  /// Quick timer tiles shown on Today.
+  static const int quickTimerCount = 4;
+
+  /// A day in the week strip.
+  static const double dayCell = 36;
+  static const double dayCellRing = 2;
+
+  /// The glyph disc in a hero or empty card.
+  static const double heroGlyph = 48;
+
+  /// Longest line of body text on a first-run screen.
+  static const double readableWidth = 420;
+
+  /// Recent searches kept.
+  static const int recentSearches = 8;
+
+  /// Results shown per group in "All" before "Show all".
+  static const int searchGroupLimit = 4;
+
+  /// Wait after the last keystroke before a search runs.
+  static const Duration searchDebounce = Duration(milliseconds: 250);
+}
+
+/// More, Profile, Units, Plates, Backup, Settings, Theme, About, Permissions.
+abstract final class MoreSpec {
+  /// A theme family swatch dot and its smaller wallpaper twin.
+  static const double swatch = 34;
+  static const double swatchSmall = 26;
+  static const double familyCardMinHeight = 116;
+  static const double familyCardBorder = 2;
+
+  /// The mode preview tile (System, Light, Dark, AMOLED).
+  static const double modePreviewHeight = 56;
+  static const double modePreviewBar = 6;
+
+  /// A plate swatch in the inventory list.
+  static const double plateSwatch = 28;
+
+  /// Largest target weight on the plate preview, in kilograms.
+  static const double previewMaxKg = 500;
+
+  /// The birth year range offered in the profile.
+  static const int birthYearMin = 1900;
+
+  /// Rest time step in Settings, in seconds.
+  static const int restStep = 15;
+}

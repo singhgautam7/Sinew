@@ -9,9 +9,11 @@ import 'core/theme/wallpaper_seed.dart';
 import 'core/widgets/sinew_extended_fab.dart';
 
 class SinewApp extends ConsumerStatefulWidget {
-  const SinewApp({super.key, this.initialLocation = Routes.today});
+  const SinewApp({super.key, this.initialLocation});
 
-  final String initialLocation;
+  /// Overrides the start route (tests). By default a first run opens Welcome
+  /// and everyone else opens Today.
+  final String? initialLocation;
 
   @override
   ConsumerState<SinewApp> createState() => _SinewAppState();
@@ -19,7 +21,9 @@ class SinewApp extends ConsumerStatefulWidget {
 
 class _SinewAppState extends ConsumerState<SinewApp> {
   late final GoRouter _router = buildRouter(
-    initialLocation: widget.initialLocation,
+    initialLocation:
+        widget.initialLocation ??
+        (ref.read(settingsProvider).onboarded ? Routes.today : Routes.welcome),
   );
 
   @override

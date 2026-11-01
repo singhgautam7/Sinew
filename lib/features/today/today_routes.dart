@@ -1,5 +1,8 @@
 import 'package:go_router/go_router.dart';
 
+import '../../core/routing/router.dart';
+import '../search/search_screen.dart';
+
 // Owned by the Today feature. The paths other features may link to are in
 // `Routes` (lib/core/routing/router.dart); register them here.
 
@@ -9,4 +12,10 @@ final List<RouteBase> todayTabRoutes = <RouteBase>[];
 
 /// Full-screen routes above the shell (no nav). Each sets
 /// `parentNavigatorKey: rootNavigatorKey`.
-final List<RouteBase> todayRootRoutes = <RouteBase>[];
+final List<RouteBase> todayRootRoutes = <RouteBase>[
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: Routes.search,
+    builder: (context, state) => const SearchScreen(),
+  ),
+];

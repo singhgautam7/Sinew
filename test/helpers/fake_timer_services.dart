@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sinew/core/models/timer_preset.dart';
 import 'package:sinew/engines/timer/timer_engine.dart';

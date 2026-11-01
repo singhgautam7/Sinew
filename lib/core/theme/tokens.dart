@@ -645,3 +645,69 @@ abstract final class ExerciseTileSpec {
   static const double actionGlyph = 20;
   static const double metaGlyph = 16;
 }
+
+// ── Library feature (Phase 5, append-only section owned by the Library) ────
+
+/// Library screens: browse, results, detail and the custom exercise form.
+abstract final class LibrarySpec {
+  /// Results are loaded in pages of this many rows.
+  static const int pageSize = 50;
+
+  /// Load the next page when this close (logical px) to the end of the list.
+  static const double loadMoreExtent = 600;
+
+  /// Keystrokes settle for this long before a search runs.
+  static const Duration searchDebounce = Duration(milliseconds: 100);
+
+  /// Most recently viewed exercise ids kept in prefs.
+  static const int recentMax = 20;
+
+  /// Rows shown in a collapsed browse section.
+  static const int collapsedRows = 5;
+
+  /// The pill search field.
+  static const double searchFieldHeight = 48;
+
+  /// The full-height picker and filter sheets cover this share of the screen.
+  static const double sheetHeightFactor = 0.94;
+
+  /// Category card on the browse screen.
+  static const double categoryCardMinHeight = 88;
+  static const double categoryGlyph = 28;
+
+  /// Exercise detail muscle map (front and back side by side).
+  static const double detailMapWidth = 170;
+  static const double detailMapHeight = 186;
+
+  /// Pose detail: one cropped side.
+  static const double poseMap = 112;
+
+  /// Numbered step badge.
+  static const double stepBadge = 28;
+
+  /// Tracking type tile in the custom exercise form.
+  static const double trackTileHeight = 72;
+  static const int trackTileColumns = 4;
+
+  /// Muscle preview in the custom exercise form.
+  static const double mapPreviewHeight = 180;
+
+  /// Multi-line text fields in the custom exercise form.
+  static const int stepsLines = 6;
+  static const int notesLines = 3;
+
+  /// Default MET shown in the form, by category (Compendium of Physical
+  /// Activities ballparks). Always labelled as an estimate.
+  static const double metStrength = 4;
+  static const double metCalisthenics = 4;
+  static const double metYoga = 2.5;
+  static const double metMobility = 2.3;
+  static const double metHiit = 8;
+  static const double metBoxing = 7.8;
+  static const double metCardio = 7;
+  static const double metPilates = 3;
+  static const double metFallback = 4;
+
+  /// Equipment chips shown before "More" in the filter sheet.
+  static const int equipmentCollapsed = 12;
+}

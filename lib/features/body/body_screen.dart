@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/format/number_text.dart';
 import '../../core/models/enums.dart';
 import '../../core/models/measurement.dart';
 import '../../core/providers.dart';
@@ -17,6 +18,7 @@ import '../../core/widgets/domain/stat_card.dart';
 import '../../core/widgets/sinew_bottom_sheet.dart';
 import '../../core/widgets/sinew_chips.dart';
 import '../../core/widgets/sinew_app_bar.dart';
+import '../../core/widgets/sinew_error_state.dart';
 import '../../core/widgets/sinew_extended_fab.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_marker_bar.dart';
@@ -51,13 +53,10 @@ class BodyScreen extends ConsumerWidget {
           children: <Widget>[
             const _Header(overview: null),
             Expanded(
-              child: SinewEmptyState(
-                icon: Icons.error_outline_rounded,
+              child: SinewErrorState(
                 title: 'Could not load your measurements',
                 description: 'Nothing was lost. Try again.',
-                actionLabel: 'Try again',
-                actionIcon: Icons.refresh_rounded,
-                onAction: () => ref.invalidate(bodyOverviewProvider),
+                onRetry: () => ref.invalidate(bodyOverviewProvider),
               ),
             ),
           ],
@@ -79,6 +78,13 @@ class _Header extends StatelessWidget {
     return SinewPageHeader(
       title: 'Body',
       actions: <Widget>[
+        if ((o?.entries.length ?? 0) >= 2)
+          AppIconButton(
+            icon: Icons.compare_rounded,
+            semanticLabel: 'Compare dates',
+            kind: AppIconButtonKind.plain,
+            onPressed: () => context.push(Routes.compare),
+          ),
         if (hasData)
           AppIconButton(
             icon: Icons.show_chart_rounded,
@@ -224,17 +230,6 @@ class _ShapeCard extends StatelessWidget {
                 color: context.cs.onSurfaceVariant,
               ),
             ),
-            if (o.entries.length >= 2) ...<Widget>[
-              const SizedBox(height: Space.md),
-              Align(
-                child: AppButton(
-                  label: 'Compare dates',
-                  icon: Icons.compare_rounded,
-                  type: AppButtonType.outline,
-                  onPressed: () => context.push(Routes.compare),
-                ),
-              ),
-            ],
           ] else ...<Widget>[
             silhouette,
             const SizedBox(height: Space.lg),
@@ -270,15 +265,7 @@ class _ShapeCard extends StatelessWidget {
 
 // ── Stats ───────────────────────────────────────────────────────────────────
 
-String _kcal(double v) {
-  final String digits = v.round().toString();
-  final StringBuffer out = StringBuffer();
-  for (int i = 0; i < digits.length; i++) {
-    if (i > 0 && (digits.length - i) % 3 == 0) out.write(',');
-    out.write(digits[i]);
-  }
-  return out.toString();
-}
+String _kcal(double v) => NumberText.thousands(v);
 
 String _activityLabel(ActivityLevel l) => switch (l) {
   ActivityLevel.sedentary => 'Sedentary',

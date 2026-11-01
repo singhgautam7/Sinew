@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TimerPreset {
 
- int get schemaVersion; String get id; String get name; TimerMode get mode; List<TimerStepSpec> get steps; TimerCues get cues; int get position; bool get builtIn; DateTime get updatedAt;
+ int get schemaVersion; String get id; String get name; TimerMode get mode; List<TimerStepSpec> get steps; TimerCues get cues; int get position; bool get builtIn;@UtcDateTimeConverter() DateTime get updatedAt;
 /// Create a copy of TimerPreset
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $TimerPresetCopyWith<$Res>  {
   factory $TimerPresetCopyWith(TimerPreset value, $Res Function(TimerPreset) _then) = _$TimerPresetCopyWithImpl;
 @useResult
 $Res call({
- int schemaVersion, String id, String name, TimerMode mode, List<TimerStepSpec> steps, TimerCues cues, int position, bool builtIn, DateTime updatedAt
+ int schemaVersion, String id, String name, TimerMode mode, List<TimerStepSpec> steps, TimerCues cues, int position, bool builtIn,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -176,7 +176,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  String id,  String name,  TimerMode mode,  List<TimerStepSpec> steps,  TimerCues cues,  int position,  bool builtIn,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  String id,  String name,  TimerMode mode,  List<TimerStepSpec> steps,  TimerCues cues,  int position,  bool builtIn, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TimerPreset() when $default != null:
 return $default(_that.schemaVersion,_that.id,_that.name,_that.mode,_that.steps,_that.cues,_that.position,_that.builtIn,_that.updatedAt);case _:
@@ -197,7 +197,7 @@ return $default(_that.schemaVersion,_that.id,_that.name,_that.mode,_that.steps,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  String id,  String name,  TimerMode mode,  List<TimerStepSpec> steps,  TimerCues cues,  int position,  bool builtIn,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  String id,  String name,  TimerMode mode,  List<TimerStepSpec> steps,  TimerCues cues,  int position,  bool builtIn, @UtcDateTimeConverter()  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _TimerPreset():
 return $default(_that.schemaVersion,_that.id,_that.name,_that.mode,_that.steps,_that.cues,_that.position,_that.builtIn,_that.updatedAt);case _:
@@ -217,7 +217,7 @@ return $default(_that.schemaVersion,_that.id,_that.name,_that.mode,_that.steps,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  String id,  String name,  TimerMode mode,  List<TimerStepSpec> steps,  TimerCues cues,  int position,  bool builtIn,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  String id,  String name,  TimerMode mode,  List<TimerStepSpec> steps,  TimerCues cues,  int position,  bool builtIn, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _TimerPreset() when $default != null:
 return $default(_that.schemaVersion,_that.id,_that.name,_that.mode,_that.steps,_that.cues,_that.position,_that.builtIn,_that.updatedAt);case _:
@@ -232,7 +232,7 @@ return $default(_that.schemaVersion,_that.id,_that.name,_that.mode,_that.steps,_
 @JsonSerializable()
 
 class _TimerPreset implements TimerPreset {
-  const _TimerPreset({this.schemaVersion = TimerPreset.currentSchemaVersion, required this.id, required this.name, required this.mode,  List<TimerStepSpec> steps = const <TimerStepSpec>[], this.cues = const TimerCues(), this.position = 0, this.builtIn = false, required this.updatedAt}): _steps = steps;
+  const _TimerPreset({this.schemaVersion = TimerPreset.currentSchemaVersion, required this.id, required this.name, required this.mode,  List<TimerStepSpec> steps = const <TimerStepSpec>[], this.cues = const TimerCues(), this.position = 0, this.builtIn = false, @UtcDateTimeConverter() required this.updatedAt}): _steps = steps;
   factory _TimerPreset.fromJson(Map<String, dynamic> json) => _$TimerPresetFromJson(json);
 
 @override@JsonKey() final  int schemaVersion;
@@ -249,7 +249,7 @@ class _TimerPreset implements TimerPreset {
 @override@JsonKey() final  TimerCues cues;
 @override@JsonKey() final  int position;
 @override@JsonKey() final  bool builtIn;
-@override final  DateTime updatedAt;
+@override@UtcDateTimeConverter() final  DateTime updatedAt;
 
 /// Create a copy of TimerPreset
 /// with the given fields replaced by the non-null parameter values.
@@ -286,7 +286,7 @@ abstract mixin class _$TimerPresetCopyWith<$Res> implements $TimerPresetCopyWith
   factory _$TimerPresetCopyWith(_TimerPreset value, $Res Function(_TimerPreset) _then) = __$TimerPresetCopyWithImpl;
 @override @useResult
 $Res call({
- int schemaVersion, String id, String name, TimerMode mode, List<TimerStepSpec> steps, TimerCues cues, int position, bool builtIn, DateTime updatedAt
+ int schemaVersion, String id, String name, TimerMode mode, List<TimerStepSpec> steps, TimerCues cues, int position, bool builtIn,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 

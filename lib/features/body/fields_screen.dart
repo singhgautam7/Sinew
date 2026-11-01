@@ -10,6 +10,7 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/domain/field_row.dart';
 import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_dialogs.dart';
+import '../../core/widgets/sinew_error_state.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_menu.dart';
 import '../../core/widgets/sinew_snackbar.dart';
@@ -95,14 +96,36 @@ class _FieldsScreenState extends ConsumerState<FieldsScreen> {
       now: ref.read(bodyNowProvider),
     );
     if (result == null) return;
-    for (final MeasurementField f in result) {
-      await repo.saveField(f);
+    try {
+      // A left and right pair is saved together or not at all.
+      await repo.saveFields(result);
+    } on Object {
+      if (!mounted) return;
+      showSinewSnackBar(
+        context,
+        'Could not save the field. Nothing was changed.',
+        isError: true,
+      );
     }
+  }
+
+  /// The other side of [f]'s left and right pair (none for a single field).
+  List<MeasurementField> _pairMates(MeasurementField f) {
+    final String? pair = f.pairId;
+    if (pair == null) return const <MeasurementField>[];
+    return <MeasurementField>[
+      for (final MeasurementField o
+          in ref.read(bodyFieldsProvider).value ?? const <MeasurementField>[])
+        if (o.id != f.id && o.pairId == pair) o,
+    ];
   }
 
   Future<void> _removeField(MeasurementField f) async {
     final MeasurementRepository repo = ref.read(measurementRepositoryProvider);
-    final bool hasData = await repo.fieldHasData(f.id);
+    bool hasData = await repo.fieldHasData(f.id);
+    for (final MeasurementField m in _pairMates(f)) {
+      hasData = hasData || await repo.fieldHasData(m.id);
+    }
     if (!mounted) return;
     final bool ok = await showSinewConfirmDialog(
       context: context,
@@ -116,7 +139,22 @@ class _FieldsScreenState extends ConsumerState<FieldsScreen> {
       destructive: true,
     );
     if (!ok || !mounted) return;
-    final FieldRemoval result = await repo.removeField(f.id);
+    final FieldRemoval result;
+    try {
+      // Both sides of a pair go together.
+      result = await repo.removeFields(<String>[
+        f.id,
+        ..._pairMates(f).map((MeasurementField m) => m.id),
+      ]);
+    } on Object {
+      if (!mounted) return;
+      showSinewSnackBar(
+        context,
+        'Could not remove ${f.name}. Nothing was changed.',
+        isError: true,
+      );
+      return;
+    }
     if (!mounted) return;
     showSinewSnackBar(
       context,
@@ -132,7 +170,7 @@ class _FieldsScreenState extends ConsumerState<FieldsScreen> {
       bodyFieldsProvider,
     );
     final List<MeasurementField>? data = async.value;
-    _profile = ref.watch(bodyProfileProvider).value ?? const Profile();
+    _profile = ref.watch(currentProfileProvider).value ?? const Profile();
     final List<MeasurementField> live = data == null
         ? const <MeasurementField>[]
         : _ordered(<MeasurementField>[
@@ -159,18 +197,18 @@ class _FieldsScreenState extends ConsumerState<FieldsScreen> {
       ),
       body: data == null
           ? (async.hasError
-                ? const SinewEmptyState(
-                    icon: Icons.error_outline_rounded,
+                ? SinewErrorState(
                     title: 'Could not load fields',
-                    description: 'Nothing was lost. Go back and try again.',
+                    description: 'Nothing was lost. Try again.',
+                    onRetry: () => ref.invalidate(bodyFieldsProvider),
                   )
                 : const Delayed(child: SinewLoader()))
           : SafeArea(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(
-                  Space.lg,
+                  Space.screen,
                   Space.sm,
-                  Space.lg,
+                  Space.screen,
                   Space.xxxl,
                 ),
                 children: <Widget>[

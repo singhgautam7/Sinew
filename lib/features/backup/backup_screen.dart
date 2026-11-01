@@ -7,7 +7,7 @@ import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_bottom_sheet.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_settings.dart';
-import '../today/date_text.dart';
+import '../../core/format/date_text.dart';
 import 'export_sheet.dart';
 import 'restore_panel.dart';
 

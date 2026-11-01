@@ -6,7 +6,8 @@ import '../../core/models/training.dart';
 import '../../core/providers.dart';
 import '../../core/settings/app_settings.dart';
 import '../../engines/body_stats/body_stats.dart';
-import 'date_text.dart';
+import '../body/body_model.dart';
+import '../../core/format/date_text.dart';
 
 /// "Now", overridable in tests so a seeded week is the same on any day.
 final Provider<DateTime Function()> todayClockProvider =
@@ -105,11 +106,6 @@ final StreamProvider<List<Routine>> _routinesProvider =
       (Ref ref) => ref.watch(routineRepositoryProvider).watchAll(),
     );
 
-final StreamProvider<Profile> _profileProvider =
-    StreamProvider.autoDispose<Profile>(
-      (Ref ref) => ref.watch(profileRepositoryProvider).watch(),
-    );
-
 final StreamProvider<List<TimerPreset>> _presetsProvider =
     StreamProvider.autoDispose<List<TimerPreset>>(
       (Ref ref) => ref.watch(timerPresetRepositoryProvider).watchAll(),
@@ -126,7 +122,7 @@ todaySummaryProvider = FutureProvider.autoDispose<TodaySummary>((
   final List<WorkoutSession> history = await ref.watch(_historyProvider.future);
   final List<Routine> routines = await ref.watch(_routinesProvider.future);
   final List<TimerPreset> presets = await ref.watch(_presetsProvider.future);
-  final Profile profile = await ref.watch(_profileProvider.future);
+  final Profile profile = await ref.watch(currentProfileProvider.future);
   final int finished = await ref
       .watch(sessionRepositoryProvider)
       .finishedCount();
@@ -171,6 +167,7 @@ class TodayBody {
     required this.bmi,
     required this.bodyFat,
     required this.hasAny,
+    required this.heightCm,
   });
 
   final Profile profile;
@@ -178,6 +175,9 @@ class TodayBody {
   final DateTime? weightDate;
   final StatResult<double> bmi;
   final StatResult<BodyFat> bodyFat;
+
+  /// The height the stats used (profile or logged, whichever is newer).
+  final double? heightCm;
 
   /// Any weight, height or body measurement at all.
   final bool hasAny;
@@ -190,24 +190,14 @@ class TodayBody {
 final FutureProvider<TodayBody> todayBodyProvider =
     FutureProvider.autoDispose<TodayBody>((Ref ref) async {
       final DateTime now = ref.watch(todayClockProvider)();
-      final Profile profile = await ref.watch(profileRepositoryProvider).get();
+      final Profile profile = await ref.watch(currentProfileProvider.future);
       final Map<String, ({double value, DateTime date})> latest = await ref
           .watch(measurementRepositoryProvider)
           .latestValues();
-      final BodyStatsInput input = BodyStatsInput(
-        now: now,
-        weightKg: latest['weight']?.value,
-        heightCm: profile.heightCm ?? latest['height']?.value,
-        waistCm: latest['waist']?.value,
-        neckCm: latest['neck']?.value,
-        hipsCm: latest['hips']?.value,
-        loggedBodyFatPercent: latest['body-fat']?.value,
-        sex: profile.sex,
-        birthYear: profile.birthYear,
-        activityLevel: profile.activityLevel,
-        cutoffs: profile.bmiCutoffs,
-      );
+      // The same input Body builds, so both screens agree on every number.
+      final BodyStatsInput input = bodyStatsInputFor(latest, profile, now);
       return TodayBody(
+        heightCm: input.heightCm,
         profile: profile,
         weightKg: latest['weight']?.value,
         weightDate: latest['weight']?.date,

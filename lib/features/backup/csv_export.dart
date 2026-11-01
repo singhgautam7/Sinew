@@ -1,5 +1,6 @@
 import 'package:csv/csv.dart';
 
+import '../../core/background.dart';
 import '../../core/db/repositories/exercise_repository.dart';
 import '../../core/db/repositories/measurement_repository.dart';
 import '../../core/db/repositories/session_repository.dart';
@@ -53,13 +54,18 @@ class CsvExportService {
     'pr',
   ];
 
-  Future<CsvFile> measurementsCsv() async => CsvFile(
-    fileName: measurementsFileName,
-    contents: buildMeasurementsCsv(
-      fields: await _measurements.fields(includeArchived: true),
-      entries: await _measurements.entries(),
-    ),
-  );
+  Future<CsvFile> measurementsCsv() async {
+    final List<MeasurementField> fields = await _measurements.fields(
+      includeArchived: true,
+    );
+    final List<MeasurementEntry> entries = await _measurements.entries();
+    return CsvFile(
+      fileName: measurementsFileName,
+      contents: await Background.run(
+        () => buildMeasurementsCsv(fields: fields, entries: entries),
+      ),
+    );
+  }
 
   Future<CsvFile> setsCsv() async {
     final List<WorkoutSession> sessions = await _sessions.allWithTree();
@@ -68,14 +74,14 @@ class CsvExportService {
         for (final SessionExercise e in s.exercises) e.exerciseId,
     };
     final Map<String, Exercise> found = await _resolver.resolve(ids);
+    final Map<String, String> names = <String, String>{
+      for (final MapEntry<String, Exercise> e in found.entries)
+        e.key: e.value.name,
+    };
     return CsvFile(
       fileName: setsFileName,
-      contents: buildSetsCsv(
-        sessions: sessions,
-        exerciseNames: <String, String>{
-          for (final MapEntry<String, Exercise> e in found.entries)
-            e.key: e.value.name,
-        },
+      contents: await Background.run(
+        () => buildSetsCsv(sessions: sessions, exerciseNames: names),
       ),
     );
   }

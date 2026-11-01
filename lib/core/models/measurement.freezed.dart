@@ -18,7 +18,7 @@ mixin _$MeasurementField {
 
  String get id; String get name; MeasurementUnitType get unitType;/// Label for [MeasurementUnitType.custom] only.
  String? get customUnit; BodySide get side;/// Left and right of one measurement share a pair id.
- String? get pairId; BodyAnchor? get bodyAnchor; bool get enabled; int get position; bool get builtIn; bool get archived; DateTime get updatedAt;
+ String? get pairId; BodyAnchor? get bodyAnchor; bool get enabled; int get position; bool get builtIn; bool get archived;@UtcDateTimeConverter() DateTime get updatedAt;
 /// Create a copy of MeasurementField
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -56,7 +56,7 @@ abstract mixin class $MeasurementFieldCopyWith<$Res>  {
   factory $MeasurementFieldCopyWith(MeasurementField value, $Res Function(MeasurementField) _then) = _$MeasurementFieldCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, MeasurementUnitType unitType, String? customUnit, BodySide side, String? pairId, BodyAnchor? bodyAnchor, bool enabled, int position, bool builtIn, bool archived, DateTime updatedAt
+ String id, String name, MeasurementUnitType unitType, String? customUnit, BodySide side, String? pairId, BodyAnchor? bodyAnchor, bool enabled, int position, bool builtIn, bool archived,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -172,7 +172,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  MeasurementUnitType unitType,  String? customUnit,  BodySide side,  String? pairId,  BodyAnchor? bodyAnchor,  bool enabled,  int position,  bool builtIn,  bool archived,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  MeasurementUnitType unitType,  String? customUnit,  BodySide side,  String? pairId,  BodyAnchor? bodyAnchor,  bool enabled,  int position,  bool builtIn,  bool archived, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MeasurementField() when $default != null:
 return $default(_that.id,_that.name,_that.unitType,_that.customUnit,_that.side,_that.pairId,_that.bodyAnchor,_that.enabled,_that.position,_that.builtIn,_that.archived,_that.updatedAt);case _:
@@ -193,7 +193,7 @@ return $default(_that.id,_that.name,_that.unitType,_that.customUnit,_that.side,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  MeasurementUnitType unitType,  String? customUnit,  BodySide side,  String? pairId,  BodyAnchor? bodyAnchor,  bool enabled,  int position,  bool builtIn,  bool archived,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  MeasurementUnitType unitType,  String? customUnit,  BodySide side,  String? pairId,  BodyAnchor? bodyAnchor,  bool enabled,  int position,  bool builtIn,  bool archived, @UtcDateTimeConverter()  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _MeasurementField():
 return $default(_that.id,_that.name,_that.unitType,_that.customUnit,_that.side,_that.pairId,_that.bodyAnchor,_that.enabled,_that.position,_that.builtIn,_that.archived,_that.updatedAt);case _:
@@ -213,7 +213,7 @@ return $default(_that.id,_that.name,_that.unitType,_that.customUnit,_that.side,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  MeasurementUnitType unitType,  String? customUnit,  BodySide side,  String? pairId,  BodyAnchor? bodyAnchor,  bool enabled,  int position,  bool builtIn,  bool archived,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  MeasurementUnitType unitType,  String? customUnit,  BodySide side,  String? pairId,  BodyAnchor? bodyAnchor,  bool enabled,  int position,  bool builtIn,  bool archived, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _MeasurementField() when $default != null:
 return $default(_that.id,_that.name,_that.unitType,_that.customUnit,_that.side,_that.pairId,_that.bodyAnchor,_that.enabled,_that.position,_that.builtIn,_that.archived,_that.updatedAt);case _:
@@ -228,7 +228,7 @@ return $default(_that.id,_that.name,_that.unitType,_that.customUnit,_that.side,_
 @JsonSerializable()
 
 class _MeasurementField implements MeasurementField {
-  const _MeasurementField({required this.id, required this.name, required this.unitType, this.customUnit, this.side = BodySide.none, this.pairId, this.bodyAnchor, this.enabled = true, this.position = 0, this.builtIn = false, this.archived = false, required this.updatedAt});
+  const _MeasurementField({required this.id, required this.name, required this.unitType, this.customUnit, this.side = BodySide.none, this.pairId, this.bodyAnchor, this.enabled = true, this.position = 0, this.builtIn = false, this.archived = false, @UtcDateTimeConverter() required this.updatedAt});
   factory _MeasurementField.fromJson(Map<String, dynamic> json) => _$MeasurementFieldFromJson(json);
 
 @override final  String id;
@@ -244,7 +244,7 @@ class _MeasurementField implements MeasurementField {
 @override@JsonKey() final  int position;
 @override@JsonKey() final  bool builtIn;
 @override@JsonKey() final  bool archived;
-@override final  DateTime updatedAt;
+@override@UtcDateTimeConverter() final  DateTime updatedAt;
 
 /// Create a copy of MeasurementField
 /// with the given fields replaced by the non-null parameter values.
@@ -281,7 +281,7 @@ abstract mixin class _$MeasurementFieldCopyWith<$Res> implements $MeasurementFie
   factory _$MeasurementFieldCopyWith(_MeasurementField value, $Res Function(_MeasurementField) _then) = __$MeasurementFieldCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, MeasurementUnitType unitType, String? customUnit, BodySide side, String? pairId, BodyAnchor? bodyAnchor, bool enabled, int position, bool builtIn, bool archived, DateTime updatedAt
+ String id, String name, MeasurementUnitType unitType, String? customUnit, BodySide side, String? pairId, BodyAnchor? bodyAnchor, bool enabled, int position, bool builtIn, bool archived,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -323,7 +323,7 @@ as DateTime,
 /// @nodoc
 mixin _$MeasurementEntry {
 
- String get id; DateTime get date; Map<String, double> get values; String? get note; DateTime get updatedAt;
+ String get id;@UtcDateTimeConverter() DateTime get date; Map<String, double> get values; String? get note;@UtcDateTimeConverter() DateTime get updatedAt;
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -361,7 +361,7 @@ abstract mixin class $MeasurementEntryCopyWith<$Res>  {
   factory $MeasurementEntryCopyWith(MeasurementEntry value, $Res Function(MeasurementEntry) _then) = _$MeasurementEntryCopyWithImpl;
 @useResult
 $Res call({
- String id, DateTime date, Map<String, double> values, String? note, DateTime updatedAt
+ String id,@UtcDateTimeConverter() DateTime date, Map<String, double> values, String? note,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -470,7 +470,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  DateTime date,  Map<String, double> values,  String? note,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @UtcDateTimeConverter()  DateTime date,  Map<String, double> values,  String? note, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MeasurementEntry() when $default != null:
 return $default(_that.id,_that.date,_that.values,_that.note,_that.updatedAt);case _:
@@ -491,7 +491,7 @@ return $default(_that.id,_that.date,_that.values,_that.note,_that.updatedAt);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  DateTime date,  Map<String, double> values,  String? note,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @UtcDateTimeConverter()  DateTime date,  Map<String, double> values,  String? note, @UtcDateTimeConverter()  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _MeasurementEntry():
 return $default(_that.id,_that.date,_that.values,_that.note,_that.updatedAt);case _:
@@ -511,7 +511,7 @@ return $default(_that.id,_that.date,_that.values,_that.note,_that.updatedAt);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  DateTime date,  Map<String, double> values,  String? note,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @UtcDateTimeConverter()  DateTime date,  Map<String, double> values,  String? note, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _MeasurementEntry() when $default != null:
 return $default(_that.id,_that.date,_that.values,_that.note,_that.updatedAt);case _:
@@ -526,11 +526,11 @@ return $default(_that.id,_that.date,_that.values,_that.note,_that.updatedAt);cas
 @JsonSerializable()
 
 class _MeasurementEntry implements MeasurementEntry {
-  const _MeasurementEntry({required this.id, required this.date,  Map<String, double> values = const <String, double>{}, this.note, required this.updatedAt}): _values = values;
+  const _MeasurementEntry({required this.id, @UtcDateTimeConverter() required this.date,  Map<String, double> values = const <String, double>{}, this.note, @UtcDateTimeConverter() required this.updatedAt}): _values = values;
   factory _MeasurementEntry.fromJson(Map<String, dynamic> json) => _$MeasurementEntryFromJson(json);
 
 @override final  String id;
-@override final  DateTime date;
+@override@UtcDateTimeConverter() final  DateTime date;
  final  Map<String, double> _values;
 @override@JsonKey() Map<String, double> get values {
   if (_values is EqualUnmodifiableMapView) return _values;
@@ -539,7 +539,7 @@ class _MeasurementEntry implements MeasurementEntry {
 }
 
 @override final  String? note;
-@override final  DateTime updatedAt;
+@override@UtcDateTimeConverter() final  DateTime updatedAt;
 
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -576,7 +576,7 @@ abstract mixin class _$MeasurementEntryCopyWith<$Res> implements $MeasurementEnt
   factory _$MeasurementEntryCopyWith(_MeasurementEntry value, $Res Function(_MeasurementEntry) _then) = __$MeasurementEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String id, DateTime date, Map<String, double> values, String? note, DateTime updatedAt
+ String id,@UtcDateTimeConverter() DateTime date, Map<String, double> values, String? note,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 

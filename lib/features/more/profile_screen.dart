@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/models/enums.dart';
 import '../../core/models/profile.dart';
 import '../../core/settings/app_settings.dart';
+import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/units/units.dart';
 import '../../core/widgets/sinew_app_bar.dart';
@@ -19,7 +20,7 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<Profile> profile = ref.watch(profileProvider);
+    final AsyncValue<Profile> profile = ref.watch(currentProfileProvider);
     return Scaffold(
       appBar: const SinewAppBar(
         title: 'Profile',
@@ -113,6 +114,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
       children: <Widget>[
         SinewTextField(
           key: const ValueKey<String>('profile-name'),
+          textInputAction: TextInputAction.next,
           label: 'Name',
           optional: true,
           controller: _name,
@@ -140,6 +142,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
         const SizedBox(height: Space.xl),
         SinewTextField.number(
           key: const ValueKey<String>('profile-year'),
+          textInputAction: TextInputAction.next,
           label: 'Birth year',
           optional: true,
           decimal: false,
@@ -160,6 +163,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
         const SizedBox(height: Space.lg),
         SinewTextField.number(
           key: const ValueKey<String>('profile-height'),
+          textInputAction: TextInputAction.done,
           label: 'Height',
           optional: true,
           controller: _height,

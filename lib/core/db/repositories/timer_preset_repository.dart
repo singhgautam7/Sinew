@@ -35,12 +35,20 @@ class TimerPresetRepository {
       )..where(($TimerPresetsTable t) => t.id.equals(id))).getSingleOrNull() !=
       null;
 
-  Future<void> save(TimerPreset preset) {
+  /// An existing row this build cannot read (corrupt, or written by a newer
+  /// build) is never overwritten: that would destroy the user's data, so the
+  /// save is skipped instead.
+  Future<void> save(TimerPreset preset) async {
+    final TimerPresetRow? existing =
+        await (_db.select(_db.timerPresets)
+              ..where(($TimerPresetsTable t) => t.id.equals(preset.id)))
+            .getSingleOrNull();
+    if (existing != null && _decode(existing) == null) return;
     final TimerPreset p = preset.copyWith(
       schemaVersion: TimerPreset.currentSchemaVersion,
       updatedAt: _clock(),
     );
-    return _db
+    await _db
         .into(_db.timerPresets)
         .insertOnConflictUpdate(
           TimerPresetsCompanion.insert(

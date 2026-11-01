@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'enums.dart';
+import 'utc_date_time.dart';
 
 part 'training.freezed.dart';
 part 'training.g.dart';
@@ -15,8 +16,8 @@ abstract class Routine with _$Routine {
     @Default(0) int position,
     @Default(false) bool archived,
     @Default(<RoutineItem>[]) List<RoutineItem> items,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    @UtcDateTimeConverter() required DateTime createdAt,
+    @UtcDateTimeConverter() required DateTime updatedAt,
   }) = _Routine;
 
   factory Routine.fromJson(Map<String, dynamic> json) =>
@@ -52,8 +53,8 @@ abstract class WorkoutSession with _$WorkoutSession {
   const factory WorkoutSession({
     required String id,
     String? name,
-    required DateTime startedAt,
-    DateTime? endedAt,
+    @UtcDateTimeConverter() required DateTime startedAt,
+    @NullableUtcDateTimeConverter() DateTime? endedAt,
     String? routineId,
     String? notes,
 
@@ -66,7 +67,7 @@ abstract class WorkoutSession with _$WorkoutSession {
     double? volumeKg,
     double? caloriesKcal,
     @Default(<SessionExercise>[]) List<SessionExercise> exercises,
-    required DateTime updatedAt,
+    @UtcDateTimeConverter() required DateTime updatedAt,
   }) = _WorkoutSession;
 
   factory WorkoutSession.fromJson(Map<String, dynamic> json) =>
@@ -105,7 +106,7 @@ abstract class SetEntry with _$SetEntry {
     @Default(false) bool completed,
     @Default(false) bool isWarmup,
     @Default(false) bool isPR,
-    DateTime? completedAt,
+    @NullableUtcDateTimeConverter() DateTime? completedAt,
   }) = _SetEntry;
 
   factory SetEntry.fromJson(Map<String, dynamic> json) =>

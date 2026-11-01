@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Routine {
 
- String get id; String get name; String? get notes; int get position; bool get archived; List<RoutineItem> get items; DateTime get createdAt; DateTime get updatedAt;
+ String get id; String get name; String? get notes; int get position; bool get archived; List<RoutineItem> get items;@UtcDateTimeConverter() DateTime get createdAt;@UtcDateTimeConverter() DateTime get updatedAt;
 /// Create a copy of Routine
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $RoutineCopyWith<$Res>  {
   factory $RoutineCopyWith(Routine value, $Res Function(Routine) _then) = _$RoutineCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String? notes, int position, bool archived, List<RoutineItem> items, DateTime createdAt, DateTime updatedAt
+ String id, String name, String? notes, int position, bool archived, List<RoutineItem> items,@UtcDateTimeConverter() DateTime createdAt,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -166,7 +166,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? notes,  int position,  bool archived,  List<RoutineItem> items,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? notes,  int position,  bool archived,  List<RoutineItem> items, @UtcDateTimeConverter()  DateTime createdAt, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Routine() when $default != null:
 return $default(_that.id,_that.name,_that.notes,_that.position,_that.archived,_that.items,_that.createdAt,_that.updatedAt);case _:
@@ -187,7 +187,7 @@ return $default(_that.id,_that.name,_that.notes,_that.position,_that.archived,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? notes,  int position,  bool archived,  List<RoutineItem> items,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? notes,  int position,  bool archived,  List<RoutineItem> items, @UtcDateTimeConverter()  DateTime createdAt, @UtcDateTimeConverter()  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Routine():
 return $default(_that.id,_that.name,_that.notes,_that.position,_that.archived,_that.items,_that.createdAt,_that.updatedAt);case _:
@@ -207,7 +207,7 @@ return $default(_that.id,_that.name,_that.notes,_that.position,_that.archived,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? notes,  int position,  bool archived,  List<RoutineItem> items,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? notes,  int position,  bool archived,  List<RoutineItem> items, @UtcDateTimeConverter()  DateTime createdAt, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Routine() when $default != null:
 return $default(_that.id,_that.name,_that.notes,_that.position,_that.archived,_that.items,_that.createdAt,_that.updatedAt);case _:
@@ -222,7 +222,7 @@ return $default(_that.id,_that.name,_that.notes,_that.position,_that.archived,_t
 @JsonSerializable()
 
 class _Routine implements Routine {
-  const _Routine({required this.id, required this.name, this.notes, this.position = 0, this.archived = false,  List<RoutineItem> items = const <RoutineItem>[], required this.createdAt, required this.updatedAt}): _items = items;
+  const _Routine({required this.id, required this.name, this.notes, this.position = 0, this.archived = false,  List<RoutineItem> items = const <RoutineItem>[], @UtcDateTimeConverter() required this.createdAt, @UtcDateTimeConverter() required this.updatedAt}): _items = items;
   factory _Routine.fromJson(Map<String, dynamic> json) => _$RoutineFromJson(json);
 
 @override final  String id;
@@ -237,8 +237,8 @@ class _Routine implements Routine {
   return EqualUnmodifiableListView(_items);
 }
 
-@override final  DateTime createdAt;
-@override final  DateTime updatedAt;
+@override@UtcDateTimeConverter() final  DateTime createdAt;
+@override@UtcDateTimeConverter() final  DateTime updatedAt;
 
 /// Create a copy of Routine
 /// with the given fields replaced by the non-null parameter values.
@@ -275,7 +275,7 @@ abstract mixin class _$RoutineCopyWith<$Res> implements $RoutineCopyWith<$Res> {
   factory _$RoutineCopyWith(_Routine value, $Res Function(_Routine) _then) = __$RoutineCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String? notes, int position, bool archived, List<RoutineItem> items, DateTime createdAt, DateTime updatedAt
+ String id, String name, String? notes, int position, bool archived, List<RoutineItem> items,@UtcDateTimeConverter() DateTime createdAt,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -615,9 +615,9 @@ as String?,
 /// @nodoc
 mixin _$WorkoutSession {
 
- String get id; String? get name; DateTime get startedAt; DateTime? get endedAt; String? get routineId; String? get notes;/// 1 to 10.
+ String get id; String? get name;@UtcDateTimeConverter() DateTime get startedAt;@NullableUtcDateTimeConverter() DateTime? get endedAt; String? get routineId; String? get notes;/// 1 to 10.
  int? get perceivedEffort; SessionSource get source;/// Cached at finish and recomputed on edit. Estimates, not truth.
- int? get durationSec; double? get volumeKg; double? get caloriesKcal; List<SessionExercise> get exercises; DateTime get updatedAt;
+ int? get durationSec; double? get volumeKg; double? get caloriesKcal; List<SessionExercise> get exercises;@UtcDateTimeConverter() DateTime get updatedAt;
 /// Create a copy of WorkoutSession
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -655,7 +655,7 @@ abstract mixin class $WorkoutSessionCopyWith<$Res>  {
   factory $WorkoutSessionCopyWith(WorkoutSession value, $Res Function(WorkoutSession) _then) = _$WorkoutSessionCopyWithImpl;
 @useResult
 $Res call({
- String id, String? name, DateTime startedAt, DateTime? endedAt, String? routineId, String? notes, int? perceivedEffort, SessionSource source, int? durationSec, double? volumeKg, double? caloriesKcal, List<SessionExercise> exercises, DateTime updatedAt
+ String id, String? name,@UtcDateTimeConverter() DateTime startedAt,@NullableUtcDateTimeConverter() DateTime? endedAt, String? routineId, String? notes, int? perceivedEffort, SessionSource source, int? durationSec, double? volumeKg, double? caloriesKcal, List<SessionExercise> exercises,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -772,7 +772,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String? name,  DateTime startedAt,  DateTime? endedAt,  String? routineId,  String? notes,  int? perceivedEffort,  SessionSource source,  int? durationSec,  double? volumeKg,  double? caloriesKcal,  List<SessionExercise> exercises,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String? name, @UtcDateTimeConverter()  DateTime startedAt, @NullableUtcDateTimeConverter()  DateTime? endedAt,  String? routineId,  String? notes,  int? perceivedEffort,  SessionSource source,  int? durationSec,  double? volumeKg,  double? caloriesKcal,  List<SessionExercise> exercises, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WorkoutSession() when $default != null:
 return $default(_that.id,_that.name,_that.startedAt,_that.endedAt,_that.routineId,_that.notes,_that.perceivedEffort,_that.source,_that.durationSec,_that.volumeKg,_that.caloriesKcal,_that.exercises,_that.updatedAt);case _:
@@ -793,7 +793,7 @@ return $default(_that.id,_that.name,_that.startedAt,_that.endedAt,_that.routineI
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String? name,  DateTime startedAt,  DateTime? endedAt,  String? routineId,  String? notes,  int? perceivedEffort,  SessionSource source,  int? durationSec,  double? volumeKg,  double? caloriesKcal,  List<SessionExercise> exercises,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String? name, @UtcDateTimeConverter()  DateTime startedAt, @NullableUtcDateTimeConverter()  DateTime? endedAt,  String? routineId,  String? notes,  int? perceivedEffort,  SessionSource source,  int? durationSec,  double? volumeKg,  double? caloriesKcal,  List<SessionExercise> exercises, @UtcDateTimeConverter()  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutSession():
 return $default(_that.id,_that.name,_that.startedAt,_that.endedAt,_that.routineId,_that.notes,_that.perceivedEffort,_that.source,_that.durationSec,_that.volumeKg,_that.caloriesKcal,_that.exercises,_that.updatedAt);case _:
@@ -813,7 +813,7 @@ return $default(_that.id,_that.name,_that.startedAt,_that.endedAt,_that.routineI
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String? name,  DateTime startedAt,  DateTime? endedAt,  String? routineId,  String? notes,  int? perceivedEffort,  SessionSource source,  int? durationSec,  double? volumeKg,  double? caloriesKcal,  List<SessionExercise> exercises,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String? name, @UtcDateTimeConverter()  DateTime startedAt, @NullableUtcDateTimeConverter()  DateTime? endedAt,  String? routineId,  String? notes,  int? perceivedEffort,  SessionSource source,  int? durationSec,  double? volumeKg,  double? caloriesKcal,  List<SessionExercise> exercises, @UtcDateTimeConverter()  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutSession() when $default != null:
 return $default(_that.id,_that.name,_that.startedAt,_that.endedAt,_that.routineId,_that.notes,_that.perceivedEffort,_that.source,_that.durationSec,_that.volumeKg,_that.caloriesKcal,_that.exercises,_that.updatedAt);case _:
@@ -828,13 +828,13 @@ return $default(_that.id,_that.name,_that.startedAt,_that.endedAt,_that.routineI
 @JsonSerializable()
 
 class _WorkoutSession implements WorkoutSession {
-  const _WorkoutSession({required this.id, this.name, required this.startedAt, this.endedAt, this.routineId, this.notes, this.perceivedEffort, this.source = SessionSource.manual, this.durationSec, this.volumeKg, this.caloriesKcal,  List<SessionExercise> exercises = const <SessionExercise>[], required this.updatedAt}): _exercises = exercises;
+  const _WorkoutSession({required this.id, this.name, @UtcDateTimeConverter() required this.startedAt, @NullableUtcDateTimeConverter() this.endedAt, this.routineId, this.notes, this.perceivedEffort, this.source = SessionSource.manual, this.durationSec, this.volumeKg, this.caloriesKcal,  List<SessionExercise> exercises = const <SessionExercise>[], @UtcDateTimeConverter() required this.updatedAt}): _exercises = exercises;
   factory _WorkoutSession.fromJson(Map<String, dynamic> json) => _$WorkoutSessionFromJson(json);
 
 @override final  String id;
 @override final  String? name;
-@override final  DateTime startedAt;
-@override final  DateTime? endedAt;
+@override@UtcDateTimeConverter() final  DateTime startedAt;
+@override@NullableUtcDateTimeConverter() final  DateTime? endedAt;
 @override final  String? routineId;
 @override final  String? notes;
 /// 1 to 10.
@@ -851,7 +851,7 @@ class _WorkoutSession implements WorkoutSession {
   return EqualUnmodifiableListView(_exercises);
 }
 
-@override final  DateTime updatedAt;
+@override@UtcDateTimeConverter() final  DateTime updatedAt;
 
 /// Create a copy of WorkoutSession
 /// with the given fields replaced by the non-null parameter values.
@@ -888,7 +888,7 @@ abstract mixin class _$WorkoutSessionCopyWith<$Res> implements $WorkoutSessionCo
   factory _$WorkoutSessionCopyWith(_WorkoutSession value, $Res Function(_WorkoutSession) _then) = __$WorkoutSessionCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String? name, DateTime startedAt, DateTime? endedAt, String? routineId, String? notes, int? perceivedEffort, SessionSource source, int? durationSec, double? volumeKg, double? caloriesKcal, List<SessionExercise> exercises, DateTime updatedAt
+ String id, String? name,@UtcDateTimeConverter() DateTime startedAt,@NullableUtcDateTimeConverter() DateTime? endedAt, String? routineId, String? notes, int? perceivedEffort, SessionSource source, int? durationSec, double? volumeKg, double? caloriesKcal, List<SessionExercise> exercises,@UtcDateTimeConverter() DateTime updatedAt
 });
 
 
@@ -1222,7 +1222,7 @@ as List<SetEntry>,
 /// @nodoc
 mixin _$SetEntry {
 
- String get id; int get position; SetType get type; double? get weightKg; int? get reps; int? get durationSec; double? get distanceM; int? get rounds; int? get holdSec; bool get completed; bool get isWarmup; bool get isPR; DateTime? get completedAt;
+ String get id; int get position; SetType get type; double? get weightKg; int? get reps; int? get durationSec; double? get distanceM; int? get rounds; int? get holdSec; bool get completed; bool get isWarmup; bool get isPR;@NullableUtcDateTimeConverter() DateTime? get completedAt;
 /// Create a copy of SetEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1260,7 +1260,7 @@ abstract mixin class $SetEntryCopyWith<$Res>  {
   factory $SetEntryCopyWith(SetEntry value, $Res Function(SetEntry) _then) = _$SetEntryCopyWithImpl;
 @useResult
 $Res call({
- String id, int position, SetType type, double? weightKg, int? reps, int? durationSec, double? distanceM, int? rounds, int? holdSec, bool completed, bool isWarmup, bool isPR, DateTime? completedAt
+ String id, int position, SetType type, double? weightKg, int? reps, int? durationSec, double? distanceM, int? rounds, int? holdSec, bool completed, bool isWarmup, bool isPR,@NullableUtcDateTimeConverter() DateTime? completedAt
 });
 
 
@@ -1377,7 +1377,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int position,  SetType type,  double? weightKg,  int? reps,  int? durationSec,  double? distanceM,  int? rounds,  int? holdSec,  bool completed,  bool isWarmup,  bool isPR,  DateTime? completedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int position,  SetType type,  double? weightKg,  int? reps,  int? durationSec,  double? distanceM,  int? rounds,  int? holdSec,  bool completed,  bool isWarmup,  bool isPR, @NullableUtcDateTimeConverter()  DateTime? completedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SetEntry() when $default != null:
 return $default(_that.id,_that.position,_that.type,_that.weightKg,_that.reps,_that.durationSec,_that.distanceM,_that.rounds,_that.holdSec,_that.completed,_that.isWarmup,_that.isPR,_that.completedAt);case _:
@@ -1398,7 +1398,7 @@ return $default(_that.id,_that.position,_that.type,_that.weightKg,_that.reps,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int position,  SetType type,  double? weightKg,  int? reps,  int? durationSec,  double? distanceM,  int? rounds,  int? holdSec,  bool completed,  bool isWarmup,  bool isPR,  DateTime? completedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int position,  SetType type,  double? weightKg,  int? reps,  int? durationSec,  double? distanceM,  int? rounds,  int? holdSec,  bool completed,  bool isWarmup,  bool isPR, @NullableUtcDateTimeConverter()  DateTime? completedAt)  $default,) {final _that = this;
 switch (_that) {
 case _SetEntry():
 return $default(_that.id,_that.position,_that.type,_that.weightKg,_that.reps,_that.durationSec,_that.distanceM,_that.rounds,_that.holdSec,_that.completed,_that.isWarmup,_that.isPR,_that.completedAt);case _:
@@ -1418,7 +1418,7 @@ return $default(_that.id,_that.position,_that.type,_that.weightKg,_that.reps,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int position,  SetType type,  double? weightKg,  int? reps,  int? durationSec,  double? distanceM,  int? rounds,  int? holdSec,  bool completed,  bool isWarmup,  bool isPR,  DateTime? completedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int position,  SetType type,  double? weightKg,  int? reps,  int? durationSec,  double? distanceM,  int? rounds,  int? holdSec,  bool completed,  bool isWarmup,  bool isPR, @NullableUtcDateTimeConverter()  DateTime? completedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SetEntry() when $default != null:
 return $default(_that.id,_that.position,_that.type,_that.weightKg,_that.reps,_that.durationSec,_that.distanceM,_that.rounds,_that.holdSec,_that.completed,_that.isWarmup,_that.isPR,_that.completedAt);case _:
@@ -1433,7 +1433,7 @@ return $default(_that.id,_that.position,_that.type,_that.weightKg,_that.reps,_th
 @JsonSerializable()
 
 class _SetEntry implements SetEntry {
-  const _SetEntry({required this.id, required this.position, this.type = SetType.normal, this.weightKg, this.reps, this.durationSec, this.distanceM, this.rounds, this.holdSec, this.completed = false, this.isWarmup = false, this.isPR = false, this.completedAt});
+  const _SetEntry({required this.id, required this.position, this.type = SetType.normal, this.weightKg, this.reps, this.durationSec, this.distanceM, this.rounds, this.holdSec, this.completed = false, this.isWarmup = false, this.isPR = false, @NullableUtcDateTimeConverter() this.completedAt});
   factory _SetEntry.fromJson(Map<String, dynamic> json) => _$SetEntryFromJson(json);
 
 @override final  String id;
@@ -1448,7 +1448,7 @@ class _SetEntry implements SetEntry {
 @override@JsonKey() final  bool completed;
 @override@JsonKey() final  bool isWarmup;
 @override@JsonKey() final  bool isPR;
-@override final  DateTime? completedAt;
+@override@NullableUtcDateTimeConverter() final  DateTime? completedAt;
 
 /// Create a copy of SetEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -1485,7 +1485,7 @@ abstract mixin class _$SetEntryCopyWith<$Res> implements $SetEntryCopyWith<$Res>
   factory _$SetEntryCopyWith(_SetEntry value, $Res Function(_SetEntry) _then) = __$SetEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int position, SetType type, double? weightKg, int? reps, int? durationSec, double? distanceM, int? rounds, int? holdSec, bool completed, bool isWarmup, bool isPR, DateTime? completedAt
+ String id, int position, SetType type, double? weightKg, int? reps, int? durationSec, double? distanceM, int? rounds, int? holdSec, bool completed, bool isWarmup, bool isPR,@NullableUtcDateTimeConverter() DateTime? completedAt
 });
 
 

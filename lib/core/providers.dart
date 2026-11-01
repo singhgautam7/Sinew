@@ -19,6 +19,19 @@ import 'db/user/user_db.dart';
 import '../features/backup/backup_service.dart';
 import '../features/backup/csv_export.dart';
 import 'settings/app_settings.dart';
+import 'models/plate_inventory.dart';
+import 'models/training.dart';
+import 'models/profile.dart';
+import '../features/body/body_providers.dart';
+import '../features/library/library_providers.dart';
+import '../features/timer/controller/timer_presets_provider.dart';
+import '../features/today/today_providers.dart';
+import '../features/train/exercise_history_screen.dart';
+import '../features/train/history_screen.dart';
+import '../features/train/routine_style.dart';
+import '../features/train/train_providers.dart';
+import '../features/train/workout_controller.dart';
+import '../features/train/workout_summary_screen.dart';
 
 /// Riverpod 3 retries a failed provider with backoff by default. Sinew has
 /// no network, so every failure is deterministic: a retry only keeps a screen
@@ -73,6 +86,13 @@ final Provider<ProfileRepository> profileRepositoryProvider =
       (Ref ref) => ProfileRepository(ref.watch(userDatabaseProvider)),
     );
 
+/// The profile, live. The one provider every feature watches (Today, Body,
+/// More, Settings); defaults when none is saved.
+final StreamProvider<Profile> currentProfileProvider =
+    StreamProvider.autoDispose<Profile>(
+      (Ref ref) => ref.watch(profileRepositoryProvider).watch(),
+    );
+
 final Provider<CustomExerciseRepository> customExerciseRepositoryProvider =
     Provider<CustomExerciseRepository>(
       (Ref ref) => CustomExerciseRepository(ref.watch(userDatabaseProvider)),
@@ -101,6 +121,12 @@ final Provider<TimerPresetRepository> timerPresetRepositoryProvider =
 final Provider<PlateInventoryRepository> plateInventoryRepositoryProvider =
     Provider<PlateInventoryRepository>(
       (Ref ref) => PlateInventoryRepository(ref.watch(userDatabaseProvider)),
+    );
+
+/// The plate inventory, live (defaults when none is saved).
+final StreamProvider<PlateInventory> currentPlateInventoryProvider =
+    StreamProvider.autoDispose<PlateInventory>(
+      (Ref ref) => ref.watch(plateInventoryRepositoryProvider).watch(),
     );
 
 final Provider<RuntimeStateRepository> runtimeStateRepositoryProvider =
@@ -151,8 +177,43 @@ final Provider<BackupService> backupServiceProvider = Provider<BackupService>(
     prefs: ref.watch(prefsProvider),
     onBackedUp: () => ref.read(lastBackupAtProvider.notifier).refresh(),
     onSettingsRestored: () => ref.invalidate(settingsProvider),
+    onDataRestored: () => onDataRestored(ref),
   ),
 );
+
+/// The single hook a restore calls once the database was rewritten: every
+/// provider that caches what a restore can change is invalidated here, so no
+/// screen keeps showing the data from before. Add a provider to this list when
+/// it caches (or streams) user data.
+void onDataRestored(Ref ref) {
+  ref
+    ..invalidate(currentProfileProvider)
+    ..invalidate(currentPlateInventoryProvider)
+    ..invalidate(shouldRemindBackupProvider)
+    ..invalidate(sessionChangeProvider)
+    ..invalidate(bodyFieldsProvider)
+    ..invalidate(bodyEntriesProvider)
+    ..invalidate(bodyOverviewProvider)
+    ..invalidate(todayBodyProvider)
+    ..invalidate(todaySummaryProvider)
+    ..invalidate(activeSessionIdProvider)
+    ..invalidate(timerPresetsProvider)
+    ..invalidate(workoutProvider)
+    ..invalidate(trainActiveIdProvider)
+    ..invalidate(trainRoutinesProvider)
+    ..invalidate(trainHistoryTickProvider)
+    ..invalidate(trainMonthSessionsProvider)
+    ..invalidate(trainWeekSetCountsProvider)
+    ..invalidate(trainPrCountsProvider)
+    ..invalidate(trainExerciseSessionsProvider)
+    ..invalidate(trainHistoryProvider)
+    ..invalidate(trainRecentSessionsProvider)
+    ..invalidate(exerciseHistoryProvider)
+    ..invalidate(summaryProvider)
+    ..invalidate(routineStyleProvider)
+    ..invalidate(customExercisesProvider)
+    ..invalidate(recentSummariesProvider);
+}
 
 final FutureProvider<CsvExportService> csvExportServiceProvider =
     FutureProvider<CsvExportService>(
@@ -166,12 +227,26 @@ final FutureProvider<CsvExportService> csvExportServiceProvider =
 /// How many finished workouts without a backup before the reminder shows.
 const int backupReminderSessions = 10;
 
+/// Ticks whenever the sessions table changes (a workout starts, is saved,
+/// finished or deleted), so anything derived from the history refreshes.
+final StreamProvider<int> sessionChangeProvider = StreamProvider<int>((
+  Ref ref,
+) {
+  int n = 0;
+  return ref
+      .watch(sessionRepositoryProvider)
+      .watchHistory(limit: 1)
+      .map((List<WorkoutSession> _) => ++n);
+});
+
 /// True when the user has never backed up and has logged at least
-/// [backupReminderSessions] finished workouts.
+/// [backupReminderSessions] finished workouts. Refreshes when a workout
+/// finishes.
 final FutureProvider<bool> shouldRemindBackupProvider = FutureProvider<bool>((
   Ref ref,
 ) async {
   if (ref.watch(lastBackupAtProvider) != null) return false;
+  ref.watch(sessionChangeProvider);
   final int finished = await ref
       .watch(sessionRepositoryProvider)
       .finishedCount();

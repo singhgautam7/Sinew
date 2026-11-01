@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sinew/core/db/repositories/backup_repository.dart';
 import 'package:sinew/core/db/repositories/backup_snapshot.dart';
 import 'package:sinew/core/db/repositories/exercise_repository.dart';
 import 'package:sinew/core/db/repositories/measurement_repository.dart';
@@ -234,6 +235,11 @@ Future<void> populate(
       machineStepKg: 4.5,
     ),
   );
+
+  // A restore recomputes the PR flags from the sets, so settle the fixture
+  // the same way: what is read back is then what a restore will write.
+  final BackupRepository backup = BackupRepository(db);
+  await backup.writeAll(await backup.readAll(), mode: RestoreMode.replace);
 }
 
 /// Sorts every list by id so two snapshots compare regardless of read order.

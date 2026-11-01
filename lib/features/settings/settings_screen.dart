@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/models/enums.dart';
 import '../../core/routing/router.dart';
 import '../../core/settings/app_settings.dart';
+import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/units/units.dart';
 import '../../core/widgets/domain/numeric_stepper.dart';
@@ -12,8 +13,7 @@ import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_bottom_sheet.dart';
 import '../../core/widgets/sinew_chips.dart';
 import '../../core/widgets/sinew_settings.dart';
-import '../more/profile_form.dart';
-import '../today/date_text.dart';
+import '../../core/format/date_text.dart';
 
 /// Appearance, workout and timer defaults, data and about. Ported from
 /// Kuber's Settings: grouped cards of rows, one switch per behaviour.
@@ -25,7 +25,7 @@ class SettingsScreen extends ConsumerWidget {
     final AppSettings s = ref.watch(settingsProvider);
     final SettingsController ctl = ref.read(settingsProvider.notifier);
     final WeightUnit unit =
-        ref.watch(profileProvider).value?.weightUnit ?? WeightUnit.kg;
+        ref.watch(currentProfileProvider).value?.weightUnit ?? WeightUnit.kg;
     final double step = unit == WeightUnit.kg ? s.incrementKg : s.incrementLb;
     return Scaffold(
       appBar: const SinewAppBar(title: 'Settings', showBack: true),
@@ -260,7 +260,7 @@ class _StepSheet extends ConsumerWidget {
         : SettingsSpec.lbSteps;
     return SinewBottomSheet(
       title: 'Weight step',
-      description: 'How much the + and - buttons change a weight.',
+      description: 'How much the plus and minus buttons change a weight.',
       child: Wrap(
         spacing: Space.sm,
         runSpacing: Space.sm,

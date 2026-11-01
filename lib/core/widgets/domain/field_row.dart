@@ -492,20 +492,18 @@ class FieldManagerRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Row(
+                Wrap(
+                  spacing: Space.sm,
+                  runSpacing: Space.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: <Widget>[
-                    Flexible(
-                      child: Text(
-                        name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: tt.titleMedium,
-                      ),
+                    Text(
+                      name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: tt.titleMedium,
                     ),
-                    if (paired) ...<Widget>[
-                      const SizedBox(width: Space.sm),
-                      const _SideTag('L / R'),
-                    ],
+                    if (paired) const _SideTag('L / R'),
                   ],
                 ),
                 Text(

@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import '../../models/enums.dart';
@@ -84,7 +85,14 @@ class LibraryUpgrade {
       newDb = null;
       copy.deleteSync();
       return stones.length;
-    } on Object {
+    } on Object catch (e, st) {
+      // Leave the snapshot in place: the next start retries.
+      developer.log(
+        'Library upgrade could not write tombstones: $e',
+        name: 'sinew.library',
+        error: e,
+        stackTrace: st,
+      );
       return 0;
     } finally {
       await oldDb?.close();

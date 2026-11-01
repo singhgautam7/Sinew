@@ -21,12 +21,6 @@ final StreamProvider<List<MeasurementField>> bodyFieldsProvider =
           .watchFields(includeArchived: true),
     );
 
-/// The profile (defaults when none is saved).
-final StreamProvider<Profile> bodyProfileProvider =
-    StreamProvider.autoDispose<Profile>(
-      (Ref ref) => ref.watch(profileRepositoryProvider).watch(),
-    );
-
 /// Every entry with its values, newest first. Invalidate after a write.
 final FutureProvider<List<MeasurementEntry>> bodyEntriesProvider =
     FutureProvider.autoDispose<List<MeasurementEntry>>(
@@ -78,7 +72,7 @@ final FutureProvider<BodyOverview> bodyOverviewProvider =
       final List<MeasurementField> fields = await ref.watch(
         bodyFieldsProvider.future,
       );
-      final Profile profile = await ref.watch(bodyProfileProvider.future);
+      final Profile profile = await ref.watch(currentProfileProvider.future);
       final List<MeasurementEntry> entries = await ref.watch(
         bodyEntriesProvider.future,
       );

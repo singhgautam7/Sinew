@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'enums.dart';
+import 'utc_date_time.dart';
 
 part 'plate_inventory.freezed.dart';
 part 'plate_inventory.g.dart';
@@ -18,7 +19,7 @@ abstract class PlateInventory with _$PlateInventory {
 
     /// Machine weight-stack increment, kilograms.
     @Default(5.0) double machineStepKg,
-    DateTime? updatedAt,
+    @NullableUtcDateTimeConverter() DateTime? updatedAt,
   }) = _PlateInventory;
 
   factory PlateInventory.fromJson(Map<String, dynamic> json) =>

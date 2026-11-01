@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/models/enums.dart';
 import '../../core/models/profile.dart';
 import '../../core/settings/app_settings.dart';
+import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_list.dart';
@@ -18,7 +19,7 @@ class UnitsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<Profile> profile = ref.watch(profileProvider);
+    final AsyncValue<Profile> profile = ref.watch(currentProfileProvider);
     final bool monday = ref.watch(
       settingsProvider.select((AppSettings s) => s.weekStartsMonday),
     );

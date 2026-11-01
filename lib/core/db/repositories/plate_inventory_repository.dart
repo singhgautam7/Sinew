@@ -21,13 +21,20 @@ class PlateInventoryRepository {
 
   Stream<PlateInventory> watch() => _query().watchSingleOrNull().map(_decode);
 
-  Future<void> save(PlateInventory inventory) {
-    final DateTime now = inventory.updatedAt ?? _clock();
+  /// Always stamps `updatedAt` with now; a restore writes through
+  /// `BackupRepository`, which keeps the incoming stamp.
+  ///
+  /// An unreadable or newer stored payload is never overwritten (it would
+  /// destroy data this build cannot read): the save is skipped then.
+  Future<void> save(PlateInventory inventory) async {
+    final PlateInventoryRow? existing = await _query().getSingleOrNull();
+    if (existing != null && _isUnreadable(existing)) return;
+    final DateTime now = _clock();
     final PlateInventory stamped = inventory.copyWith(
       schemaVersion: PlateInventory.currentSchemaVersion,
       updatedAt: now,
     );
-    return _db
+    await _db
         .into(_db.plateInventories)
         .insertOnConflictUpdate(
           PlateInventoriesCompanion.insert(
@@ -41,6 +48,16 @@ class PlateInventoryRepository {
   SingleOrNullSelectable<PlateInventoryRow> _query() =>
       _db.select(_db.plateInventories)
         ..where(($PlateInventoriesTable t) => t.id.equals('default'));
+
+  static bool _isUnreadable(PlateInventoryRow row) {
+    try {
+      final Map<String, dynamic> json =
+          jsonDecode(row.payload) as Map<String, dynamic>;
+      return payloadVersion(json) > PlateInventory.currentSchemaVersion;
+    } on Object {
+      return true;
+    }
+  }
 
   static PlateInventory _decode(PlateInventoryRow? row) {
     if (row == null) return PlateInventory.metricDefault;

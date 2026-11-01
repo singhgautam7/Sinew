@@ -15,6 +15,9 @@ class ProfileRepository {
 
   Stream<Profile> watch() => _query().watchSingleOrNull().map(_map);
 
+  /// Always stamps `updatedAt` with now: a local edit is the newest change.
+  /// A restore writes through `BackupRepository`, which keeps the incoming
+  /// stamp.
   Future<void> save(Profile p) => _db
       .into(_db.profiles)
       .insertOnConflictUpdate(
@@ -28,7 +31,7 @@ class ProfileRepository {
           lengthUnit: Value(p.lengthUnit),
           distanceUnit: Value(p.distanceUnit),
           bmiCutoffs: Value(p.bmiCutoffs),
-          updatedAt: p.updatedAt ?? _clock(),
+          updatedAt: _clock(),
         ),
       );
 

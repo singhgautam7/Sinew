@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 import '../../models/enums.dart';
@@ -85,7 +87,7 @@ class CustomExerciseRepository {
           .toList();
 
   /// The library exercise ids the user's data points at: session exercises
-  /// and routine items. Custom ids are left out. Used by the library upgrade
+  /// routine items and timer preset steps. Custom ids are left out. Used by the library upgrade
   /// to decide which removed exercises need a tombstone.
   Future<Set<String>> referencedLibraryExerciseIds() async {
     final List<QueryRow> rows = await _db
@@ -95,14 +97,47 @@ class CustomExerciseRepository {
           readsFrom: <TableInfo<Table, dynamic>>{
             _db.sessionExercises,
             _db.routineItems,
+            _db.timerPresets,
           },
         )
         .get();
-    return <String>{
+    final Set<String> ids = <String>{
       for (final QueryRow r in rows)
         if (!r.read<String>('exercise_id').startsWith(Exercise.customPrefix))
           r.read<String>('exercise_id'),
     };
+    // Timer presets (yoga flows, tagged steps) point at exercises inside their
+    // JSON payload; a payload this build cannot read is skipped.
+    final List<TimerPresetRow> presets = await _db
+        .select(_db.timerPresets)
+        .get();
+    for (final TimerPresetRow p in presets) {
+      try {
+        _collectExerciseIds(jsonDecode(p.payload), ids);
+      } on Object {
+        continue;
+      }
+    }
+    return ids;
+  }
+
+  static void _collectExerciseIds(Object? node, Set<String> into) {
+    if (node is Map<dynamic, dynamic>) {
+      for (final MapEntry<dynamic, dynamic> e in node.entries) {
+        final Object? v = e.value;
+        if (e.key == 'exerciseId' &&
+            v is String &&
+            !v.startsWith(Exercise.customPrefix)) {
+          into.add(v);
+        } else {
+          _collectExerciseIds(v, into);
+        }
+      }
+    } else if (node is List<dynamic>) {
+      for (final Object? x in node) {
+        _collectExerciseIds(x, into);
+      }
+    }
   }
 
   Future<List<ExerciseTombstone>> tombstones() async =>

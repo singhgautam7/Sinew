@@ -17,8 +17,8 @@ _Routine _$RoutineFromJson(Map<String, dynamic> json) => _Routine(
           ?.map((e) => RoutineItem.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const <RoutineItem>[],
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt: DateTime.parse(json['updatedAt'] as String),
+  createdAt: const UtcDateTimeConverter().fromJson(json['createdAt'] as String),
+  updatedAt: const UtcDateTimeConverter().fromJson(json['updatedAt'] as String),
 );
 
 Map<String, dynamic> _$RoutineToJson(_Routine instance) => <String, dynamic>{
@@ -28,8 +28,8 @@ Map<String, dynamic> _$RoutineToJson(_Routine instance) => <String, dynamic>{
   'position': instance.position,
   'archived': instance.archived,
   'items': instance.items,
-  'createdAt': instance.createdAt.toIso8601String(),
-  'updatedAt': instance.updatedAt.toIso8601String(),
+  'createdAt': const UtcDateTimeConverter().toJson(instance.createdAt),
+  'updatedAt': const UtcDateTimeConverter().toJson(instance.updatedAt),
 };
 
 _RoutineItem _$RoutineItemFromJson(Map<String, dynamic> json) => _RoutineItem(
@@ -61,37 +61,38 @@ Map<String, dynamic> _$RoutineItemToJson(_RoutineItem instance) =>
       'notes': instance.notes,
     };
 
-_WorkoutSession _$WorkoutSessionFromJson(Map<String, dynamic> json) =>
-    _WorkoutSession(
-      id: json['id'] as String,
-      name: json['name'] as String?,
-      startedAt: DateTime.parse(json['startedAt'] as String),
-      endedAt: json['endedAt'] == null
-          ? null
-          : DateTime.parse(json['endedAt'] as String),
-      routineId: json['routineId'] as String?,
-      notes: json['notes'] as String?,
-      perceivedEffort: (json['perceivedEffort'] as num?)?.toInt(),
-      source:
-          $enumDecodeNullable(_$SessionSourceEnumMap, json['source']) ??
-          SessionSource.manual,
-      durationSec: (json['durationSec'] as num?)?.toInt(),
-      volumeKg: (json['volumeKg'] as num?)?.toDouble(),
-      caloriesKcal: (json['caloriesKcal'] as num?)?.toDouble(),
-      exercises:
-          (json['exercises'] as List<dynamic>?)
-              ?.map((e) => SessionExercise.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const <SessionExercise>[],
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-    );
+_WorkoutSession _$WorkoutSessionFromJson(
+  Map<String, dynamic> json,
+) => _WorkoutSession(
+  id: json['id'] as String,
+  name: json['name'] as String?,
+  startedAt: const UtcDateTimeConverter().fromJson(json['startedAt'] as String),
+  endedAt: const NullableUtcDateTimeConverter().fromJson(
+    json['endedAt'] as String?,
+  ),
+  routineId: json['routineId'] as String?,
+  notes: json['notes'] as String?,
+  perceivedEffort: (json['perceivedEffort'] as num?)?.toInt(),
+  source:
+      $enumDecodeNullable(_$SessionSourceEnumMap, json['source']) ??
+      SessionSource.manual,
+  durationSec: (json['durationSec'] as num?)?.toInt(),
+  volumeKg: (json['volumeKg'] as num?)?.toDouble(),
+  caloriesKcal: (json['caloriesKcal'] as num?)?.toDouble(),
+  exercises:
+      (json['exercises'] as List<dynamic>?)
+          ?.map((e) => SessionExercise.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <SessionExercise>[],
+  updatedAt: const UtcDateTimeConverter().fromJson(json['updatedAt'] as String),
+);
 
 Map<String, dynamic> _$WorkoutSessionToJson(_WorkoutSession instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'startedAt': instance.startedAt.toIso8601String(),
-      'endedAt': instance.endedAt?.toIso8601String(),
+      'startedAt': const UtcDateTimeConverter().toJson(instance.startedAt),
+      'endedAt': const NullableUtcDateTimeConverter().toJson(instance.endedAt),
       'routineId': instance.routineId,
       'notes': instance.notes,
       'perceivedEffort': instance.perceivedEffort,
@@ -100,7 +101,7 @@ Map<String, dynamic> _$WorkoutSessionToJson(_WorkoutSession instance) =>
       'volumeKg': instance.volumeKg,
       'caloriesKcal': instance.caloriesKcal,
       'exercises': instance.exercises,
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'updatedAt': const UtcDateTimeConverter().toJson(instance.updatedAt),
     };
 
 const _$SessionSourceEnumMap = {
@@ -147,9 +148,9 @@ _SetEntry _$SetEntryFromJson(Map<String, dynamic> json) => _SetEntry(
   completed: json['completed'] as bool? ?? false,
   isWarmup: json['isWarmup'] as bool? ?? false,
   isPR: json['isPR'] as bool? ?? false,
-  completedAt: json['completedAt'] == null
-      ? null
-      : DateTime.parse(json['completedAt'] as String),
+  completedAt: const NullableUtcDateTimeConverter().fromJson(
+    json['completedAt'] as String?,
+  ),
 );
 
 Map<String, dynamic> _$SetEntryToJson(_SetEntry instance) => <String, dynamic>{
@@ -165,7 +166,9 @@ Map<String, dynamic> _$SetEntryToJson(_SetEntry instance) => <String, dynamic>{
   'completed': instance.completed,
   'isWarmup': instance.isWarmup,
   'isPR': instance.isPR,
-  'completedAt': instance.completedAt?.toIso8601String(),
+  'completedAt': const NullableUtcDateTimeConverter().toJson(
+    instance.completedAt,
+  ),
 };
 
 const _$SetTypeEnumMap = {

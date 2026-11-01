@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/background.dart';
 import '../../core/db/ids.dart';
 import '../../core/db/repositories/backup_repository.dart';
 import '../../core/db/repositories/backup_snapshot.dart';
@@ -20,6 +21,7 @@ class RestoreSummary {
     required this.written,
     required this.kept,
     required this.settingsApplied,
+    this.settingsFailed = false,
   });
 
   final RestoreMode mode;
@@ -32,6 +34,10 @@ class RestoreSummary {
 
   /// Number of settings written back to the device.
   final int settingsApplied;
+
+  /// True when the data was restored but writing the settings failed: the
+  /// restore as a whole is not undone, only the settings were skipped.
+  final bool settingsFailed;
 }
 
 /// Export and restore of the whole user dataset as one JSON file.
@@ -46,6 +52,7 @@ class BackupService {
     this._codec = const BackupCodec(),
     this.onBackedUp,
     this.onSettingsRestored,
+    this.onDataRestored,
   });
 
   final BackupRepository _repository;
@@ -59,6 +66,10 @@ class BackupService {
   /// Called after restored settings were written (providers re-read them).
   final void Function()? onSettingsRestored;
 
+  /// Called once the database was rewritten by a restore, whatever happened
+  /// to the settings afterwards (providers drop what they cached).
+  final void Function()? onDataRestored;
+
   /// SharedPreferences key holding the time of the last export (ISO-8601).
   static const String lastBackupKey = 'backup.lastAt';
 
@@ -71,6 +82,7 @@ class BackupService {
     'text.',
     'app.',
     'units.',
+    'routine.',
   ];
 
   // ── Export ────────────────────────────────────────────────────────────────
@@ -89,15 +101,15 @@ class BackupService {
   Future<BackupFile> export({bool markBackedUp = true}) async {
     final BackupSnapshot snapshot = await _repository.readAll();
     final DateTime now = _clock();
-    final String json = _codec.encode(
-      BackupDocument(
-        schemaVersion: _codec.currentVersion,
-        exportedAt: now,
-        libraryVersion: _prefs.getString(libraryVersionKey),
-        snapshot: snapshot,
-        settings: _readSettings(),
-      ),
+    final BackupDocument doc = BackupDocument(
+      schemaVersion: _codec.currentVersion,
+      exportedAt: now,
+      libraryVersion: _prefs.getString(libraryVersionKey),
+      snapshot: snapshot,
+      settings: _readSettings(),
     );
+    final BackupCodec codec = _codec;
+    final String json = await Background.run(() => _encode(codec, doc));
     final BackupFile file = BackupFile(
       fileName: fileNameFor(now),
       contents: json,
@@ -137,9 +149,22 @@ class BackupService {
   /// before anything is written. Never throws.
   BackupParseResult parse(String json) => _codec.decode(json);
 
+  /// [parse] on a background isolate: a large file never blocks the UI.
+  Future<BackupParseResult> parseAsync(String json) {
+    final BackupCodec codec = _codec;
+    return Background.run(() => _decode(codec, json));
+  }
+
+  static String _encode(BackupCodec codec, BackupDocument doc) =>
+      codec.encode(doc);
+
+  static BackupParseResult _decode(BackupCodec codec, String json) =>
+      codec.decode(json);
+
   /// Writes the backup to the database in one transaction, then applies its
-  /// settings. Any failure leaves the database as it was and throws
-  /// [RestoreFailed].
+  /// settings. A database failure leaves the database as it was and throws
+  /// [RestoreFailed]; a settings failure afterwards does not undo the data
+  /// and is reported as [RestoreSummary.settingsFailed].
   ///
   /// Settings follow the same rule as the data: [RestoreMode.replace] writes
   /// every setting in the backup; [RestoreMode.merge] only fills settings
@@ -157,13 +182,23 @@ class BackupService {
     } on Object catch (e) {
       throw RestoreFailed(e);
     }
-    final int applied = await _applySettings(preview.document.settings, mode);
+    // The data is in. Everything that cached the old data lets go now, even
+    // if the settings below fail.
+    onDataRestored?.call();
+    int applied = 0;
+    bool settingsFailed = false;
+    try {
+      applied = await _applySettings(preview.document.settings, mode);
+    } on Object {
+      settingsFailed = true;
+    }
     if (applied > 0) onSettingsRestored?.call();
     return RestoreSummary(
       mode: mode,
       written: result.written,
       kept: result.kept,
       settingsApplied: applied,
+      settingsFailed: settingsFailed,
     );
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/db/ids.dart';
 import '../../core/models/enums.dart';
 import '../../core/models/profile.dart';
 import '../../core/providers.dart';
@@ -11,12 +10,6 @@ import '../../core/widgets/sinew_segmented_control.dart';
 
 // Pieces shared by the first-run Quick profile and More > Profile / Units.
 
-/// The profile, live.
-final StreamProvider<Profile> profileProvider =
-    StreamProvider.autoDispose<Profile>(
-      (Ref ref) => ref.watch(profileRepositoryProvider).watch(),
-    );
-
 /// Reads the saved profile, applies [change] and saves it.
 Future<void> updateProfile(
   WidgetRef ref,
@@ -24,7 +17,7 @@ Future<void> updateProfile(
 ) async {
   final repo = ref.read(profileRepositoryProvider);
   final Profile current = await repo.get();
-  await repo.save(change(current).copyWith(updatedAt: systemClock()));
+  await repo.save(change(current));
 }
 
 /// Parses a typed number; null for empty or malformed text.

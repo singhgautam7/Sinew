@@ -30,7 +30,9 @@ SemanticsNode? _nodeLabelled(WidgetTester tester, String label) {
     return found == null;
   }
 
-  visit(tester.binding.rootPipelineOwner.semanticsOwner!.rootSemanticsNode!);
+  visit(
+    tester.binding.renderViews.first.owner!.semanticsOwner!.rootSemanticsNode!,
+  );
   return found;
 }
 

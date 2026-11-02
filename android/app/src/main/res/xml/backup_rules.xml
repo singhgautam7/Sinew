@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Auto Backup on Android 6 to 11. Only what cannot be rebuilt:
+     - the user database (workouts, body, presets). Only the main file: it is
+       always a consistent snapshot as of the last checkpoint. Backing up the
+       -wal and -shm files at a different instant than the main file could
+       restore a log that does not belong to it, so they are left out.
+     - the settings (SharedPreferences).
+     The exercise library (files/library.sqlite) is rebuilt from the APK's
+     assets on first launch and is never backed up. -->
+<full-backup-content>
+    <include domain="root" path="app_flutter/sinew_user.sqlite" />
+    <include domain="sharedpref" path="FlutterSharedPreferences.xml" />
+</full-backup-content>

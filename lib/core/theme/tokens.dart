@@ -1,0 +1,1002 @@
+import 'package:flutter/material.dart';
+
+/// Design tokens: spacing, radii, icon sizes, motion and elevation.
+///
+/// Values are Kuber's (`KuberSpace`, `KuberShape`, `KuberMotion`) with the
+/// Sinew additions from the design handoff at the bottom. Nothing in a feature
+/// or a widget names a raw size, radius or duration: it comes from here. A
+/// magic number in a widget is a bug.
+
+/// 4 · 8 · 12 · 16 · 24 · 32 · 48, plus the layout metrics defined once.
+abstract final class Space {
+  static const double xxs = 2;
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 24;
+  static const double xxl = 32;
+  static const double xxxl = 48;
+
+  /// Horizontal edge of every screen.
+  static const double screen = 20;
+
+  /// Gap between rows in a list.
+  static const double row = 10;
+
+  /// Gap between sections on a screen.
+  static const double section = 28;
+
+  /// Section header to its content.
+  static const double sectionHeaderGap = 8;
+
+  /// Between stacked cards and tiles.
+  static const double cardGap = 12;
+  static const double cardPadding = 16;
+
+  /// The one hero card per screen.
+  static const double cardPaddingHero = 20;
+
+  /// Minimum list row heights: title only, with a subtitle, with a body line.
+  static const double listItem1 = 56;
+  static const double listItem2 = 72;
+  static const double listItem3 = 88;
+  static const double listRowPadH = 16;
+  static const double listRowPadV = 8;
+
+  /// Bottom padding on every scrollable so content clears the floating nav
+  /// (56 pill + 22 offset + 32 scrim, rounded to the handoff's 108).
+  static const double bottomSafe = 108;
+}
+
+/// The shape scale. Rounded, never squircle.
+abstract final class Radii {
+  static const double extraSmall = 4;
+
+  /// Chips, tooltips, heatmap cells, inline badges.
+  static const double chip = 8;
+
+  /// Category tiles, menu rows, inner tiles in cards.
+  static const double medium = 12;
+
+  /// List thumbnails (the exercise row, 48dp, radius 14 in the handoff).
+  static const double thumb = 14;
+
+  /// Text fields, snackbar, nested containers.
+  static const double large = 16;
+
+  /// Cards, grouped lists, menus.
+  static const double card = 20;
+
+  /// Sheets (top), dialogs.
+  static const double sheet = 28;
+
+  /// Buttons, icon buttons, nav pill, FAB, segmented, progress, badges.
+  static const double full = 999;
+
+  static const BorderRadius extraSmallR = BorderRadius.all(
+    Radius.circular(extraSmall),
+  );
+  static const BorderRadius chipR = BorderRadius.all(Radius.circular(chip));
+  static const BorderRadius mediumR = BorderRadius.all(Radius.circular(medium));
+  static const BorderRadius thumbR = BorderRadius.all(Radius.circular(thumb));
+  static const BorderRadius largeR = BorderRadius.all(Radius.circular(large));
+  static const BorderRadius cardR = BorderRadius.all(Radius.circular(card));
+  static const BorderRadius dialogR = BorderRadius.all(Radius.circular(sheet));
+  static const BorderRadius sheetR = BorderRadius.vertical(
+    top: Radius.circular(sheet),
+  );
+  static const BorderRadius fullR = BorderRadius.all(Radius.circular(full));
+}
+
+/// One rounded outline set, 24dp, 48dp tap target.
+abstract final class IconSpec {
+  static const double size = 24;
+  static const double tiny = 16;
+  static const double small = 18;
+  static const double large = 32;
+
+  /// The glyph inside buttons, menu rows and tiles.
+  static const double glyph = 20;
+  static const double stroke = 1.75;
+
+  /// Minimum touch target everywhere (accessibility rule).
+  static const double tapTarget = 48;
+}
+
+/// Stroke widths for hairlines, rings and outlines.
+abstract final class Strokes {
+  static const double hairline = 1;
+  static const double focus = 2;
+  static const double ring = 6;
+  static const double spinnerSmall = 2;
+  static const double spinnerMedium = 2.5;
+  static const double spinnerLarge = 3;
+}
+
+/// Spring for anything the finger caused, decelerate for anything the system
+/// caused. Honour reduced motion through [Motion.of] and [Motion.curveOf].
+abstract final class Motion {
+  static const Duration instant = Duration(milliseconds: 90);
+  static const Duration fast = Duration(milliseconds: 150);
+  static const Duration navIndicator = Duration(milliseconds: 220);
+  static const Duration containerTransform = Duration(milliseconds: 240);
+  static const Duration sheet = Duration(milliseconds: 260);
+  static const Duration navHide = Duration(milliseconds: 160);
+  static const Duration snackEnter = Duration(milliseconds: 220);
+  static const Duration snackExit = Duration(milliseconds: 140);
+  static const Duration snackLife = Duration(seconds: 7);
+  static const Duration fabSlide = Duration(milliseconds: 220);
+  static const Duration fabFade = Duration(milliseconds: 180);
+  static const Duration segment = Duration(milliseconds: 200);
+  static const Duration headerSwap = Duration(milliseconds: 200);
+  static const Duration skeletonPulse = Duration(milliseconds: 1200);
+
+  /// A loader stays invisible this long so a fast load never flashes one.
+  static const Duration loadDelay = Duration(milliseconds: 250);
+
+  /// Anything the finger caused.
+  static const Curve spring = Curves.easeOutBack;
+
+  /// Anything the system caused.
+  static const Curve decelerate = Curves.easeOutCubic;
+  static const Curve accelerate = Curves.easeInCubic;
+  static const Curve standard = Curves.easeInOut;
+
+  /// Re-tapping the active tab: scroll to the top. Even-speed curve, longer
+  /// trips get more time (milliseconds: base + screens * per screen, capped).
+  static const Curve scrollTop = Curves.easeInOutSine;
+  static const int scrollTopBaseMs = 250;
+  static const int scrollTopPerScreenMs = 40;
+  static const int scrollTopMaxMs = 800;
+
+  /// Under OS reduced motion: transforms become cross-fades, springs go linear.
+  static const Duration reducedFade = Duration(milliseconds: 90);
+
+  static bool reduced(BuildContext context) {
+    final MediaQueryData mq = MediaQuery.of(context);
+    return mq.disableAnimations || mq.accessibleNavigation;
+  }
+
+  /// Duration to actually use, honouring reduced motion.
+  static Duration of(BuildContext context, Duration full) =>
+      reduced(context) ? reducedFade : full;
+
+  static Curve curveOf(BuildContext context, Curve full) =>
+      reduced(context) ? Curves.linear : full;
+}
+
+/// Depth lives in 1px outlines; a shadow exists on exactly one object, the
+/// nav pill. Kuber's pill casts none, and so does Sinew's: the border is
+/// enough. The values stay for the one place a shadow is ever allowed.
+abstract final class Elevations {
+  static const double none = 0;
+  static const double navPill = 6;
+  static const double navPillBlur = 18;
+}
+
+/// Opacity steps used for states and disabled content.
+abstract final class Opacities {
+  static const double disabled = 0.38;
+  static const double disabledFill = 0.12;
+  static const double muted = 0.6;
+  static const double pressed = 0.12;
+  static const double scrim = 0.32;
+  static const double handle = 0.4;
+  static const double selection = 0.3;
+  static const double track = 0.16;
+  static const double skeletonLow = 0.55;
+  static const double scrimFade = 0.92;
+}
+
+/// Component metrics: the numbers behind the shared widgets, named once.
+abstract final class Sizes {
+  // Nav pill (Kuber's exact geometry: 56 tall, padding 8, 40 items, 2 gap).
+  static const double navPillHeight = 56;
+  static const double navItem = 40;
+  static const double navItemGap = 2;
+
+  /// Transparent hit slop per side so an unselected item is 48 wide.
+  static const double navHitInset = 4;
+  static const double navPadding = 8;
+
+  /// Border of the pill, both sides.
+  static const double hairlineBorders = 2;
+
+  /// Vertical inset that leaves the 48dp hit row inside the 56 pill: the pill
+  /// height minus its border minus the hit row, halved.
+  static const double navPillInsetV = 3;
+  static const double navLabelPadLeft = 11;
+  static const double navLabelPadRight = 14;
+  static const double navLabelGap = 8;
+  static const double navBottomMin = 22;
+  static const double navScrim = 32;
+  static const double navHideTravel = 72;
+
+  /// Above this text height a selected tab drops its label.
+  static const double navLabelMaxText = 20;
+  static const double glyphSlot = 24;
+  static const double glyphWidth = 20;
+  static const double glyphHeight = 16;
+
+  // Buttons.
+  static const double buttonLarge = 56;
+  static const double buttonSmall = 40;
+  static const double buttonPadLarge = 24;
+  static const double buttonPadSmall = 16;
+  static const double buttonMinWidth = 64;
+  static const double buttonWideThreshold = 120;
+  static const double dashLength = 4;
+  static const double dashGap = 3;
+
+  // Icon buttons.
+  static const double iconButton = 40;
+  static const double badge = 16;
+  static const double badgeInset = 6;
+
+  // Header (app bar).
+  static const double headerTop = 14;
+  static const double headerRow = 48;
+
+  /// Extra height a one-line bodyMedium subtitle adds to the header (20 for
+  /// the line, less the 4 the bottom padding shrinks by).
+  static const double headerSubtitle = 16;
+  static const double headerGap = 6;
+  static const double headerSubtitleLift = 4;
+
+  // Sheets and menus.
+  static const double handleWidth = 32;
+  static const double handleHeight = 4;
+  static const double handleBand = 24;
+  static const double menuMinWidth = 200;
+  static const double menuMaxWidth = 320;
+  static const double menuDivider = 17;
+  static const double menuHeader = 32;
+  static const double menuSubtitleRow = 60;
+  static const double infoGlyph = 18;
+
+  // Chips and segmented controls.
+  static const double chip = 32;
+  static const double segmented = 40;
+  static const double segmentedMinWidth = 48;
+  static const int segmentedNoCheckFrom = 4;
+  static const double chipMenuMinWidth = 184;
+
+  // Empty state, loader, snackbar.
+  static const double emptyIcon = 72;
+  static const double emptyGlyph = 32;
+  static const double loaderSpinner = 32;
+  static const double snackMinHeight = 56;
+  static const double snackTimer = 4;
+  static const double snackSwipeDistance = 80;
+  static const double snackSwipeVelocity = 600;
+  static const double snackEnterTravel = 80;
+  static const double snackDragFade = 200;
+
+  // Extended FAB.
+  static const double fab = 56;
+  static const double fabPadLeft = 16;
+  static const double fabPadRight = 20;
+  static const double fabGap = 8;
+
+  /// Text scale above which the extended FAB collapses to its icon.
+  static const double fabCollapseScale = 1.3;
+  static const double fabCollapseProbe = 14;
+
+  /// Gap between the nav pill and an extended FAB above it.
+  static const double fabNavGap = 22;
+
+  // Tiles.
+  static const double tile = 40;
+  static const double dragDistance = 2;
+
+  // Text field.
+  static const double fieldPadV = 16;
+  static const double fieldBorder = 2;
+
+  // Settings and list rows.
+  static const double leadingTile = 40;
+  static const double pickerRowLeading = 40;
+  static const double switchRowInset = 12;
+
+  // Colour and icon picker.
+  static const double swatch = 44;
+  static const double swatchGap = 12;
+  static const double pickerTile = 48;
+  static const double pickerIcon = 28;
+}
+
+/// Sinew additions to the space scale (handoff: gloveTarget 64, timerControl
+/// 96, setRowHeight 64).
+abstract final class SinewSpace {
+  /// Active workout and timer secondary controls.
+  static const double gloveTarget = 64;
+
+  /// Primary pause / play.
+  static const double timerControl = 96;
+  static const double setRowHeight = 64;
+}
+
+/// Sinew additions to the shape scale.
+abstract final class SinewShape {
+  /// The pause control: squircle-ish, morphs to a full circle when paused.
+  static const double timerPrimary = 32;
+}
+
+/// Sinew motion moments (handoff, Motion table).
+abstract final class SinewMotion {
+  static const Duration plateEnter = Duration(milliseconds: 420);
+  static const Duration plateStagger = Duration(milliseconds: 45);
+  static const Duration plateExit = Duration(milliseconds: 220);
+
+  /// Spring behind the plate slide, mass 1, stiffness 380, damping 22.
+  static const SpringDescription plateSpring = SpringDescription(
+    mass: 1,
+    stiffness: 380,
+    damping: 22,
+  );
+  static const Duration setComplete = Duration(milliseconds: 260);
+  static const Duration prFlash = Duration(milliseconds: 600);
+  static const Duration silhouetteMorph = Duration(milliseconds: 480);
+  static const Duration phaseSweep = Duration(milliseconds: 360);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Sinew components: plate loader, set rows, timer controls and ring, numeric
+// stepper. Append-only; every number below comes from the design source
+// (`sinew-art.js`, Components, Train and Timer frames).
+// ──────────────────────────────────────────────────────────────────────────
+
+/// Plate loader geometry, in the design's own coordinate space (the art is
+/// drawn at these sizes and scaled to the available width, like an SVG
+/// viewBox).
+abstract final class PlateSpec {
+  static const double barbellWidth = 340;
+  static const double barbellHeight = 120;
+  static const double dumbbellWidth = 260;
+  static const double dumbbellHeight = 96;
+  static const double stackWidth = 200;
+
+  /// Half the length of the bare bar between the sleeves.
+  static const double barbellCollar = 64;
+  static const double dumbbellCollar = 30;
+
+  /// Distance from the collar to the first plate.
+  static const double barbellFirstGap = 3;
+  static const double dumbbellFirstGap = 1;
+
+  /// Gap between neighbouring plates.
+  static const double plateGap = 2;
+
+  /// Space kept free at the end of the sleeve.
+  static const double roomMargin = 14;
+  static const double plateStroke = 1.5;
+  static const double plateRadius = 3;
+
+  /// How far a plate slides when it enters or leaves.
+  static const double slideTravel = 46;
+
+  // Barbell.
+  static const double shaftHalfHeight = 3.5;
+  static const double sleeveHalfHeight = 6;
+  static const double sleeveInset = 8;
+  static const double stopHalfHeight = 13;
+  static const double stopWidth = 8;
+  static const double stopOutset = 6;
+  static const double stopInset = 2;
+  static const double stopRadius = 3;
+
+  // Dumbbell.
+  static const double handleHalfHeight = 5;
+  static const double gripHalfHeight = 4;
+  static const double gripLength = 34;
+
+  /// Plate sizes in kg, heaviest first, with the face height and thickness
+  /// each is drawn at on a barbell.
+  static const List<double> sizes = <double>[25, 20, 15, 10, 5, 2.5, 1.25];
+  static const List<double> barbellHeights = <double>[
+    96,
+    96,
+    96,
+    96,
+    62,
+    48,
+    40,
+  ];
+  static const List<double> barbellThickness = <double>[15, 13, 11, 9, 8, 7, 6];
+
+  /// Dumbbell plates exist for 5, 2.5 and 1.25 kg only (index 4 to 6).
+  static const List<double> dumbbellHeights = <double>[78, 62, 52];
+  static const List<double> dumbbellThickness = <double>[12, 9, 7];
+  static const int dumbbellFirstIndex = 4;
+
+  /// Two plate sizes closer than this many kilograms are the same size.
+  static const double lbMatchTolerance = 0.05;
+
+  // Machine stack.
+  static const int stackDefaultCount = 16;
+  static const double stackPlateHeight = 9;
+  static const double stackPitch = 11;
+  static const double stackTop = 10;
+  static const double stackBottom = 10;
+  static const double stackRodHalf = 3;
+  static const double stackPlateHalf = 46;
+  static const double stackPlateRadius = 2.5;
+  static const int stackLabelEvery = 4;
+  static const double stackLabelOffset = 56;
+  static const double stackLabelFont = 10;
+  static const double pinLength = 30;
+  static const double pinHeight = 4;
+  static const double pinStart = 64;
+  static const double pinKnobOffset = 66;
+  static const double pinKnobRadius = 6;
+
+  /// Gap between the art and its caption.
+  static const double captionGap = 6;
+  static const double captionFont = 13;
+  static const double captionLine = 18;
+}
+
+/// Set row metrics (Components and Train frames).
+abstract final class SetRowSpec {
+  static const double minHeight = SinewSpace.setRowHeight;
+  static const double plannedHeight = 56;
+  static const double compactHeight = 40;
+  static const double badge = 32;
+  static const double check = 52;
+  static const double checkBorder = 2;
+  static const double checkGlyph = 28;
+  static const double fieldMinHeight = 48;
+  static const double fieldPadH = 10;
+  static const double rowPadLeft = 8;
+  static const double rowPadRight = 6;
+  static const double rowPadV = 6;
+  static const double focusBorder = 2;
+  static const double valueFont = 18;
+  static const double valueLine = 22;
+  static const double summaryFont = 20;
+  static const double plannedFont = 16;
+  static const double prPadH = 10;
+  static const double prPadV = 4;
+
+  /// The check disc grows to this on completion, then settles to 1.
+  static const double checkOvershoot = 1.18;
+
+  /// Share of the 260ms check animation spent growing to the overshoot.
+  static const double checkGrowShare = 0.6;
+}
+
+/// Timer controls, ring and phase field metrics (Timer frames).
+abstract final class TimerSpec {
+  static const double ringSize = 340;
+  static const double ringStroke = 14;
+
+  /// The numeral fits this share of the ring's width (112 of 150 in the
+  /// design at full size).
+  static const double numeralWidthFactor = 0.62;
+  static const double trackOpacity = 0.15;
+  static const double secondaryFillOpacity = 0.12;
+  static const double pausedOpacity = 0.7;
+  static const double nextFillOpacity = 0.08;
+  static const double barFutureOpacity = 0.2;
+
+  static const double primaryIcon = 48;
+  static const double secondaryIcon = 28;
+  static const double addFont = 18;
+  static const double labelFont = 12;
+  static const double labelGap = 6;
+
+  /// Halo around the lock while locked, and the arc drawn while holding.
+  static const double lockHalo = 6;
+  static const double lockHaloOpacity = 0.2;
+  static const double lockHoldStroke = 4;
+  static const Duration holdToUnlock = Duration(seconds: 1);
+  static const double controlsGap = 12;
+
+  static const double phaseWordSize = 40;
+  static const double phaseWordTracking = 3;
+  static const double nextFont = 18;
+  static const double nextPadH = 18;
+  static const double nextPadV = 10;
+  static const double topBarPadV = 8;
+  static const double topBarPadH = 20;
+  static const double controlsBottom = 44;
+  static const double statusPill = 32;
+
+  // Warning (boxing): inset border, pill and round bars.
+  static const double warningBorder = 10;
+  static const double warningPill = 44;
+  static const double barWidth = 36;
+  static const double barHeight = 10;
+  static const double barGap = 6;
+
+  // AMRAP counter.
+  static const double amrapRadius = 40;
+  static const double amrapFont = 150;
+  static const double amrapTracking = -4;
+  static const double amrapMinHeight = 200;
+
+  // Finished.
+  static const double finishedDisc = 72;
+  static const double finishedGlyph = 40;
+}
+
+/// Numeric stepper metrics.
+abstract final class StepperSpec {
+  static const double button = IconSpec.tapTarget;
+  static const double buttonGlove = SinewSpace.gloveTarget;
+  static const double glyph = 24;
+  static const double glyphGlove = 28;
+  static const double valueMinWidth = 64;
+  static const double valueMinWidthGlove = 96;
+
+  /// Repeat while a button is held: the first interval, the faster one after
+  /// [accelerateAfter] repeats.
+  static const Duration repeatSlow = Duration(milliseconds: 120);
+  static const Duration repeatFast = Duration(milliseconds: 50);
+  static const int accelerateAfter = 12;
+
+  /// Decimal places kept when stepping, to avoid 0.1 + 0.2 drift.
+  static const int precision = 4;
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// Domain widgets (muscle map, silhouette, stat card, chart card, field row,
+// exercise tile). Append-only section: lib/core/widgets/domain/.
+// ═════════════════════════════════════════════════════════════════════════
+
+/// Muscle map metrics.
+abstract final class MapSpec {
+  /// Gap between the front and back figure.
+  static const double figureGap = 6;
+
+  /// Figure to its "Front" / "Back" caption.
+  static const double labelGap = 4;
+
+  /// Share of a routine tint in the pale secondary colour (the rest is the
+  /// surface).
+  static const double tintSecondaryMix = 0.4;
+
+  /// The cropped map in an exercise tile: the 48dp thumbnail.
+  static const double thumb = 48;
+}
+
+/// Silhouette metrics. The `view*` and stroke values are in the reference's
+/// own 240 x 424 canvas units and scale with the figure, as an SVG would.
+abstract final class SilhouetteSpec {
+  static const double viewWidth = 240;
+  static const double viewHeight = 424;
+
+  /// Figure height inside the canvas, and the gap above it.
+  static const double figureHeight = 400;
+  static const double topInset = 12;
+
+  static const double strokeMeasured = 2.25;
+  static const double strokeEstimated = 1.75;
+  static const double strokeCompare = 1.5;
+
+  /// Estimated outline: dashes of 3 with gaps of 5.
+  static const double dashOn = 3;
+  static const double dashOff = 5;
+
+  /// Comparison outline: dots of 1 with gaps of 4.
+  static const double dotOn = 1;
+  static const double dotOff = 4;
+
+  /// Highlighted level: a 1.25 dashed line and a dot at its end.
+  static const double highlightStroke = 1.25;
+  static const double highlightDashOn = 2;
+  static const double highlightDashOff = 4;
+  static const double highlightInset = 18;
+  static const double markerRadius = 4.5;
+  static const double markerRadiusSmall = 2.5;
+  static const double labelSize = 9;
+  static const double labelGap = 4;
+
+  /// Height of the view when its parent gives none.
+  static const double defaultHeight = 300;
+}
+
+/// Stat card metrics.
+abstract final class StatSpec {
+  /// Gap between the value and its unit.
+  static const double valueGap = 8;
+
+  /// Vertical rhythm inside a card.
+  static const double gap = 10;
+
+  /// Lock glyph in a locked card.
+  static const double lockGlyph = 20;
+
+  /// The compact card (Today).
+  static const double compactMinWidth = 132;
+  static const double skeletonValue = 32;
+  static const double skeletonLabel = 14;
+  static const double skeletonLabelWidth = 0.5;
+  static const double skeletonValueWidth = 0.35;
+}
+
+/// Chart card metrics.
+abstract final class ChartSpec {
+  static const double height = 160;
+  static const double lineWidth = 2.5;
+  static const double secondaryLineWidth = 2;
+  static const double dotRadius = 3;
+  static const double lastDotRadius = 5;
+  static const double dotRing = 2;
+  static const double areaTop = 0.18;
+  static const double leftReserved = 40;
+  static const double bottomReserved = 24;
+  static const double referenceDashOn = 5;
+  static const double referenceDashOff = 4;
+  static const double headerGap = 8;
+
+  /// The y range grows by this share of its span so the line never touches
+  /// the edge.
+  static const double padRatio = 0.12;
+
+  /// Horizontal gridlines.
+  static const int gridLines = 3;
+
+  /// Most x labels shown.
+  static const int maxXLabels = 4;
+}
+
+/// Measurement field row metrics.
+abstract final class FieldSpec {
+  static const double inputWidth = 112;
+  static const double inputGap = 12;
+  static const double dragSlot = 40;
+  static const double switchRowMinHeight = 72;
+  static const double tagPadH = 6;
+  static const double tagPadV = 2;
+}
+
+/// Exercise tile metrics (the thumbnail is [MapSpec.thumb] with
+/// [Radii.thumb]).
+abstract final class ExerciseTileSpec {
+  static const double actionSize = 40;
+  static const double actionGlyph = 20;
+  static const double metaGlyph = 16;
+}
+
+// ── Library feature (Phase 5, append-only section owned by the Library) ────
+
+/// Library screens: browse, results, detail and the custom exercise form.
+abstract final class LibrarySpec {
+  /// Results are loaded in pages of this many rows.
+  static const int pageSize = 50;
+
+  /// Load the next page when this close (logical px) to the end of the list.
+  static const double loadMoreExtent = 600;
+
+  /// Keystrokes settle for this long before a search runs.
+  static const Duration searchDebounce = Duration(milliseconds: 100);
+
+  /// Most recently viewed exercise ids kept in prefs.
+  static const int recentMax = 20;
+
+  /// Rows shown in a collapsed browse section.
+  static const int collapsedRows = 5;
+
+  /// The pill search field.
+  static const double searchFieldHeight = 48;
+
+  /// The full-height picker and filter sheets cover this share of the screen.
+  static const double sheetHeightFactor = 0.94;
+
+  /// Category card on the browse screen.
+  static const double categoryCardMinHeight = 88;
+  static const double categoryGlyph = 28;
+
+  /// Exercise detail muscle map (front and back side by side).
+  static const double detailMapWidth = 170;
+  static const double detailMapHeight = 186;
+
+  /// Pose detail: one cropped side.
+  static const double poseMap = 112;
+
+  /// Numbered step badge.
+  static const double stepBadge = 28;
+
+  /// Tracking type tile in the custom exercise form.
+  static const double trackTileHeight = 72;
+  static const int trackTileColumns = 4;
+
+  /// Muscle preview in the custom exercise form.
+  static const double mapPreviewHeight = 180;
+
+  /// Multi-line text fields in the custom exercise form.
+  static const int stepsLines = 6;
+  static const int notesLines = 3;
+
+  /// Default MET shown in the form, by category (Compendium of Physical
+  /// Activities ballparks). Always labelled as an estimate.
+  static const double metStrength = 4;
+  static const double metCalisthenics = 4;
+  static const double metYoga = 2.5;
+  static const double metMobility = 2.3;
+  static const double metHiit = 8;
+  static const double metBoxing = 7.8;
+  static const double metCardio = 7;
+  static const double metPilates = 3;
+  static const double metFallback = 4;
+
+  /// Equipment chips shown before "More" in the filter sheet.
+  static const int equipmentCollapsed = 12;
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// Body feature (lib/features/body/). Append-only section.
+// ═════════════════════════════════════════════════════════════════════════
+
+/// Body screens: silhouette sizes, the ratio marker bar, range lengths.
+abstract final class BodySpec {
+  /// The silhouette on the overview and in the compare screen.
+  static const double overviewSilhouetteHeight = 340;
+  static const double compareSilhouetteHeight = 320;
+
+  /// The waist-to-height scale under its value: the bar and its 0.5 marker.
+  static const double ratioBarHeight = 8;
+  static const double ratioMarkerWidth = 3;
+  static const double ratioMarkerHeight = 20;
+
+  /// The scale runs from [ratioMin] to [ratioMax].
+  static const double ratioMin = 0.3;
+  static const double ratioMax = 0.7;
+
+  /// Width of a value and a change column in a table row.
+  static const double tableValueWidth = 72;
+  static const double tableDeltaWidth = 64;
+
+  /// Days covered by each chart range chip.
+  static const int daysMonth = 30;
+  static const int daysQuarter = 91;
+  static const int daysHalfYear = 182;
+  static const int daysYear = 365;
+
+  /// Earliest year the entry date picker offers.
+  static const int firstYear = 2000;
+
+  /// Decimals shown for ratios and for body measurements.
+  static const int ratioDecimals = 2;
+  static const int valueDecimals = 1;
+}
+// ──────────────────────────────────────────────────────────────────────────
+// TRAIN FEATURE (append-only section owned by lib/features/train)
+// ──────────────────────────────────────────────────────────────────────────
+
+/// Metrics and defaults for the Train feature.
+abstract final class TrainSpec {
+  // Routine cards and tiles.
+  static const double routineTile = 56;
+  static const double routinePlay = 48;
+  static const double routinePlayGlyph = 26;
+  static const double routineEditorTile = 48;
+
+  // Defaults.
+  static const int defaultSetCount = 3;
+  static const int restStepSec = 10;
+  static const int maxSets = 20;
+  static const int maxRestSec = 600;
+
+  // Active workout.
+  static const double progressSegment = 4;
+  static const double headerGlyph = 24;
+  static const double exerciseBarGap = 6;
+  static const double restBarProgress = 4;
+  static const double restRing = 280;
+  static const double restRingStroke = 12;
+  static const double setGap = 8;
+
+  // History.
+  static const double calendarGap = 4;
+  static const double calendarCellRadius = 10;
+  static const double legendSwatch = 12;
+  static const int historyPage = 40;
+  static const double dateBlock = 48;
+  static const double dateBlockRadius = 12;
+
+  // Summary.
+  static const double summaryBadge = 72;
+  static const double summaryBadgeGlyph = 40;
+  static const double mapPreview = 96;
+  static const double mapPreviewHeight = 100;
+
+  // Exercise history.
+  static const int recentSessions = 20;
+}
+// ═════════════════════════════════════════════════════════════════════════
+// Timer feature (lib/features/timer/). Append-only section: sizes from the
+// Timer frames, and the cue and service timings that are not design values.
+// ═════════════════════════════════════════════════════════════════════════
+
+/// Timer home, setup and finished screens.
+abstract final class TimerUi {
+  // Home: the mode grid.
+  static const int tileColumns = 3;
+  static const double tileHeight = 92;
+  static const double tileGap = 8;
+  static const double presetPlay = IconSpec.tapTarget;
+
+  // Setup: the live total card and its bar strip.
+  static const double totalNumeral = 36;
+  static const double stripHeight = 40;
+  static const double stripBar = 7;
+  static const double stripGap = 3;
+  static const double stripLowShare = 0.45;
+  static const int stripBars = 12;
+
+  // Setup: cue tiles and the sticky start button.
+  static const double cueTileHeight = ToggleTileSpec.height;
+  static const double startBottom = 28;
+  static const double startClearance = 120;
+  static const double fieldDot = 10;
+
+  // Custom sequence rows.
+  static const double stepRowHeight = 56;
+  static const double stepBarWidth = 8;
+  static const double stepBarHeight = 32;
+  static const double stepTimeHeight = 36;
+
+  // Stopwatch.
+  static const double stopwatchNumeral = 96;
+  static const double stopwatchTracking = -3;
+  static const double stopwatchCentis = 32;
+  static const double stopwatchTop = 48;
+  static const double lapButton = 80;
+
+  // AMRAP: the time left above the counter.
+  static const double amrapClock = 120;
+  static const double amrapClockTracking = -5;
+  static const double amrapBarWidth = 300;
+  static const double amrapBarHeight = 10;
+
+  // Finished: the stat tiles and the timeline strip.
+  static const double timelineHeight = 28;
+  static const double timelineGap = 2;
+  static const int statColumns = 3;
+
+  // Running banner on Home.
+  static const double bannerIcon = 40;
+
+  /// Fewest and most seconds any duration field accepts.
+  static const double maxSeconds = 6 * 3600;
+  static const double maxRounds = 99;
+}
+
+/// Timings of the cue driver and the background service. Time itself always
+/// comes from timestamps; these only decide how often we look.
+abstract final class TimerTiming {
+  /// How often the controller checks for due cues while a run is live.
+  static const Duration cueTick = Duration(milliseconds: 100);
+
+  /// A cue older than this when we first look at it is dropped (the app was
+  /// suspended); the background service played it already.
+  static const int staleCueMs = 1000;
+
+  /// The same, for the cues that matter most (a new phase, the finish): they
+  /// are still worth playing a little late, for example after the main
+  /// isolate was busy for a moment.
+  static const int staleLongCueMs = 3000;
+
+  /// How often the app tells the service it is alive.
+  static const Duration heartbeat = Duration(seconds: 1);
+
+  /// The service takes over cues when the app has been silent this long.
+  static const int heartbeatLapseMs = 2500;
+
+  /// How often the service checks for due cues.
+  static const Duration serviceTick = Duration(milliseconds: 250);
+
+  /// The ringer mode is cached this long.
+  static const Duration ringerCache = Duration(seconds: 2);
+
+  /// The screen reader hears the time left at most this often.
+  static const Duration announceEvery = Duration(seconds: 30);
+
+  /// The finish notification stays this long before the service stops.
+  static const Duration finishLinger = Duration(seconds: 3);
+
+  /// While a run is paused the service only looks this often (the face does
+  /// not change; the tick is just there to notice the pause timeout).
+  static const Duration pausedServiceTick = Duration(seconds: 5);
+
+  /// A run paused this long stops its service (and the wake lock and the
+  /// notification). The run itself stays saved and restores on the next open.
+  static const Duration pausedServiceTimeout = Duration(minutes: 20);
+}
+
+/// The on / off option tile (`SinewToggleTile`).
+abstract final class ToggleTileSpec {
+  static const double height = 72;
+}
+// ──────────────────────────────────────────────────────────────────────────
+// Phase 8: Today, first run, search, More, backup, theme, about.
+// Append-only; every number below is used by the screens named.
+// ──────────────────────────────────────────────────────────────────────────
+
+/// Today, search and the first-run screens.
+abstract final class TodaySpec {
+  /// Quick timer tiles shown on Today.
+  static const int quickTimerCount = 4;
+
+  /// A day in the week strip.
+  static const double dayCell = 36;
+  static const double dayCellRing = 2;
+
+  /// The glyph disc in a hero or empty card.
+  static const double heroGlyph = 48;
+
+  /// The brand mark: corner radius and glyph as a share of the tile.
+  static const double brandRadiusRatio = 0.3;
+  static const double brandGlyphRatio = 0.55;
+
+  /// Longest line of body text on a first-run screen.
+  static const double readableWidth = 420;
+
+  /// Recent searches kept.
+  static const int recentSearches = 8;
+
+  /// Results shown per group in "All" before "Show all".
+  static const int searchGroupLimit = 4;
+
+  /// Wait after the last keystroke before a search runs.
+  static const Duration searchDebounce = Duration(milliseconds: 250);
+}
+
+/// More, Profile, Units, Plates, Backup, Settings, Theme, About, Permissions.
+abstract final class MoreSpec {
+  /// A theme family swatch dot and its smaller wallpaper twin.
+  static const double swatch = 34;
+  static const double swatchSmall = 26;
+  static const double familyCardMinHeight = 116;
+  static const double familyCardBorder = 2;
+
+  /// The mode preview tile (System, Light, Dark, AMOLED).
+  static const double modePreviewHeight = 56;
+  static const double modePreviewBar = 6;
+
+  /// A plate swatch in the inventory list.
+  static const double plateSwatch = 28;
+
+  /// Largest target weight on the plate preview, in kilograms.
+  static const double previewMaxKg = 500;
+
+  /// The birth year range offered in the profile.
+  static const int birthYearMin = 1900;
+
+  /// Rest time step in Settings, in seconds.
+  static const int restStep = 15;
+}
+
+/// Settings screen choices.
+abstract final class SettingsSpec {
+  /// 0.85 to 1.3 in steps of 0.05.
+  static const int textScaleDivisions = 9;
+
+  /// Weight step presets, in the unit's own terms.
+  static const List<double> kgSteps = <double>[1, 1.25, 2.5, 5];
+  static const List<double> lbSteps = <double>[2.5, 5, 10];
+}
+
+/// Vibration patterns of the timer cues, as `[wait, on, off, on, ...]` in
+/// milliseconds (what `Vibrator` takes). Short for a countdown tick, long
+/// for the finish.
+abstract final class CueHaptics {
+  static const List<int> countdown = <int>[0, 15];
+  static const List<int> phaseStart = <int>[0, 45];
+  static const List<int> warning = <int>[0, 60, 70, 60];
+  static const List<int> finish = <int>[0, 200, 100, 200, 100, 400];
+}
+
+/// The timer home grid and the setup screen's floating Start.
+abstract final class TimerHomeSpec {
+  /// Below this width the mode grid has two columns, so a label like
+  /// "Countdown" fits its tile at 1x text on a 360dp phone.
+  static const double narrowWidth = 380;
+
+  /// Where the Start button's scrim becomes fully opaque (fraction of its
+  /// height, top to bottom).
+  static const double scrimSolidFrom = 0.45;
+}

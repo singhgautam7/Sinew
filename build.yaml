@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # Millisecond-precise ISO-8601 timestamps: `updatedAt` decides merge
+          # conflicts in a restore, so second precision is not enough.
+          store_date_time_values_as_text: true
+          sql:
+            dialect: sqlite
+            options:
+              version: "3.45"
+              modules:
+                - fts5

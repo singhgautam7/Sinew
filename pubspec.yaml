@@ -1,0 +1,124 @@
+name: sinew
+description: "Sinew, an offline workout, timer and body tracker."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.7
+
+# Versions verified on pub.dev on 2026-10-31 (latest, maintained, no network at
+# runtime). See CLAUDE.md "Dependencies" for the reasoning per package. Nothing
+# here may phone home: no HTTP client, analytics, crash reporting, ads, remote
+# config or runtime font fetching.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State and navigation, as in Mull.
+  flutter_riverpod: ^3.4.3
+  go_router: ^18.1.2
+
+  # User database (Drift) and the read-only exercise library (SQLite + FTS5).
+  # sqlite3 3.x bundles SQLite with FTS5 through Dart build hooks;
+  # sqlite3_flutter_libs is end-of-life and must not be added.
+  drift: ^2.35.3
+  drift_flutter: ^0.3.1
+  sqlite3: ^3.8.0
+  path_provider: ^2.1.6
+  path: ^1.9.1
+
+  # Device settings read synchronously before the first frame (theme caching).
+  shared_preferences: ^2.5.6
+  dynamic_color: ^2.1.0
+
+  # Immutable models and backup (de)serialisation.
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
+
+  # Progress charts (as in Kuber), muscle map and illustrations.
+  fl_chart: ^1.3.0
+  flutter_svg: ^2.3.2
+
+  # Backup: Storage Access Framework, share sheet, spreadsheet export.
+  file_picker: ^13.3.0
+  share_plus: ^13.3.1
+  csv: ^8.0.0
+
+  # Timer (Phase 6), verified on pub.dev 2026-11-01. Neither opens a socket at
+  # runtime: the foreground service and wake lock are local Android APIs.
+  # Sound, vibration and voice are on our own native channel (CueChannel.kt).
+  flutter_foreground_task: ^11.0.3
+  wakelock_plus: ^1.8.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.17.1
+  drift_dev: ^2.35.2
+  freezed: ^4.0.3
+  json_serializable: ^6.15.2
+  # Dev-only: generates the native launch screen. Configured in Phase 9 once
+  # the icon art exists.
+  flutter_native_splash: ^2.4.8
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    # The prebuilt, read-only exercise library and its version stamp, built by
+    # `dart run tool/build_library_db.dart`. Binary, committed, deliberate.
+    - assets/db/
+    # Short timer cue sounds.
+    - assets/audio/
+    # Font licences, registered with the LicenseRegistry in main.dart.
+    - assets/fonts/Inter-OFL.txt
+    - assets/fonts/JetBrainsMono-OFL.txt
+    - assets/fonts/InstrumentSerif-OFL.txt
+
+  # Bundled, never fetched (offline guarantee). Same families as Kuber.
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-Medium.ttf
+          weight: 500
+    - family: InstrumentSerif
+      fonts:
+        - asset: assets/fonts/InstrumentSerif-Italic.ttf
+          style: italic
+
+# Launcher icon and splash. `flutter_launcher_icons` is deliberately not used
+# (it would rasterise the adaptive vector drawables and lose the monochrome
+# layer), as in Kuber. The adaptive icon is hand-written vectors in
+# android/app/src/main/res/drawable/; legacy PNGs and the splash art come from
+# `flutter test tool/generate_icons_test.dart`. See docs/ICON.md.
+flutter_native_splash:
+  # The icon's own ground: the splash reads as the launcher icon holding still.
+  # Dark mode uses the dark scheme surface under the #2A3310 circle.
+  color: "#E4ECC7"
+  color_dark: "#161811"
+  image: assets/icon/splash.png
+  image_dark: assets/icon/splash_dark.png
+  android_12:
+    # Android 12 masks its splash icon to a circle and shows only the middle of
+    # it, so this art is the glyph alone on transparent and the ground is the
+    # colour below.
+    image: assets/icon/splash_android12.png
+    image_dark: assets/icon/splash_android12_dark.png
+    icon_background_color: "#E4ECC7"
+    icon_background_color_dark: "#2A3310"
+    color: "#E4ECC7"
+    color_dark: "#161811"
+  android: true
+  ios: false
+  web: false

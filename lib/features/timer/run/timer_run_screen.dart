@@ -15,6 +15,7 @@ import '../../../core/widgets/sinew_dialogs.dart';
 import '../../../core/widgets/sinew_snackbar.dart';
 import '../../../core/widgets/sinew_states.dart';
 import '../../../engines/timer/timer_engine.dart';
+import '../../exercise_media/presentation/yoga_flow_figure.dart';
 import '../api/timer_api.dart';
 import '../controller/timer_session.dart';
 import '../data/active_timer.dart';
@@ -274,6 +275,13 @@ class _TimerRunScreenState extends ConsumerState<TimerRunScreen>
       heading: yogaPose ? snap.step?.label : null,
       label: yogaPose && snap.stepDurationMs != null
           ? 'hold of ${ClockText.format(snap.stepDurationMs! ~/ 1000)}'
+          : null,
+      figure: yogaPose && snap.step?.exerciseId != null
+          ? YogaFlowFigure(
+              exerciseId: snap.step!.exerciseId!,
+              progress: snap.stepProgress,
+              paused: snap.paused,
+            )
           : null,
       nextLabel: locked ? null : nextLabel(a, snap),
       warningSec: a.cues.warningSec,

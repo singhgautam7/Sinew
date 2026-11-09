@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "source": "specs/design/sinew-design-references/project/tokens/sinew_tokens.json",
+  "palettes": {
+    "light": {
+      "bodyBase": "#DDDFD5",
+      "bodyMuscle": "#ACB09F",
+      "bodyFar": "#C6C9BE",
+      "musclePrimary": "#617600",
+      "muscleSecondary": "#C4DE7A",
+      "prop": "#191C0F",
+      "propDetail": "#626556",
+      "ground": "#D4D8C7",
+      "shadow": "rgba(21, 24, 11, 0.10)",
+      "cardBackground": "#F4F7ED",
+      "cardSurface": "#FFFFFF",
+      "cardOutline": "#DDE1D1",
+      "text": "#15180B",
+      "textMuted": "#626556"
+    },
+    "dark": {
+      "bodyBase": "#32342C",
+      "bodyMuscle": "#54574B",
+      "bodyFar": "#42453A",
+      "musclePrimary": "#A1B567",
+      "muscleSecondary": "#3B4A00",
+      "prop": "#E7E9E2",
+      "propDetail": "#7F8178",
+      "ground": "#3C3F33",
+      "shadow": "rgba(241, 242, 238, 0.10)",
+      "cardBackground": "#1C1E16",
+      "cardSurface": "#22241B",
+      "cardOutline": "#35372C",
+      "text": "#F1F2EE",
+      "textMuted": "#A3A69C"
+    }
+  }
+}

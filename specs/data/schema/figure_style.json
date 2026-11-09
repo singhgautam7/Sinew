@@ -1,0 +1,334 @@
+{
+  "version": 1,
+  "description": "Sinew Exercise Figure Style Specification matching the design muscle map.",
+  "standardHeight": 1.0,
+  "coordinateSystem": {
+    "forward": "+x",
+    "up": "+y",
+    "left": "+z",
+    "right": "-z"
+  },
+  "roles": {
+    "bodyBase": "Torso base, head, neck, feet, joint dots",
+    "bodyMuscle": "Default untargeted muscle shapes",
+    "bodyFar": "Far-side limbs for depth separation",
+    "musclePrimary": "Primary targeted muscle highlight",
+    "muscleSecondary": "Secondary targeted muscle highlight",
+    "prop": "Equipment frames, bars, handles, bench structure",
+    "propDetail": "Plates, collars, bench pad",
+    "ground": "Ground reference plane",
+    "shadow": "Soft contact shadow"
+  },
+  "bases": {
+    "male": {
+      "head": {
+        "radius": 0.0496,
+        "role": "bodyBase"
+      },
+      "neck": {
+        "width": 0.0454,
+        "height": 0.0413,
+        "rx": 0.0165,
+        "role": "bodyBase"
+      },
+      "jointDots": {
+        "wrist": 0.0207,
+        "knee": 0.0248,
+        "role": "bodyBase"
+      },
+      "feet": {
+        "rx": 0.0289,
+        "ry": 0.0165,
+        "role": "bodyBase"
+      },
+      "torsoBase": {
+        "shoulderWidth": 0.165,
+        "chestWidth": 0.165,
+        "waistWidth": 0.132,
+        "hipWidth": 0.132,
+        "role": "bodyBase"
+      },
+      "patches": {
+        "shoulders": {
+          "segment": "shoulder",
+          "shape": "ellipse",
+          "rx": 0.0372,
+          "ry": 0.0413,
+          "facing": "lateral",
+          "muscleId": "shoulders"
+        },
+        "chest": {
+          "segment": "chest",
+          "shape": "plate",
+          "width": 0.06,
+          "height": 0.078,
+          "facing": "front",
+          "muscleId": "chest"
+        },
+        "biceps": {
+          "segment": "upperArm",
+          "shape": "ellipse",
+          "rx": 0.0248,
+          "ry": 0.0537,
+          "facing": "front",
+          "muscleId": "biceps"
+        },
+        "triceps": {
+          "segment": "upperArm",
+          "shape": "ellipse",
+          "rx": 0.0248,
+          "ry": 0.0537,
+          "facing": "back",
+          "muscleId": "triceps"
+        },
+        "forearms": {
+          "segment": "forearm",
+          "shape": "ellipse",
+          "rx": 0.0227,
+          "ry": 0.0578,
+          "facing": "both",
+          "muscleId": "forearms"
+        },
+        "abs": {
+          "segment": "torso",
+          "shape": "grid2x3",
+          "rectWidth": 0.0289,
+          "rectHeight": 0.0454,
+          "rx": 0.0124,
+          "facing": "front",
+          "muscleId": "core"
+        },
+        "obliques": {
+          "segment": "torso",
+          "shape": "ellipse",
+          "rx": 0.0186,
+          "ry": 0.062,
+          "facing": "lateral",
+          "muscleId": "obliques"
+        },
+        "quads": {
+          "segment": "thigh",
+          "shape": "ellipse",
+          "rx": 0.0392,
+          "ry": 0.1074,
+          "facing": "front",
+          "muscleId": "quadriceps"
+        },
+        "adductors": {
+          "segment": "thigh",
+          "shape": "ellipse",
+          "rx": 0.0132,
+          "ry": 0.062,
+          "facing": "medial",
+          "muscleId": "adductors"
+        },
+        "hamstrings": {
+          "segment": "thigh",
+          "shape": "ellipse",
+          "rx": 0.0351,
+          "ry": 0.095,
+          "facing": "back",
+          "muscleId": "hamstrings"
+        },
+        "calves": {
+          "segment": "calf",
+          "shape": "ellipse",
+          "rx": 0.028,
+          "ry": 0.0785,
+          "facing": "back",
+          "muscleId": "calves"
+        },
+        "traps": {
+          "segment": "chest",
+          "shape": "triangle",
+          "width": 0.05,
+          "height": 0.07,
+          "facing": "back",
+          "muscleId": "trapezius"
+        },
+        "lats": {
+          "segment": "chest",
+          "shape": "plate",
+          "width": 0.066,
+          "height": 0.115,
+          "facing": "back",
+          "muscleId": "lats"
+        },
+        "lowerBack": {
+          "segment": "spineLower",
+          "shape": "rect",
+          "width": 0.0248,
+          "height": 0.0661,
+          "rx": 0.0124,
+          "facing": "back",
+          "muscleId": "lowerBack"
+        },
+        "glutes": {
+          "segment": "pelvis",
+          "shape": "ellipse",
+          "rx": 0.0392,
+          "ry": 0.0454,
+          "facing": "back",
+          "muscleId": "glutes"
+        }
+      }
+    },
+    "female": {
+      "head": {
+        "radius": 0.0475,
+        "hairBun": {
+          "offsetY": 0.049,
+          "radius": 0.0227
+        },
+        "role": "bodyBase"
+      },
+      "neck": {
+        "width": 0.0372,
+        "height": 0.0413,
+        "rx": 0.0165,
+        "role": "bodyBase"
+      },
+      "jointDots": {
+        "wrist": 0.0186,
+        "knee": 0.0248,
+        "role": "bodyBase"
+      },
+      "feet": {
+        "rx": 0.0268,
+        "ry": 0.0165,
+        "role": "bodyBase"
+      },
+      "torsoBase": {
+        "shoulderWidth": 0.14,
+        "chestWidth": 0.145,
+        "waistWidth": 0.115,
+        "hipWidth": 0.165,
+        "role": "bodyBase"
+      },
+      "patches": {
+        "shoulders": {
+          "segment": "shoulder",
+          "shape": "ellipse",
+          "rx": 0.033,
+          "ry": 0.0372,
+          "facing": "lateral",
+          "muscleId": "shoulders"
+        },
+        "chest": {
+          "segment": "chest",
+          "shape": "plate",
+          "width": 0.054,
+          "height": 0.07,
+          "facing": "front",
+          "muscleId": "chest"
+        },
+        "biceps": {
+          "segment": "upperArm",
+          "shape": "ellipse",
+          "rx": 0.0207,
+          "ry": 0.0516,
+          "facing": "front",
+          "muscleId": "biceps"
+        },
+        "triceps": {
+          "segment": "upperArm",
+          "shape": "ellipse",
+          "rx": 0.0207,
+          "ry": 0.0516,
+          "facing": "back",
+          "muscleId": "triceps"
+        },
+        "forearms": {
+          "segment": "forearm",
+          "shape": "ellipse",
+          "rx": 0.0186,
+          "ry": 0.0558,
+          "facing": "both",
+          "muscleId": "forearms"
+        },
+        "abs": {
+          "segment": "torso",
+          "shape": "grid2x3",
+          "rectWidth": 0.026,
+          "rectHeight": 0.0413,
+          "rx": 0.0124,
+          "facing": "front",
+          "muscleId": "core"
+        },
+        "obliques": {
+          "segment": "torso",
+          "shape": "ellipse",
+          "rx": 0.0157,
+          "ry": 0.0537,
+          "facing": "lateral",
+          "muscleId": "obliques"
+        },
+        "quads": {
+          "segment": "thigh",
+          "shape": "ellipse",
+          "rx": 0.0434,
+          "ry": 0.1074,
+          "facing": "front",
+          "muscleId": "quadriceps"
+        },
+        "adductors": {
+          "segment": "thigh",
+          "shape": "ellipse",
+          "rx": 0.0132,
+          "ry": 0.062,
+          "facing": "medial",
+          "muscleId": "adductors"
+        },
+        "hamstrings": {
+          "segment": "thigh",
+          "shape": "ellipse",
+          "rx": 0.0372,
+          "ry": 0.095,
+          "facing": "back",
+          "muscleId": "hamstrings"
+        },
+        "calves": {
+          "segment": "calf",
+          "shape": "ellipse",
+          "rx": 0.026,
+          "ry": 0.0785,
+          "facing": "back",
+          "muscleId": "calves"
+        },
+        "traps": {
+          "segment": "chest",
+          "shape": "triangle",
+          "width": 0.046,
+          "height": 0.066,
+          "facing": "back",
+          "muscleId": "trapezius"
+        },
+        "lats": {
+          "segment": "chest",
+          "shape": "plate",
+          "width": 0.062,
+          "height": 0.107,
+          "facing": "back",
+          "muscleId": "lats"
+        },
+        "lowerBack": {
+          "segment": "spineLower",
+          "shape": "rect",
+          "width": 0.0248,
+          "height": 0.0661,
+          "rx": 0.0124,
+          "facing": "back",
+          "muscleId": "lowerBack"
+        },
+        "glutes": {
+          "segment": "pelvis",
+          "shape": "ellipse",
+          "rx": 0.0434,
+          "ry": 0.0496,
+          "facing": "back",
+          "muscleId": "glutes"
+        }
+      }
+    }
+  }
+}

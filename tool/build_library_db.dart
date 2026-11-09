@@ -31,6 +31,10 @@ Future<void> main(List<String> args) async {
   }
   final File manifestFile = File('$dataDir/manifest.json');
   final File flowsFile = File('$dataDir/flows.json');
+  File motionsFile = File('$dataDir/motions.json');
+  if (!motionsFile.existsSync()) {
+    motionsFile = File('$dataDir/motions.sample.json');
+  }
 
   final List<int> exerciseBytes = exercisesFile.readAsBytesSync();
   final Object? exercises = jsonDecode(utf8.decode(exerciseBytes));
@@ -44,6 +48,14 @@ Future<void> main(List<String> args) async {
       : <Object?>[];
   if (flows is! List<Object?>) {
     stderr.writeln('${flowsFile.path} must be a JSON array');
+    exitCode = 2;
+    return;
+  }
+  final Object? motions = motionsFile.existsSync()
+      ? jsonDecode(motionsFile.readAsStringSync())
+      : <Object?>[];
+  if (motions is! List<Object?>) {
+    stderr.writeln('${motionsFile.path} must be a JSON array');
     exitCode = 2;
     return;
   }
@@ -62,6 +74,7 @@ Future<void> main(List<String> args) async {
       output: out,
       exercises: exercises,
       flows: flows,
+      motions: motions,
       libraryVersion: version,
       builtAt: builtAt,
       sha256: digest,
@@ -83,7 +96,10 @@ Future<void> main(List<String> args) async {
   }
   stdout.writeln('library $version  sha256 ${digest.substring(0, 12)}');
   stdout.writeln(
-    '${report.exerciseCount} exercises, ${report.flowCount} flows',
+    '${report.exerciseCount} exercises, ${report.flowCount} flows, ${report.motionCount} motions',
+  );
+  stdout.writeln(
+    'average payload size: ${report.averagePayloadBytes.toStringAsFixed(1)} bytes',
   );
   final List<MapEntry<String, int>> cats = report.countsByCategory.entries
       .toList();

@@ -67,6 +67,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02054 (resistance training, squats)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "barbell-back-squat",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -138,6 +144,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02054 (resistance training, deadlifts)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "barbell-deadlift",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -207,6 +219,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02024 (battle ropes, vigorous)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "unsupportedEquipment"
     }
   },
   {
@@ -275,6 +293,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02024 (plyometrics, box jumps)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -343,6 +367,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 06020 (boxing, punching drills)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "boxing-lead-jab",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -413,6 +443,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 06020 (boxing, in-ring/technique)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "boxing-rear-cross",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -482,6 +518,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02050 (resistance training, seated row)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "unsupportedEquipment"
     }
   },
   {
@@ -548,6 +590,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02040 (stretching, dynamic)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -616,6 +664,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (hatha yoga backbends)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -679,6 +733,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (restorative yoga)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "corpse-pose",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -748,6 +808,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (hatha yoga)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "downward-facing-dog",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -815,6 +881,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02050 (free weights resistance training)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "dumbbell-bench-press",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -879,6 +951,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02050 (biceps curls)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "ez-bar-biceps-curl",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -950,6 +1028,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 18310 (swimming, freestyle vigorous)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "unsupportedEquipment"
     }
   },
   {
@@ -1019,6 +1103,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02022 (calisthenics, elite vigorous)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "front-lever-hold",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1086,6 +1176,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02022 (vigorous bodyweight inverted)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "extremeInversion"
     }
   },
   {
@@ -1153,6 +1249,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02020 (calisthenics, abdominal work)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "hanging-leg-raise",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1225,6 +1327,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 06010 (boxing, bag work vigorous)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -1291,6 +1399,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02020 (calisthenics, core holds)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "hollow-body-hold",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1361,6 +1475,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02070 (rowing ergometer, vigorous)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "cardioMachineSimplified"
     }
   },
   {
@@ -1429,6 +1549,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02024 (plyometric jumping lunges)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "jumping-lunge",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1498,6 +1624,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02054 (vigorous resistance training)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "kettlebell-swing",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1564,6 +1696,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02040 (stretching, static)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "kneeling-hip-flexor-stretch",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1632,6 +1770,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02022 (calisthenics, mountain climbers)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -1699,6 +1843,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02040 (hip mobility drills)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -1768,6 +1918,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 06020 (boxing, shadowboxing combos)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "one-two-lead-hook-combo",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1835,6 +1991,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 06010 (boxing, sparring/stance drill)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "orthodox-boxing-stance",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1904,6 +2066,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 12050 (running, 6 mph / 10 min per mile)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "outdoor-running",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -1970,6 +2138,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02022 (calisthenics, dips vigorous)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "parallel-bar-dip",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2036,6 +2210,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02115 (pilates mat exercises)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "pilates-single-leg-stretch",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2104,6 +2284,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02115 (pilates mat work)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "pilates-the-hundred",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2173,6 +2359,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02115 (pilates advanced mat)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "pilates-the-teaser",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2244,6 +2436,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02022 (calisthenics, vigorous)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "pistol-squat",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2313,6 +2511,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02022 (calisthenics, pull-ups vigorous)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "pull-up",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2382,6 +2586,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02115 (pilates apparatus)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "unsupportedEquipment"
     }
   },
   {
@@ -2449,6 +2659,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02115 (pilates reformer apparatus)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "unsupportedEquipment"
     }
   },
   {
@@ -2515,6 +2731,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (hatha yoga seated folds)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -2582,6 +2804,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02040 (shoulder mobility)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "shoulder-pass-through",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2650,6 +2878,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02080 (stair-treadmill ergometer)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "cardioMachineSimplified"
     }
   },
   {
@@ -2719,6 +2953,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02024 (burpees, vigorous effort)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -2785,6 +3025,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02020 (calisthenics, pushups)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "standard-push-up",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2855,6 +3101,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02054 (overhead resistance training)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "standing-overhead-press",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -2923,6 +3175,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02011 (bicycling, stationary 100-150W)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "unsupportedEquipment"
     }
   },
   {
@@ -2993,6 +3251,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (yoga inversions)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "extremeInversion"
     }
   },
   {
@@ -3064,6 +3328,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (vinyasa yoga flow)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "complexFloorSequence"
     }
   },
   {
@@ -3131,6 +3401,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02040 (self-myofascial release)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "unsupportedEquipment"
     }
   },
   {
@@ -3199,6 +3475,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (hatha yoga)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "tree-pose",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -3206,7 +3488,8 @@
     "name": "Walking Dumbbell Lunge",
     "aliases": [
       "Walking Lunge",
-      "DB Walking Lunge"
+      "DB Walking Lunge",
+      "Bodyweight Walking Lunge"
     ],
     "sanskritName": null,
     "category": "strength",
@@ -3229,7 +3512,7 @@
     "mechanic": "compound",
     "force": "push",
     "steps": [
-      "Stand upright holding a pair of dumbbells securely at your sides.",
+      "Stand upright holding a pair of dumbbells at your sides, or place hands on hips for bodyweight.",
       "Step forward with your right leg into an elongated stride position.",
       "Lower your hips until your right thigh is parallel to the ground.",
       "Ensure your back left knee gently hovers one inch above the floor.",
@@ -3238,7 +3521,8 @@
     ],
     "tips": [
       "Keep your torso tall and vertical without tilting forward at your hips.",
-      "Track your front knee directly over your middle toes."
+      "Track your front knee directly over your middle toes.",
+      "This exercise can also be performed without dumbbells using bodyweight only."
     ],
     "commonMistakes": [
       "Collapsing your front knee inward during the deceleration phase.",
@@ -3267,6 +3551,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02052 (lunges, moderate to vigorous)."
+    },
+    "media": {
+      "tier": "animated",
+      "motionId": "walking-dumbbell-lunge",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   },
   {
@@ -3335,6 +3625,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02105 (hatha yoga)."
+    },
+    "media": {
+      "tier": "mapOnly",
+      "motionId": null,
+      "muscleMap": true,
+      "downgradeReason": "lowConfidenceForm"
     }
   },
   {
@@ -3405,6 +3701,12 @@
       "status": "verified",
       "passes": 2,
       "notes": "Compendium of Physical Activities code 02040 (stretching, dynamic mobility)."
+    },
+    "media": {
+      "tier": "frames",
+      "motionId": "worlds-greatest-stretch",
+      "muscleMap": true,
+      "downgradeReason": null
     }
   }
 ]

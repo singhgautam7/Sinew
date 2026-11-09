@@ -12,6 +12,7 @@ import '../../core/widgets/domain/numeric_stepper.dart';
 import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_bottom_sheet.dart';
 import '../../core/widgets/sinew_chips.dart';
+import '../../core/widgets/sinew_option_tile.dart';
 import '../../core/widgets/sinew_settings.dart';
 import '../../core/format/date_text.dart';
 
@@ -50,6 +51,13 @@ class SettingsScreen extends ConsumerWidget {
               _TextSizeRow(
                 value: s.textScale,
                 onChanged: (double v) => ctl.setTextScale(v),
+              ),
+              SinewValueRow(
+                icon: Icons.accessibility_new_rounded,
+                label: 'Figure body',
+                subtitle: 'Base model for exercise figures',
+                value: s.figureBody.label,
+                onTap: () => _editFigureBody(context),
               ),
             ],
           ),
@@ -160,6 +168,44 @@ class SettingsScreen extends ConsumerWidget {
         context: context,
         builder: (BuildContext _) => _StepSheet(unit: unit),
       );
+
+  Future<void> _editFigureBody(BuildContext context) =>
+      showSinewBottomSheet<void>(
+        context: context,
+        builder: (BuildContext _) => const _FigureBodySheet(),
+      );
+}
+
+class _FigureBodySheet extends ConsumerWidget {
+  const _FigureBodySheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final FigureBodySetting current = ref.watch(
+      settingsProvider.select((AppSettings s) => s.figureBody),
+    );
+    return SinewBottomSheet(
+      title: 'Figure body',
+      description: 'Choose the anatomical base for exercise figures.',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          for (final FigureBodySetting setting in FigureBodySetting.values) ...<Widget>[
+            if (setting != FigureBodySetting.values.first)
+              const SizedBox(height: Space.sm),
+            SinewOptionTile(
+              title: setting.label,
+              selected: setting == current,
+              onTap: () {
+                ref.read(settingsProvider.notifier).setFigureBody(setting);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 /// A slider for the in-app text size, with a live sample line.

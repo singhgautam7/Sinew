@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: ^3.13.7
+  sdk: ^3.13.5
 
 # Versions verified on pub.dev on 2026-10-31 (latest, maintained, no network at
 # runtime). See CLAUDE.md "Dependencies" for the reasoning per package. Nothing
@@ -69,6 +69,8 @@ flutter:
     # The prebuilt, read-only exercise library and its version stamp, built by
     # `dart run tool/build_library_db.dart`. Binary, committed, deliberate.
     - assets/db/
+    # Figure style, skeletal rig, and equipment props specs.
+    - assets/figure/
     # Short timer cue sounds.
     - assets/audio/
     # Font licences, registered with the LicenseRegistry in main.dart.

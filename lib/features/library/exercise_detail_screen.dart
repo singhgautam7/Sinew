@@ -10,13 +10,13 @@ import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/configs.dart';
 import '../../core/widgets/domain/exercise_tile.dart';
-import '../../core/widgets/domain/muscle_map.dart';
 import '../../core/widgets/sinew_app_bar.dart';
 import '../../core/widgets/sinew_dialogs.dart';
 import '../../core/widgets/sinew_form.dart';
 import '../../core/widgets/sinew_list.dart';
 import '../../core/widgets/sinew_snackbar.dart';
 import '../../core/widgets/sinew_states.dart';
+import '../exercise_media/presentation/exercise_media_view.dart';
 import 'add_to_routine.dart';
 import 'library_labels.dart';
 import 'library_providers.dart';
@@ -127,7 +127,7 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen> {
 
 bool _isPose(Exercise e) => e.category == 'yoga' || e.category == 'mobility';
 
-class _Detail extends ConsumerWidget {
+class _Detail extends ConsumerStatefulWidget {
   const _Detail({
     required this.exercise,
     required this.onArchive,
@@ -139,8 +139,15 @@ class _Detail extends ConsumerWidget {
   final VoidCallback onRestore;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final Exercise e = exercise;
+  ConsumerState<_Detail> createState() => _DetailState();
+}
+
+class _DetailState extends ConsumerState<_Detail> {
+  int? _activeStepIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final Exercise e = widget.exercise;
     final TextTheme tt = context.text;
     final ColorScheme cs = context.cs;
     final Sex? sex = ref.watch(librarySexProvider).value;
@@ -157,13 +164,13 @@ class _Detail extends ConsumerWidget {
           SinewOverflowItem(
             icon: Icons.unarchive_outlined,
             label: 'Restore',
-            onTap: onRestore,
+            onTap: widget.onRestore,
           )
         else
           SinewOverflowItem(
             icon: Icons.archive_outlined,
             label: 'Archive',
-            onTap: onArchive,
+            onTap: widget.onArchive,
             isDestructive: true,
           ),
       ],
@@ -236,7 +243,13 @@ class _Detail extends ConsumerWidget {
             _MetaChips(exercise: e),
           if (!removed) ...<Widget>[
             const SizedBox(height: Space.lg),
-            _MuscleCard(exercise: e, sex: sex, pose: pose),
+            ExerciseMediaView(
+              exercise: e,
+              sex: sex,
+              pose: pose,
+              activeStepIndex: _activeStepIndex,
+              onStepChanged: (int idx) => setState(() => _activeStepIndex = idx),
+            ),
             if (pose) ...<Widget>[
               const SizedBox(height: Space.lg),
               _MetaChips(exercise: e),
@@ -244,7 +257,11 @@ class _Detail extends ConsumerWidget {
             if (e.steps.isNotEmpty) ...<Widget>[
               const SizedBox(height: Space.xl),
               const SinewSectionHeader(title: 'Steps'),
-              _Steps(steps: e.steps),
+              _Steps(
+                steps: e.steps,
+                activeStepIndex: _activeStepIndex,
+                onStepTapped: (int idx) => setState(() => _activeStepIndex = idx),
+              ),
             ],
             _Notes(
               title: 'Tips',
@@ -462,131 +479,16 @@ class _PoseFacts extends StatelessWidget {
   }
 }
 
-class _MuscleCard extends StatelessWidget {
-  const _MuscleCard({
-    required this.exercise,
-    required this.sex,
-    required this.pose,
-  });
-
-  final Exercise exercise;
-  final Sex? sex;
-  final bool pose;
-
-  @override
-  Widget build(BuildContext context) {
-    final Exercise e = exercise;
-    final ColorScheme cs = context.cs;
-    final String label =
-        'Muscles. Primary: ${e.primaryMuscles.map(muscleLabel).join(', ')}. '
-        'Secondary: ${e.secondaryMuscles.map(muscleLabel).join(', ')}.';
-    final Widget legend = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        _Legend(
-          title: 'Primary',
-          muscles: e.primaryMuscles,
-          color: context.accents.musclePrimary,
-        ),
-        if (e.secondaryMuscles.isNotEmpty) ...<Widget>[
-          const SizedBox(height: Space.md),
-          _Legend(
-            title: 'Secondary',
-            muscles: e.secondaryMuscles,
-            color: context.accents.muscleSecondary,
-          ),
-        ],
-      ],
-    );
-    return SinewCard(
-      child: pose
-          ? Row(
-              children: <Widget>[
-                Container(
-                  width: LibrarySpec.poseMap,
-                  height: LibrarySpec.poseMap,
-                  decoration: BoxDecoration(
-                    color: cs.surface,
-                    borderRadius: Radii.thumbR,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: MuscleMap(
-                    primary: e.primaryMuscles,
-                    secondary: e.secondaryMuscles,
-                    fit: MuscleMapFit.crop,
-                    sex: sex,
-                    showLabels: false,
-                    semanticLabel: label,
-                  ),
-                ),
-                const SizedBox(width: Space.lg),
-                Expanded(child: legend),
-              ],
-            )
-          : Column(
-              children: <Widget>[
-                SizedBox(
-                  height: LibrarySpec.detailMapHeight,
-                  child: MuscleMap(
-                    primary: e.primaryMuscles,
-                    secondary: e.secondaryMuscles,
-                    sex: sex,
-                    semanticLabel: label,
-                  ),
-                ),
-                const SizedBox(height: Space.md),
-                Align(alignment: Alignment.centerLeft, child: legend),
-              ],
-            ),
-    );
-  }
-}
-
-class _Legend extends StatelessWidget {
-  const _Legend({
-    required this.title,
-    required this.muscles,
-    required this.color,
-  });
-
-  final String title;
-  final List<String> muscles;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme tt = context.text;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Container(
-              width: Space.md,
-              height: Space.md,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: Space.sm),
-            Text(
-              title,
-              style: tt.labelLarge!.copyWith(color: context.cs.onSurface),
-            ),
-          ],
-        ),
-        Text(
-          muscles.isEmpty ? 'None' : muscles.map(muscleLabel).join(', '),
-          style: tt.bodyMedium!.copyWith(color: context.cs.onSurfaceVariant),
-        ),
-      ],
-    );
-  }
-}
-
 class _Steps extends StatelessWidget {
-  const _Steps({required this.steps});
+  const _Steps({
+    required this.steps,
+    this.activeStepIndex,
+    this.onStepTapped,
+  });
 
   final List<String> steps;
+  final int? activeStepIndex;
+  final ValueChanged<int>? onStepTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -594,40 +496,78 @@ class _Steps extends StatelessWidget {
     final TextTheme tt = context.text;
     return Column(
       children: <Widget>[
-        for (int i = 0; i < steps.length; i++)
+        for (int i = 0; i < steps.length; i++) ...<Widget>[
           Padding(
-            padding: const EdgeInsets.only(bottom: Space.md),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  width: LibrarySpec.stepBadge,
-                  height: LibrarySpec.stepBadge,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: cs.secondaryContainer,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    '${i + 1}',
-                    style: tt.labelLarge!.copyWith(
-                      color: cs.onSecondaryContainer,
-                    ),
+            padding: const EdgeInsets.only(bottom: Space.sm),
+            child: InkWell(
+              borderRadius: Radii.mediumR,
+              onTap: () => onStepTapped?.call(i),
+              child: AnimatedContainer(
+                duration: Motion.of(context, Motion.fast),
+                curve: Motion.curveOf(context, Motion.standard),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Space.sm,
+                  vertical: Space.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: i == activeStepIndex
+                      ? cs.primaryContainer.withValues(alpha: 0.35)
+                      : Colors.transparent,
+                  borderRadius: Radii.mediumR,
+                  border: Border.all(
+                    color: i == activeStepIndex
+                        ? cs.primary.withValues(alpha: 0.5)
+                        : Colors.transparent,
+                    width: 1.0,
                   ),
                 ),
-                const SizedBox(width: Space.md),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: Space.xs),
-                    child: Text(
-                      steps[i],
-                      style: tt.bodyLarge!.copyWith(color: cs.onSurface),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    AnimatedContainer(
+                      duration: Motion.of(context, Motion.fast),
+                      width: LibrarySpec.stepBadge,
+                      height: LibrarySpec.stepBadge,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: i == activeStepIndex
+                            ? cs.primary
+                            : cs.secondaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '${i + 1}',
+                        style: tt.labelLarge!.copyWith(
+                          color: i == activeStepIndex
+                              ? cs.onPrimary
+                              : cs.onSecondaryContainer,
+                          fontWeight: i == activeStepIndex
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: Space.md),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: Space.xs),
+                        child: Text(
+                          steps[i],
+                          style: tt.bodyLarge!.copyWith(
+                            color: cs.onSurface,
+                            fontWeight: i == activeStepIndex
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
+        ],
       ],
     );
   }

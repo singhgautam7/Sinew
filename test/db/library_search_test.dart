@@ -462,8 +462,8 @@ void main() {
       expect(await repo.count(), 2890);
       expect(await repo.libraryVersion(), '1.0.0');
       expect(await db.meta('count'), '2890');
-      expect(await db.meta('schemaVersion'), '1');
-      expect(await db.meta('sha256'), startsWith('85236132'));
+      expect(await db.meta('schemaVersion'), '2');
+      expect(await db.meta('sha256'), startsWith('72fd545e'));
       expect(
         (await repo.categoryCounts()).values.fold<int>(
           0,

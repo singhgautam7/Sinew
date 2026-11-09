@@ -28,6 +28,19 @@ enum AppThemeMode {
   };
 }
 
+/// Figure base rendering setting.
+enum FigureBodySetting {
+  followProfile,
+  male,
+  female;
+
+  String get label => switch (this) {
+    FigureBodySetting.followProfile => 'Follow profile',
+    FigureBodySetting.male => 'Male',
+    FigureBodySetting.female => 'Female',
+  };
+}
+
 /// Device-level settings that must be known before the first frame, kept in
 /// SharedPreferences and read synchronously at startup so the theme never
 /// flashes. User data (profile, units, workouts, measurements) lives in the
@@ -39,6 +52,7 @@ class AppSettings {
     this.familyId = defaultFamilyId,
     this.dynamicColor = true,
     this.textScale = 1.0,
+    this.figureBody = FigureBodySetting.followProfile,
     this.onboarded = false,
     this.restSeconds = defaultRestSeconds,
     this.incrementKg = defaultIncrementKg,
@@ -63,6 +77,10 @@ class AppSettings {
 
   /// 0.85 to 1.3, applied on top of the OS text scale.
   final double textScale;
+
+  /// Which anatomical body base to render for exercise figures.
+  final FigureBodySetting figureBody;
+
   final bool onboarded;
 
   // ── Workout defaults (read by Train; stored here, wired by those screens) ─
@@ -120,6 +138,7 @@ class AppSettings {
     String? familyId,
     bool? dynamicColor,
     double? textScale,
+    FigureBodySetting? figureBody,
     bool? onboarded,
     int? restSeconds,
     double? incrementKg,
@@ -136,6 +155,7 @@ class AppSettings {
     familyId: familyId ?? this.familyId,
     dynamicColor: dynamicColor ?? this.dynamicColor,
     textScale: textScale ?? this.textScale,
+    figureBody: figureBody ?? this.figureBody,
     onboarded: onboarded ?? this.onboarded,
     restSeconds: restSeconds ?? this.restSeconds,
     incrementKg: incrementKg ?? this.incrementKg,
@@ -157,6 +177,7 @@ class AppSettings {
   static const String kFamily = 'theme.family';
   static const String kDynamic = 'theme.dynamic';
   static const String kTextScale = 'text.scale';
+  static const String kFigureBody = 'figure.body';
   static const String kOnboarded = 'app.onboarded';
 
   // The `app.` prefix is backed up and restored with the rest of the settings.
@@ -183,6 +204,11 @@ class AppSettings {
     if ((prefs.getBool(kLegacyAmoled) ?? false) && mode != AppThemeMode.light) {
       mode = AppThemeMode.amoled;
     }
+    final String? storedBody = prefs.getString(kFigureBody);
+    final FigureBodySetting figureBody = FigureBodySetting.values.firstWhere(
+      (FigureBodySetting b) => b.name == storedBody,
+      orElse: () => FigureBodySetting.followProfile,
+    );
     return AppSettings(
       themeMode: mode,
       familyId: prefs.getString(kFamily) ?? defaultFamilyId,
@@ -191,6 +217,7 @@ class AppSettings {
         minTextScale,
         maxTextScale,
       ),
+      figureBody: figureBody,
       onboarded: prefs.getBool(kOnboarded) ?? false,
       restSeconds: (prefs.getInt(kRestSeconds) ?? defaultRestSeconds).clamp(
         minRestSeconds,
@@ -227,6 +254,7 @@ class AppSettings {
       other.familyId == familyId &&
       other.dynamicColor == dynamicColor &&
       other.textScale == textScale &&
+      other.figureBody == figureBody &&
       other.onboarded == onboarded &&
       other.restSeconds == restSeconds &&
       other.incrementKg == incrementKg &&
@@ -245,6 +273,7 @@ class AppSettings {
     familyId,
     dynamicColor,
     textScale,
+    figureBody,
     onboarded,
     restSeconds,
     incrementKg,
@@ -304,6 +333,11 @@ class SettingsController extends Notifier<AppSettings> {
     );
     state = state.copyWith(textScale: v);
     await _prefs.setDouble(AppSettings.kTextScale, v);
+  }
+
+  Future<void> setFigureBody(FigureBodySetting setting) async {
+    state = state.copyWith(figureBody: setting);
+    await _prefs.setString(AppSettings.kFigureBody, setting.name);
   }
 
   Future<void> setOnboarded({required bool value}) async {

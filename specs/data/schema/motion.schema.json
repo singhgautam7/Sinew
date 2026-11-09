@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sinew.fit/schema/motion.schema.json",
+  "title": "SinewMotionRecord",
+  "description": "Schema for solved exercise figure motion, keyframes, and timing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "motionId",
+    "schemaVersion",
+    "rigVersion",
+    "tier",
+    "view",
+    "props",
+    "keyframes",
+    "loop",
+    "mirrorForOtherSide",
+    "stepFrames",
+    "highlight",
+    "verification"
+  ],
+  "properties": {
+    "motionId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Identifier matching exercise id."
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "rigVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "animated",
+        "frames",
+        "mapOnly"
+      ]
+    },
+    "view": {
+      "type": "string",
+      "enum": [
+        "side",
+        "front",
+        "threeQuarter",
+        "top"
+      ]
+    },
+    "props": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "attach": {
+            "type": "object",
+            "properties": {
+              "joint": {
+                "type": "string"
+              },
+              "offset": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            }
+          },
+          "plates": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "keyframes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "root",
+          "joints"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "root": {
+            "type": "object",
+            "required": [
+              "pos",
+              "rot"
+            ],
+            "properties": {
+              "pos": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "rot": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            }
+          },
+          "joints": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "sec"
+        ],
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "sec": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 30.0
+          },
+          "ease": {
+            "type": "string",
+            "enum": [
+              "linear",
+              "easeIn",
+              "easeOut",
+              "easeInOut",
+              "spring"
+            ]
+          }
+        }
+      }
+    },
+    "loop": {
+      "type": "string",
+      "enum": [
+        "repeat",
+        "pingPong",
+        "none"
+      ]
+    },
+    "mirrorForOtherSide": {
+      "type": "boolean"
+    },
+    "stepFrames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "step",
+          "keyframe"
+        ],
+        "properties": {
+          "step": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "keyframe": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "highlight": {
+      "type": "object",
+      "required": [
+        "primary",
+        "secondary"
+      ],
+      "properties": {
+        "primary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "secondary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "status",
+        "passes",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "provisional",
+            "rejected"
+          ]
+        },
+        "passes": {
+          "type": "integer"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

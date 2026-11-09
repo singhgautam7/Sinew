@@ -1,0 +1,190 @@
+{
+  "version": 1,
+  "proportionsRef": "Standing height H = 1.0",
+  "props": {
+    "barbell": {
+      "category": "attached",
+      "defaultGripJoint": "wristR",
+      "length": 0.96,
+      "shaftRadius": 0.014,
+      "sleeveLength": 0.18,
+      "standardPlates": [
+        20,
+        20
+      ],
+      "plateDiameter": 0.22,
+      "plateThickness": 0.035
+    },
+    "dumbbell": {
+      "category": "attached",
+      "defaultGripJoint": "wristR",
+      "handleLength": 0.09,
+      "bellDiameter": 0.11,
+      "bellWidth": 0.05
+    },
+    "abWheel": {
+      "category": "attached",
+      "defaultGripJoint": "wristR",
+      "wheelRadius": 0.08,
+      "wheelWidth": 0.03,
+      "handleLength": 0.16
+    },
+    "kettlebell": {
+      "category": "attached",
+      "defaultGripJoint": "wristR",
+      "handleDiameter": 0.018,
+      "handleWidth": 0.1,
+      "bellRadius": 0.08
+    },
+    "ezBar": {
+      "category": "attached",
+      "defaultGripJoint": "wristR",
+      "length": 0.65,
+      "shaftRadius": 0.014,
+      "plateDiameter": 0.18
+    },
+    "trapBar": {
+      "category": "attached",
+      "defaultGripJoint": "wristR",
+      "width": 0.4,
+      "depth": 0.35,
+      "shaftRadius": 0.015
+    },
+    "medicineBall": {
+      "category": "attached",
+      "radius": 0.14
+    },
+    "jumpRope": {
+      "category": "attached",
+      "handleLength": 0.09,
+      "cableRadius": 0.003
+    },
+    "bandHandle": {
+      "category": "attached",
+      "handleLength": 0.08,
+      "bandThickness": 0.01
+    },
+    "cableHandle": {
+      "category": "attached",
+      "handleLength": 0.08,
+      "cableRadius": 0.004
+    },
+    "bench": {
+      "category": "worldFixed",
+      "height": 0.25,
+      "width": 0.18,
+      "length": 0.68,
+      "padThickness": 0.04
+    },
+    "box": {
+      "category": "worldFixed",
+      "height": 0.35,
+      "width": 0.32,
+      "depth": 0.38
+    },
+    "pullupBar": {
+      "category": "worldFixed",
+      "height": 1.08,
+      "barRadius": 0.016,
+      "width": 0.7
+    },
+    "dipBars": {
+      "category": "worldFixed",
+      "height": 0.62,
+      "spacing": 0.32,
+      "length": 0.5
+    },
+    "gymnasticRings": {
+      "category": "worldFixed",
+      "strapHeight": 1.1,
+      "ringRadius": 0.08,
+      "ringThickness": 0.015
+    },
+    "mat": {
+      "category": "worldFixed",
+      "height": 0.008,
+      "width": 0.35,
+      "length": 1.05
+    },
+    "stabilityBall": {
+      "category": "worldFixed",
+      "radius": 0.36
+    },
+    "foamRoller": {
+      "category": "worldFixed",
+      "length": 0.5,
+      "radius": 0.08
+    },
+    "heavyBag": {
+      "category": "worldFixed",
+      "height": 0.7,
+      "radius": 0.18,
+      "topY": 1.1
+    },
+    "yogaBlock": {
+      "category": "worldFixed",
+      "height": 0.08,
+      "width": 0.13,
+      "depth": 0.05
+    },
+    "yogaStrap": {
+      "category": "worldFixed",
+      "width": 0.025,
+      "length": 1.2
+    },
+    "wall": {
+      "category": "worldFixed",
+      "height": 1.2,
+      "xOffset": -0.2
+    },
+    "chair": {
+      "category": "worldFixed",
+      "seatHeight": 0.26,
+      "seatDepth": 0.25,
+      "backHeight": 0.5
+    },
+    "rower": {
+      "category": "machine",
+      "railLength": 1.1,
+      "seatHeight": 0.2,
+      "flywheelRadius": 0.18
+    },
+    "stationaryBike": {
+      "category": "machine",
+      "seatHeight": 0.52,
+      "handlebarHeight": 0.58,
+      "wheelRadius": 0.22
+    },
+    "treadmill": {
+      "category": "machine",
+      "deckLength": 1.05,
+      "deckHeight": 0.1,
+      "consoleHeight": 0.75
+    },
+    "stairClimber": {
+      "category": "machine",
+      "stepHeight": 0.12,
+      "totalHeight": 0.95
+    },
+    "elliptical": {
+      "category": "machine",
+      "pedalLength": 0.28,
+      "handleHeight": 0.82
+    },
+    "smithMachine": {
+      "category": "machine",
+      "trackHeight": 1.1,
+      "trackWidth": 0.75
+    },
+    "latPulldown": {
+      "category": "machine",
+      "seatHeight": 0.26,
+      "overheadPulleyY": 1.15
+    },
+    "legPress": {
+      "category": "machine",
+      "sledAngleDeg": 45.0,
+      "footplateWidth": 0.4
+    }
+  }
+}

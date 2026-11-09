@@ -1,7 +1,7 @@
 {
   "libraryVersion": "1.0.0",
   "schemaVersion": "2020-12",
-  "builtAt": "2026-10-31T22:07:23.518045+00:00",
+  "builtAt": "2026-11-09T15:16:24.178742+00:00",
   "totalExercises": 2890,
   "counts": {
     "strength": 1400,
@@ -17,12 +17,24 @@
     "ATTRIBUTIONS.md": "8cc27a9b8508c4cb58ab2722c4a90bdf0c730a424c33b360fc5617696cfa57d5",
     "CHANGELOG.md": "bc39bcd4b7e31e7950ef296d5b62646b775f57f3afed02ca6fe15885c660b096",
     "SOURCES.md": "66887460d99ea3774e04451f5e3adc3b2e8786e54b353ce2665267df82604312",
-    "exercises.json": "85236132ad7a6b17ffe8159b491d77ee0926b4a084af0fdd347f3bc3f49a8b01",
-    "exercises.sample.json": "fa4504bc02f3ef6e800a9e1e1205de4183f754d61e5215f424fdbf0c372cf1c1",
+    "exercises.json": "72fd545ee71095044db08beb35605ad0db1e0d4bd731aaddb082b6e60a574ea6",
+    "exercises.sample.json": "e3c05f7fdb9c3fdf8cf435bf54a1409dddbb7d9ec033a5bfba9ac2e01b519a34",
     "flows.json": "e7c4dca3e707c4b78ea5dd0ce27e6c6a67f98c54dfcc482567d11ec97afef223",
-    "schema/exercise.schema.json": "80ce1c6b96082e0a54e958665f09b0c25be3fd5f49714ac5a264c190a4f5f595",
+    "schema/exercise.schema.json": "5f0272f6d423d93587cc90750c58c8a3b8ccdcd505107627e2af76e173d6c1cb",
     "schema/flow.schema.json": "1263adfc61016dca36c9f662eafc4a723a2979d874f88cc7014f9f41c0098692",
     "schema/muscle_regions.json": "ee41a45f0b7a018b6d0df04fd0de0dba19a618698e278108cd8e70de3a6f03cf",
-    "schema/vocab.json": "de8012e693972f746cec3cef9eec5617c8c1e7d467beef0d53524de49368b19e"
+    "schema/vocab.json": "de8012e693972f746cec3cef9eec5617c8c1e7d467beef0d53524de49368b19e",
+    "motions.json": "ccf358100c659dd3b3e0a3e5daa0bf10b5735f919cad6584e48b3271c70efb91",
+    "motions.sample.json": "72afb11f7e4ed02670a437f6188728b1c4d2d10b7025fec3e20f260abc8e172f",
+    "figure_style.json": "ad654432dc3583a3f8b51fa6b3267c05c5c1ffec47f876f015d4cf1b7326fd94",
+    "preview_palettes.json": "c0cf70906508e1c476d40a67eeae0245afb897177f738dcf30ca26d8000fcd5c",
+    "props.json": "0b2d0d84b1015bb4c4a7b4f4ce65c1db2cf8c2372985d85f6b594fcd27b27b6c",
+    "rig.json": "ff805baab37d8b46d54dd07d181f172ac745284ff0bf84f6ce5d98fc9fd10b6e",
+    "test_vectors.json": "499473527c71cdc69cd9422e5236669f88c077ff5a573870d377c9cc0541163a"
+  },
+  "tierCounts": {
+    "animated": 1274,
+    "frames": 368,
+    "mapOnly": 1248
   }
 }

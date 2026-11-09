@@ -33,7 +33,8 @@
     "source",
     "sourceRef",
     "license",
-    "verification"
+    "verification",
+    "media"
   ],
   "properties": {
     "id": {
@@ -49,12 +50,17 @@
     },
     "aliases": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "uniqueItems": true,
       "description": "Alternate common names and synonyms."
     },
     "sanskritName": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Romanized Sanskrit name without diacritics (yoga postures and flows)."
     },
     "category": {
@@ -287,18 +293,38 @@
     },
     "difficulty": {
       "type": "string",
-      "enum": ["beginner", "intermediate", "advanced"]
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ]
     },
     "unilateral": {
       "type": "boolean"
     },
     "mechanic": {
-      "type": ["string", "null"],
-      "enum": ["compound", "isolation", null]
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "compound",
+        "isolation",
+        null
+      ]
     },
     "force": {
-      "type": ["string", "null"],
-      "enum": ["push", "pull", "static", "hinge", null]
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "push",
+        "pull",
+        "static",
+        "hinge",
+        null
+      ]
     },
     "steps": {
       "type": "array",
@@ -332,11 +358,15 @@
     },
     "safetyNotes": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "contraindications": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "metValue": {
       "type": "number",
@@ -344,43 +374,75 @@
       "maximum": 25.0
     },
     "defaultRestSec": {
-      "type": ["integer", "null"],
+      "type": [
+        "integer",
+        "null"
+      ],
       "minimum": 0,
       "maximum": 600
     },
     "defaultHoldSec": {
-      "type": ["integer", "null"],
+      "type": [
+        "integer",
+        "null"
+      ],
       "minimum": 1,
       "maximum": 600
     },
     "variationOf": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
     },
     "tags": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "uniqueItems": true
     },
     "source": {
       "type": "string",
-      "enum": ["seed", "generated", "curated", "manual"]
+      "enum": [
+        "seed",
+        "generated",
+        "curated",
+        "manual"
+      ]
     },
     "sourceRef": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "license": {
       "type": "string",
-      "enum": ["own", "MIT", "Unlicense", "CC0-1.0"]
+      "enum": [
+        "own",
+        "MIT",
+        "Unlicense",
+        "CC0-1.0"
+      ]
     },
     "verification": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["status", "passes", "notes"],
+      "required": [
+        "status",
+        "passes",
+        "notes"
+      ],
       "properties": {
         "status": {
           "type": "string",
-          "enum": ["unverified", "verified", "flagged"]
+          "enum": [
+            "unverified",
+            "verified",
+            "flagged"
+          ]
         },
         "passes": {
           "type": "integer",
@@ -390,16 +452,75 @@
           "type": "string"
         }
       }
+    },
+    "media": {
+      "type": "object",
+      "required": [
+        "tier",
+        "motionId",
+        "muscleMap",
+        "downgradeReason"
+      ],
+      "properties": {
+        "tier": {
+          "type": "string",
+          "enum": [
+            "animated",
+            "frames",
+            "mapOnly"
+          ],
+          "description": "Visual presentation tier."
+        },
+        "motionId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Key in motions.json."
+        },
+        "muscleMap": {
+          "type": "boolean",
+          "description": "Whether anatomical muscle map is supported."
+        },
+        "downgradeReason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "unsupportedEquipment",
+            "extremeInversion",
+            "complexFloorSequence",
+            "cardioMachineSimplified",
+            "jointLimitViolation",
+            "solverDivergence",
+            "lowConfidenceForm"
+          ]
+        }
+      }
     }
   },
   "allOf": [
     {
       "if": {
-        "properties": { "trackingType": { "const": "hold" } }
+        "properties": {
+          "trackingType": {
+            "const": "hold"
+          }
+        }
       },
       "then": {
-        "properties": { "defaultHoldSec": { "type": "integer", "minimum": 1 } },
-        "required": ["defaultHoldSec"]
+        "properties": {
+          "defaultHoldSec": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "defaultHoldSec"
+        ]
       }
     }
   ]

@@ -122,6 +122,22 @@ class FlowSteps extends Table {
   Set<Column<Object>> get primaryKey => <Column<Object>>{flowId, position};
 }
 
+/// Motion data for visual media: playback settings, synced steps, and binary keyframe payload.
+@DataClassName('ExerciseMotionRow')
+class ExerciseMotions extends Table {
+  TextColumn get exerciseId => text()();
+  TextColumn get tier => text()();
+  TextColumn get view => text()();
+  TextColumn get loop => text()();
+  BoolColumn get mirror => boolean()();
+  TextColumn get stepFrames => text()();
+  TextColumn get highlight => text()();
+  BlobColumn get payload => blob()();
+
+  @override
+  Set<Column<Object>> get primaryKey => <Column<Object>>{exerciseId};
+}
+
 /// The bundled, read-only exercise library.
 ///
 /// The app opens it with [LibraryDatabase.openReadOnly]; only the build tool
@@ -136,6 +152,7 @@ class FlowSteps extends Table {
     ExerciseEquipment,
     Flows,
     FlowSteps,
+    ExerciseMotions,
   ],
 )
 class LibraryDatabase extends _$LibraryDatabase {
@@ -159,7 +176,7 @@ class LibraryDatabase extends _$LibraryDatabase {
 
   /// The library file format. Bumped when the tables above change; the asset
   /// is rebuilt, never migrated (it is replaced wholesale on app update).
-  static const int currentSchemaVersion = 1;
+  static const int currentSchemaVersion = 2;
 
   static const String ftsTable = 'exercises_fts';
 

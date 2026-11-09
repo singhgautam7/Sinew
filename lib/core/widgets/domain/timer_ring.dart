@@ -188,6 +188,7 @@ class PhaseField extends StatefulWidget {
     this.finishedSubtitle,
     this.controls,
     this.ringFraction,
+    this.figure,
   });
 
   final TimerSnapshot snapshot;
@@ -220,6 +221,9 @@ class PhaseField extends StatefulWidget {
 
   /// Below the face: usually `TimerControls`.
   final Widget? controls;
+
+  /// Optional figure widget (e.g. for yoga flow mode).
+  final Widget? figure;
 
   @override
   State<PhaseField> createState() => _PhaseFieldState();
@@ -380,6 +384,10 @@ class _PhaseFieldState extends State<PhaseField>
       centre = Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          if (widget.figure != null) ...<Widget>[
+            widget.figure!,
+            const SizedBox(height: Space.xs),
+          ],
           if (heading != null)
             Opacity(
               opacity: paused ? TimerSpec.pausedOpacity : 1,

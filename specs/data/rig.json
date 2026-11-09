@@ -1,0 +1,545 @@
+{
+  "version": 1,
+  "standardHeight": 1.0,
+  "coordinateSystem": {
+    "hand": "rightHanded",
+    "forward": "+x",
+    "up": "+y",
+    "left": "+z",
+    "right": "-z"
+  },
+  "joints": {
+    "pelvis": {
+      "parent": null,
+      "restOffset": [
+        0.0,
+        0.54,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -180.0,
+          -180.0,
+          -180.0
+        ],
+        "max": [
+          180.0,
+          180.0,
+          180.0
+        ]
+      },
+      "radius": 0.048
+    },
+    "spineLower": {
+      "parent": "pelvis",
+      "restOffset": [
+        0.0,
+        0.09,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -30.0,
+          -35.0,
+          -40.0
+        ],
+        "max": [
+          30.0,
+          35.0,
+          65.0
+        ]
+      },
+      "radius": 0.046
+    },
+    "chest": {
+      "parent": "spineLower",
+      "restOffset": [
+        0.0,
+        0.13,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -25.0,
+          -35.0,
+          -35.0
+        ],
+        "max": [
+          25.0,
+          35.0,
+          50.0
+        ]
+      },
+      "radius": 0.05
+    },
+    "neck": {
+      "parent": "chest",
+      "restOffset": [
+        0.0,
+        0.1,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -35.0,
+          -55.0,
+          -45.0
+        ],
+        "max": [
+          35.0,
+          55.0,
+          55.0
+        ]
+      },
+      "radius": 0.026
+    },
+    "head": {
+      "parent": "neck",
+      "restOffset": [
+        0.0,
+        0.08,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -20.0,
+          -35.0,
+          -30.0
+        ],
+        "max": [
+          20.0,
+          35.0,
+          30.0
+        ]
+      },
+      "radius": 0.06
+    },
+    "shoulderL": {
+      "parent": "chest",
+      "restOffset": [
+        0.0,
+        0.03,
+        0.17
+      ],
+      "limitsDeg": {
+        "min": [
+          -180.0,
+          -110.0,
+          -180.0
+        ],
+        "max": [
+          180.0,
+          110.0,
+          180.0
+        ]
+      },
+      "radius": 0.028
+    },
+    "elbowL": {
+      "parent": "shoulderL",
+      "restOffset": [
+        0.0,
+        -0.175,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -15.0,
+          -15.0,
+          0.0
+        ],
+        "max": [
+          15.0,
+          15.0,
+          155.0
+        ]
+      },
+      "radius": 0.024
+    },
+    "wristL": {
+      "parent": "elbowL",
+      "restOffset": [
+        0.0,
+        -0.145,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -70.0,
+          -35.0,
+          -85.0
+        ],
+        "max": [
+          70.0,
+          35.0,
+          85.0
+        ]
+      },
+      "radius": 0.02
+    },
+    "shoulderR": {
+      "parent": "chest",
+      "restOffset": [
+        0.0,
+        0.03,
+        -0.17
+      ],
+      "limitsDeg": {
+        "min": [
+          -180.0,
+          -110.0,
+          -180.0
+        ],
+        "max": [
+          180.0,
+          110.0,
+          180.0
+        ]
+      },
+      "radius": 0.028
+    },
+    "elbowR": {
+      "parent": "shoulderR",
+      "restOffset": [
+        0.0,
+        -0.175,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -15.0,
+          -15.0,
+          0.0
+        ],
+        "max": [
+          15.0,
+          15.0,
+          155.0
+        ]
+      },
+      "radius": 0.024
+    },
+    "wristR": {
+      "parent": "elbowR",
+      "restOffset": [
+        0.0,
+        -0.145,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -70.0,
+          -35.0,
+          -85.0
+        ],
+        "max": [
+          70.0,
+          35.0,
+          85.0
+        ]
+      },
+      "radius": 0.02
+    },
+    "hipL": {
+      "parent": "pelvis",
+      "restOffset": [
+        0.0,
+        -0.035,
+        0.095
+      ],
+      "limitsDeg": {
+        "min": [
+          -60.0,
+          -50.0,
+          -40.0
+        ],
+        "max": [
+          60.0,
+          50.0,
+          150.0
+        ]
+      },
+      "radius": 0.036
+    },
+    "kneeL": {
+      "parent": "hipL",
+      "restOffset": [
+        0.0,
+        -0.245,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -15.0,
+          -15.0,
+          -155.0
+        ],
+        "max": [
+          15.0,
+          15.0,
+          0.0
+        ]
+      },
+      "radius": 0.032
+    },
+    "ankleL": {
+      "parent": "kneeL",
+      "restOffset": [
+        0.0,
+        -0.215,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -25.0,
+          -20.0,
+          -50.0
+        ],
+        "max": [
+          25.0,
+          20.0,
+          45.0
+        ]
+      },
+      "radius": 0.026
+    },
+    "toeL": {
+      "parent": "ankleL",
+      "restOffset": [
+        0.12,
+        -0.023,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max": [
+          0.0,
+          0.0,
+          65.0
+        ]
+      },
+      "radius": 0.022
+    },
+    "hipR": {
+      "parent": "pelvis",
+      "restOffset": [
+        0.0,
+        -0.035,
+        -0.095
+      ],
+      "limitsDeg": {
+        "min": [
+          -60.0,
+          -50.0,
+          -40.0
+        ],
+        "max": [
+          60.0,
+          50.0,
+          150.0
+        ]
+      },
+      "radius": 0.036
+    },
+    "kneeR": {
+      "parent": "hipR",
+      "restOffset": [
+        0.0,
+        -0.245,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -15.0,
+          -15.0,
+          -155.0
+        ],
+        "max": [
+          15.0,
+          15.0,
+          0.0
+        ]
+      },
+      "radius": 0.032
+    },
+    "ankleR": {
+      "parent": "kneeR",
+      "restOffset": [
+        0.0,
+        -0.215,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          -25.0,
+          -20.0,
+          -50.0
+        ],
+        "max": [
+          25.0,
+          20.0,
+          45.0
+        ]
+      },
+      "radius": 0.026
+    },
+    "toeR": {
+      "parent": "ankleR",
+      "restOffset": [
+        0.12,
+        -0.023,
+        0.0
+      ],
+      "limitsDeg": {
+        "min": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max": [
+          0.0,
+          0.0,
+          65.0
+        ]
+      },
+      "radius": 0.022
+    }
+  },
+  "contactPoints": {
+    "palmL": {
+      "joint": "wristL",
+      "offset": [
+        0.04,
+        -0.03,
+        0.0
+      ]
+    },
+    "palmR": {
+      "joint": "wristR",
+      "offset": [
+        0.04,
+        -0.03,
+        0.0
+      ]
+    },
+    "heelL": {
+      "joint": "ankleL",
+      "offset": [
+        -0.04,
+        -0.045,
+        0.0
+      ]
+    },
+    "heelR": {
+      "joint": "ankleR",
+      "offset": [
+        -0.04,
+        -0.045,
+        0.0
+      ]
+    },
+    "toeL": {
+      "joint": "toeL",
+      "offset": [
+        0.0,
+        -0.022,
+        0.0
+      ]
+    },
+    "toeR": {
+      "joint": "toeR",
+      "offset": [
+        0.0,
+        -0.022,
+        0.0
+      ]
+    },
+    "kneeL": {
+      "joint": "kneeL",
+      "offset": [
+        0.035,
+        0.0,
+        0.0
+      ]
+    },
+    "kneeR": {
+      "joint": "kneeR",
+      "offset": [
+        0.035,
+        0.0,
+        0.0
+      ]
+    },
+    "elbowL": {
+      "joint": "elbowL",
+      "offset": [
+        -0.025,
+        0.0,
+        0.0
+      ]
+    },
+    "elbowR": {
+      "joint": "elbowR",
+      "offset": [
+        -0.025,
+        0.0,
+        0.0
+      ]
+    },
+    "hipL": {
+      "joint": "hipL",
+      "offset": [
+        -0.04,
+        -0.035,
+        0.0
+      ]
+    },
+    "hipR": {
+      "joint": "hipR",
+      "offset": [
+        -0.04,
+        -0.035,
+        0.0
+      ]
+    },
+    "headBack": {
+      "joint": "head",
+      "offset": [
+        -0.06,
+        0.0,
+        0.0
+      ]
+    },
+    "upperBack": {
+      "joint": "chest",
+      "offset": [
+        -0.065,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "boneProportionsRef": "Drillis & Contini (1966)",
+  "limbs": {
+    "arms": {
+      "upperArm": 0.175,
+      "forearm": 0.145,
+      "biacromialWidth": 0.34
+    },
+    "legs": {
+      "thigh": 0.245,
+      "shank": 0.215,
+      "pelvisWidth": 0.19,
+      "footLength": 0.16
+    },
+    "torso": {
+      "pelvisHeight": 0.54,
+      "spineLength": 0.22,
+      "headRadius": 0.06
+    }
+  }
+}

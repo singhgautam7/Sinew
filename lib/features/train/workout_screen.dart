@@ -28,6 +28,7 @@ import '../../core/widgets/sinew_form.dart';
 import '../../core/widgets/sinew_menu.dart';
 import '../../core/widgets/sinew_states.dart';
 import '../../engines/plates/plates.dart';
+import '../exercise_media/presentation/exercise_media_view.dart';
 import '../timer/api/timer_api.dart';
 import 'rest_timer.dart';
 import 'train_format.dart';
@@ -296,6 +297,61 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     );
     if (ids == null || ids.isEmpty || !mounted) return;
     await _ctrl.swapExercise(e.id, ids.first);
+  }
+
+  Future<void> _showFigurePeek(BuildContext context, Exercise ex) {
+    return showSinewBottomSheet<void>(
+      context: context,
+      builder: (BuildContext ctx) => SinewBottomSheet(
+        title: ex.name,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ExerciseMediaView(exercise: ex, height: 260),
+            if (ex.steps.isNotEmpty) ...<Widget>[
+              const SizedBox(height: Space.md),
+              for (int i = 0; i < ex.steps.length; i++)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Space.sm),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: LibrarySpec.stepBadge,
+                        height: LibrarySpec.stepBadge,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: ctx.cs.secondaryContainer,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${i + 1}',
+                          style: ctx.text.labelLarge!.copyWith(
+                            color: ctx.cs.onSecondaryContainer,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: Space.md),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: Space.xs),
+                          child: Text(
+                            ex.steps[i],
+                            style: ctx.text.bodyMedium!.copyWith(
+                              color: ctx.cs.onSurface,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _editNote(SessionExercise e) async {
@@ -708,6 +764,11 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                       ),
                     ),
                   ),
+                ),
+                AppIconButton(
+                  icon: Icons.accessibility_new_rounded,
+                  semanticLabel: 'Figure for ${ex.name}',
+                  onPressed: () => _showFigurePeek(context, ex),
                 ),
                 AppIconButton(
                   icon: Icons.swap_horiz_rounded,

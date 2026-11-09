@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 
+import '../../../features/exercise_media/core/binary_payload.dart';
 import 'library_db.dart';
 import 'search_text.dart';
 
@@ -25,12 +27,16 @@ class LibraryBuildReport {
     required this.flowCount,
     required this.countsByCategory,
     required this.warnings,
+    this.motionCount = 0,
+    this.averagePayloadBytes = 0.0,
   });
 
   final int exerciseCount;
   final int flowCount;
   final Map<String, int> countsByCategory;
   final List<String> warnings;
+  final int motionCount;
+  final double averagePayloadBytes;
 }
 
 /// Builds the library file with [LibraryDatabase] itself, so the asset and
@@ -55,10 +61,37 @@ class LibraryBuilder {
     'tags',
   ];
 
+  static const Set<String> _knownMuscles = <String>{
+    'abductors',
+    'adductors',
+    'biceps',
+    'calves',
+    'chest',
+    'core',
+    'forearms',
+    'fullBody',
+    'glutes',
+    'hamstrings',
+    'hipFlexors',
+    'lats',
+    'lowerBack',
+    'neck',
+    'obliques',
+    'quadriceps',
+    'rearDeltoids',
+    'rhomboids',
+    'rotatorCuff',
+    'shoulders',
+    'tibialis',
+    'trapezius',
+    'triceps',
+  };
+
   Future<LibraryBuildReport> build({
     required File output,
     required List<Object?> exercises,
     List<Object?> flows = const <Object?>[],
+    List<Object?> motions = const <Object?>[],
     required String libraryVersion,
     required String builtAt,
     required String sha256,
@@ -82,6 +115,8 @@ class LibraryBuilder {
     final LibraryDatabase db = LibraryDatabase.forBuild(NativeDatabase(output));
     final Map<String, int> counts = <String, int>{};
     final List<String> warnings = <String>[];
+    int totalPayloadBytes = 0;
+    int motionCount = 0;
     try {
       final Map<String, String> names = <String, String>{
         for (final Map<String, Object?> r in records)
@@ -98,6 +133,36 @@ class LibraryBuilder {
         for (int i = 0; i < flows.length; i++) {
           await _insertFlow(db, flows[i], i, names, warnings, flowStepsSeen);
         }
+        for (int i = 0; i < motions.length; i++) {
+          final Map<String, Object?> m = _validateMotion(
+            motions[i],
+            i,
+            names.keys.toSet(),
+          );
+          final Uint8List payload = BinaryPayload.encode(
+            rawKeyframes: (m['keyframes']! as List<dynamic>)
+                .cast<Map<String, dynamic>>(),
+            rawTimeline: (m['timeline'] as List<dynamic>?)
+                ?.cast<Map<String, dynamic>>(),
+            rawProps: (m['props'] as List<dynamic>?)
+                ?.cast<Map<String, dynamic>>(),
+          );
+          totalPayloadBytes += payload.length;
+          motionCount++;
+
+          await db.into(db.exerciseMotions).insert(
+            ExerciseMotionsCompanion.insert(
+              exerciseId: m['motionId']! as String,
+              tier: m['tier']! as String,
+              view: m['view']! as String,
+              loop: (m['loop'] as String?) ?? 'repeat',
+              mirror: (m['mirrorForOtherSide'] as bool?) ?? false,
+              stepFrames: jsonEncode(m['stepFrames'] ?? <dynamic>[]),
+              highlight: jsonEncode(m['highlight'] ?? <String, dynamic>{}),
+              payload: payload,
+            ),
+          );
+        }
         await _insertMeta(db, <String, String>{
           'libraryVersion': libraryVersion,
           'schemaVersion': '${LibraryDatabase.currentSchemaVersion}',
@@ -105,6 +170,7 @@ class LibraryBuilder {
           'sha256': sha256,
           'count': '${records.length}',
           'flowCount': '${flows.length}',
+          'motionCount': '$motionCount',
         });
       });
       await db.customStatement('VACUUM');
@@ -120,6 +186,10 @@ class LibraryBuilder {
       flowCount: flows.length,
       countsByCategory: counts,
       warnings: warnings,
+      motionCount: motionCount,
+      averagePayloadBytes: motionCount > 0
+          ? totalPayloadBytes / motionCount
+          : 0.0,
     );
   }
 
@@ -347,5 +417,67 @@ class LibraryBuilder {
           .into(db.libraryMeta)
           .insert(LibraryMetaCompanion.insert(key: e.key, value: e.value));
     }
+  }
+
+  Map<String, Object?> _validateMotion(
+    Object? raw,
+    int index,
+    Set<String> knownExercises,
+  ) {
+    if (raw is! Map<String, Object?>) {
+      throw LibraryBuildError('motion record $index is not a JSON object');
+    }
+    final Object? id = raw['motionId'];
+    if (id is! String || id.isEmpty) {
+      throw LibraryBuildError(
+        'motion record $index has missing or invalid motionId',
+      );
+    }
+    if (raw['schemaVersion'] != 1) {
+      throw LibraryBuildError('motion "$id" schemaVersion must be 1');
+    }
+    if (raw['rigVersion'] != 1) {
+      throw LibraryBuildError('motion "$id" rigVersion must be 1');
+    }
+    final Object? tier = raw['tier'];
+    if (tier is! String ||
+        !const <String>{'animated', 'frames', 'mapOnly'}.contains(tier)) {
+      throw LibraryBuildError('motion "$id" has invalid tier "$tier"');
+    }
+    final Object? view = raw['view'];
+    if (view is! String ||
+        !const <String>{'side', 'front', 'threeQuarter', 'top'}.contains(
+          view,
+        )) {
+      throw LibraryBuildError('motion "$id" has invalid view "$view"');
+    }
+    final Object? keyframes = raw['keyframes'];
+    if (keyframes is! List<Object?> || keyframes.isEmpty) {
+      throw LibraryBuildError('motion "$id" must have at least one keyframe');
+    }
+    final Object? highlight = raw['highlight'];
+    if (highlight is Map<String, Object?>) {
+      final Object? primary = highlight['primary'];
+      if (primary is List<Object?>) {
+        for (final Object? m in primary) {
+          if (m is! String || !_knownMuscles.contains(m)) {
+            throw LibraryBuildError(
+              'unknown primary muscle "$m" in motion "$id"',
+            );
+          }
+        }
+      }
+      final Object? secondary = highlight['secondary'];
+      if (secondary is List<Object?>) {
+        for (final Object? m in secondary) {
+          if (m is! String || !_knownMuscles.contains(m)) {
+            throw LibraryBuildError(
+              'unknown secondary muscle "$m" in motion "$id"',
+            );
+          }
+        }
+      }
+    }
+    return raw;
   }
 }

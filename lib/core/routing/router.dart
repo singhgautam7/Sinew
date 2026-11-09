@@ -122,10 +122,13 @@ const List<TabSpec> kTabs = <TabSpec>[
 ];
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final RouteObserver<ModalRoute<void>> appRouteObserver =
+    RouteObserver<ModalRoute<void>>();
 
 GoRouter buildRouter({String initialLocation = Routes.today}) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
+    observers: <NavigatorObserver>[appRouteObserver],
     initialLocation: initialLocation,
     routes: <RouteBase>[
       // Each tab keeps its own navigation stack and scroll position. A tab's

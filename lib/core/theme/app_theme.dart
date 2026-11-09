@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'accents.dart';
+import 'figure_colors.dart';
 import 'palette.dart';
 import 'theme_families.dart';
 import 'tokens.dart';
 import 'typography.dart';
 
 export 'accents.dart' show PhaseColor, PlateColor, SinewAccents, SinewPhase;
+export 'figure_colors.dart' show FigureColors, FigureColorsBuildContext;
 export 'palette.dart' show SinewBrand, SinewColors, Tone;
 export 'theme_families.dart' show MullFamily, kThemeFamilies, familyById;
 export 'tokens.dart';
@@ -59,6 +61,11 @@ abstract final class AppTheme {
       palette: p,
       targetHue: family.primaryHue,
     );
+    final FigureColors figureColors = FigureColors.derive(
+      cs: cs,
+      accents: accents,
+      isDark: tone == Tone.dark || tone == Tone.amoled,
+    );
     final TextTheme text = SinewType.textTheme(
       cs.onSurface,
       cs.onSurfaceVariant,
@@ -86,7 +93,7 @@ abstract final class AppTheme {
       useMaterial3: true,
       brightness: cs.brightness,
       colorScheme: cs,
-      extensions: <ThemeExtension<dynamic>>[roles, accents],
+      extensions: <ThemeExtension<dynamic>>[roles, accents, figureColors],
       textTheme: text,
       fontFamily: SinewType.family,
       splashFactory: InkSparkle.splashFactory,

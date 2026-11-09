@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../db/repositories/library_types.dart';
 import '../../models/enums.dart';
 import '../../theme/app_theme.dart';
+import '../../../features/exercise_media/presentation/figure_thumbnail.dart';
 import '../sinew_list.dart';
 import '../sinew_states.dart';
-import 'muscle_map.dart';
 
 /// "smithMachine" to "Smith machine", "hiit" to "HIIT".
 String prettyVocab(String id) {
@@ -91,21 +91,12 @@ class ExerciseTile extends StatelessWidget {
       selected: selected,
       onTap: onTap,
       onLongPress: onLongPress,
-      leading: Container(
-        width: MapSpec.thumb,
-        height: MapSpec.thumb,
-        decoration: BoxDecoration(
-          color: cs.surface,
-          borderRadius: Radii.thumbR,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: MuscleMap(
-          primary: exercise.primaryMuscles,
-          secondary: secondaryMuscles,
-          fit: MuscleMapFit.crop,
-          sex: sex,
-          showLabels: false,
-        ),
+      leading: FigureThumbnail(
+        exerciseId: exercise.id,
+        primaryMuscles: exercise.primaryMuscles,
+        secondaryMuscles: secondaryMuscles,
+        sex: sex,
+        size: MapSpec.thumb,
       ),
       title: exercise.name,
       titleTrailing: exercise.isCustom

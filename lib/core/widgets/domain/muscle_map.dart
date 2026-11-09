@@ -263,6 +263,7 @@ class _MapPalette {
     required List<String> secondary,
   }) {
     final SinewAccents a = context.accents;
+    final FigureColors fig = context.figureColors;
     final Map<MuscleRegion, Color> fills = <MuscleRegion, Color>{};
     if (heat != null) {
       final Map<MuscleRegion, double> level = <MuscleRegion, double>{};
@@ -278,9 +279,9 @@ class _MapPalette {
         fills[r] = a.heat[step.clamp(0, top)];
       });
     } else {
-      final Color p = tint ?? a.musclePrimary;
+      final Color p = tint ?? fig.musclePrimary;
       final Color s = tint == null
-          ? a.muscleSecondary
+          ? fig.muscleSecondary
           : Color.lerp(context.cs.surface, tint, MapSpec.tintSecondaryMix)!;
       for (final String id in secondary) {
         for (final MuscleRegion r in regionsForMuscle(id)) {
@@ -293,7 +294,7 @@ class _MapPalette {
         }
       }
     }
-    return _MapPalette(body: a.muscleBody, idle: a.muscleIdle, fills: fills);
+    return _MapPalette(body: fig.bodyBase, idle: fig.bodyMuscle, fills: fills);
   }
 }
 

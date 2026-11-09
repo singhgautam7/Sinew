@@ -3235,6 +3235,523 @@ class FlowStepsCompanion extends UpdateCompanion<LibraryFlowStepRow> {
   }
 }
 
+class $ExerciseMotionsTable extends ExerciseMotions
+    with TableInfo<$ExerciseMotionsTable, ExerciseMotionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExerciseMotionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<String> exerciseId = GeneratedColumn<String>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tierMeta = const VerificationMeta('tier');
+  @override
+  late final GeneratedColumn<String> tier = GeneratedColumn<String>(
+    'tier',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _viewMeta = const VerificationMeta('view');
+  @override
+  late final GeneratedColumn<String> view = GeneratedColumn<String>(
+    'view',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _loopMeta = const VerificationMeta('loop');
+  @override
+  late final GeneratedColumn<String> loop = GeneratedColumn<String>(
+    'loop',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mirrorMeta = const VerificationMeta('mirror');
+  @override
+  late final GeneratedColumn<bool> mirror = GeneratedColumn<bool>(
+    'mirror',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("mirror" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _stepFramesMeta = const VerificationMeta(
+    'stepFrames',
+  );
+  @override
+  late final GeneratedColumn<String> stepFrames = GeneratedColumn<String>(
+    'step_frames',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _highlightMeta = const VerificationMeta(
+    'highlight',
+  );
+  @override
+  late final GeneratedColumn<String> highlight = GeneratedColumn<String>(
+    'highlight',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<Uint8List> payload = GeneratedColumn<Uint8List>(
+    'payload',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    exerciseId,
+    tier,
+    view,
+    loop,
+    mirror,
+    stepFrames,
+    highlight,
+    payload,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'exercise_motions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExerciseMotionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('tier')) {
+      context.handle(
+        _tierMeta,
+        tier.isAcceptableOrUnknown(data['tier']!, _tierMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tierMeta);
+    }
+    if (data.containsKey('view')) {
+      context.handle(
+        _viewMeta,
+        view.isAcceptableOrUnknown(data['view']!, _viewMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_viewMeta);
+    }
+    if (data.containsKey('loop')) {
+      context.handle(
+        _loopMeta,
+        loop.isAcceptableOrUnknown(data['loop']!, _loopMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_loopMeta);
+    }
+    if (data.containsKey('mirror')) {
+      context.handle(
+        _mirrorMeta,
+        mirror.isAcceptableOrUnknown(data['mirror']!, _mirrorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mirrorMeta);
+    }
+    if (data.containsKey('step_frames')) {
+      context.handle(
+        _stepFramesMeta,
+        stepFrames.isAcceptableOrUnknown(data['step_frames']!, _stepFramesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stepFramesMeta);
+    }
+    if (data.containsKey('highlight')) {
+      context.handle(
+        _highlightMeta,
+        highlight.isAcceptableOrUnknown(data['highlight']!, _highlightMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_highlightMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {exerciseId};
+  @override
+  ExerciseMotionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExerciseMotionRow(
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      tier: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tier'],
+      )!,
+      view: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}view'],
+      )!,
+      loop: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}loop'],
+      )!,
+      mirror: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}mirror'],
+      )!,
+      stepFrames: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}step_frames'],
+      )!,
+      highlight: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}highlight'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}payload'],
+      )!,
+    );
+  }
+
+  @override
+  $ExerciseMotionsTable createAlias(String alias) {
+    return $ExerciseMotionsTable(attachedDatabase, alias);
+  }
+}
+
+class ExerciseMotionRow extends DataClass
+    implements Insertable<ExerciseMotionRow> {
+  final String exerciseId;
+  final String tier;
+  final String view;
+  final String loop;
+  final bool mirror;
+  final String stepFrames;
+  final String highlight;
+  final Uint8List payload;
+  const ExerciseMotionRow({
+    required this.exerciseId,
+    required this.tier,
+    required this.view,
+    required this.loop,
+    required this.mirror,
+    required this.stepFrames,
+    required this.highlight,
+    required this.payload,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['exercise_id'] = Variable<String>(exerciseId);
+    map['tier'] = Variable<String>(tier);
+    map['view'] = Variable<String>(view);
+    map['loop'] = Variable<String>(loop);
+    map['mirror'] = Variable<bool>(mirror);
+    map['step_frames'] = Variable<String>(stepFrames);
+    map['highlight'] = Variable<String>(highlight);
+    map['payload'] = Variable<Uint8List>(payload);
+    return map;
+  }
+
+  ExerciseMotionsCompanion toCompanion(bool nullToAbsent) {
+    return ExerciseMotionsCompanion(
+      exerciseId: Value(exerciseId),
+      tier: Value(tier),
+      view: Value(view),
+      loop: Value(loop),
+      mirror: Value(mirror),
+      stepFrames: Value(stepFrames),
+      highlight: Value(highlight),
+      payload: Value(payload),
+    );
+  }
+
+  factory ExerciseMotionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExerciseMotionRow(
+      exerciseId: serializer.fromJson<String>(json['exerciseId']),
+      tier: serializer.fromJson<String>(json['tier']),
+      view: serializer.fromJson<String>(json['view']),
+      loop: serializer.fromJson<String>(json['loop']),
+      mirror: serializer.fromJson<bool>(json['mirror']),
+      stepFrames: serializer.fromJson<String>(json['stepFrames']),
+      highlight: serializer.fromJson<String>(json['highlight']),
+      payload: serializer.fromJson<Uint8List>(json['payload']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'exerciseId': serializer.toJson<String>(exerciseId),
+      'tier': serializer.toJson<String>(tier),
+      'view': serializer.toJson<String>(view),
+      'loop': serializer.toJson<String>(loop),
+      'mirror': serializer.toJson<bool>(mirror),
+      'stepFrames': serializer.toJson<String>(stepFrames),
+      'highlight': serializer.toJson<String>(highlight),
+      'payload': serializer.toJson<Uint8List>(payload),
+    };
+  }
+
+  ExerciseMotionRow copyWith({
+    String? exerciseId,
+    String? tier,
+    String? view,
+    String? loop,
+    bool? mirror,
+    String? stepFrames,
+    String? highlight,
+    Uint8List? payload,
+  }) => ExerciseMotionRow(
+    exerciseId: exerciseId ?? this.exerciseId,
+    tier: tier ?? this.tier,
+    view: view ?? this.view,
+    loop: loop ?? this.loop,
+    mirror: mirror ?? this.mirror,
+    stepFrames: stepFrames ?? this.stepFrames,
+    highlight: highlight ?? this.highlight,
+    payload: payload ?? this.payload,
+  );
+  ExerciseMotionRow copyWithCompanion(ExerciseMotionsCompanion data) {
+    return ExerciseMotionRow(
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      tier: data.tier.present ? data.tier.value : this.tier,
+      view: data.view.present ? data.view.value : this.view,
+      loop: data.loop.present ? data.loop.value : this.loop,
+      mirror: data.mirror.present ? data.mirror.value : this.mirror,
+      stepFrames: data.stepFrames.present
+          ? data.stepFrames.value
+          : this.stepFrames,
+      highlight: data.highlight.present ? data.highlight.value : this.highlight,
+      payload: data.payload.present ? data.payload.value : this.payload,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseMotionRow(')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('tier: $tier, ')
+          ..write('view: $view, ')
+          ..write('loop: $loop, ')
+          ..write('mirror: $mirror, ')
+          ..write('stepFrames: $stepFrames, ')
+          ..write('highlight: $highlight, ')
+          ..write('payload: $payload')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    exerciseId,
+    tier,
+    view,
+    loop,
+    mirror,
+    stepFrames,
+    highlight,
+    $driftBlobEquality.hash(payload),
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExerciseMotionRow &&
+          other.exerciseId == this.exerciseId &&
+          other.tier == this.tier &&
+          other.view == this.view &&
+          other.loop == this.loop &&
+          other.mirror == this.mirror &&
+          other.stepFrames == this.stepFrames &&
+          other.highlight == this.highlight &&
+          $driftBlobEquality.equals(other.payload, this.payload));
+}
+
+class ExerciseMotionsCompanion extends UpdateCompanion<ExerciseMotionRow> {
+  final Value<String> exerciseId;
+  final Value<String> tier;
+  final Value<String> view;
+  final Value<String> loop;
+  final Value<bool> mirror;
+  final Value<String> stepFrames;
+  final Value<String> highlight;
+  final Value<Uint8List> payload;
+  final Value<int> rowid;
+  const ExerciseMotionsCompanion({
+    this.exerciseId = const Value.absent(),
+    this.tier = const Value.absent(),
+    this.view = const Value.absent(),
+    this.loop = const Value.absent(),
+    this.mirror = const Value.absent(),
+    this.stepFrames = const Value.absent(),
+    this.highlight = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExerciseMotionsCompanion.insert({
+    required String exerciseId,
+    required String tier,
+    required String view,
+    required String loop,
+    required bool mirror,
+    required String stepFrames,
+    required String highlight,
+    required Uint8List payload,
+    this.rowid = const Value.absent(),
+  }) : exerciseId = Value(exerciseId),
+       tier = Value(tier),
+       view = Value(view),
+       loop = Value(loop),
+       mirror = Value(mirror),
+       stepFrames = Value(stepFrames),
+       highlight = Value(highlight),
+       payload = Value(payload);
+  static Insertable<ExerciseMotionRow> custom({
+    Expression<String>? exerciseId,
+    Expression<String>? tier,
+    Expression<String>? view,
+    Expression<String>? loop,
+    Expression<bool>? mirror,
+    Expression<String>? stepFrames,
+    Expression<String>? highlight,
+    Expression<Uint8List>? payload,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (tier != null) 'tier': tier,
+      if (view != null) 'view': view,
+      if (loop != null) 'loop': loop,
+      if (mirror != null) 'mirror': mirror,
+      if (stepFrames != null) 'step_frames': stepFrames,
+      if (highlight != null) 'highlight': highlight,
+      if (payload != null) 'payload': payload,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExerciseMotionsCompanion copyWith({
+    Value<String>? exerciseId,
+    Value<String>? tier,
+    Value<String>? view,
+    Value<String>? loop,
+    Value<bool>? mirror,
+    Value<String>? stepFrames,
+    Value<String>? highlight,
+    Value<Uint8List>? payload,
+    Value<int>? rowid,
+  }) {
+    return ExerciseMotionsCompanion(
+      exerciseId: exerciseId ?? this.exerciseId,
+      tier: tier ?? this.tier,
+      view: view ?? this.view,
+      loop: loop ?? this.loop,
+      mirror: mirror ?? this.mirror,
+      stepFrames: stepFrames ?? this.stepFrames,
+      highlight: highlight ?? this.highlight,
+      payload: payload ?? this.payload,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<String>(exerciseId.value);
+    }
+    if (tier.present) {
+      map['tier'] = Variable<String>(tier.value);
+    }
+    if (view.present) {
+      map['view'] = Variable<String>(view.value);
+    }
+    if (loop.present) {
+      map['loop'] = Variable<String>(loop.value);
+    }
+    if (mirror.present) {
+      map['mirror'] = Variable<bool>(mirror.value);
+    }
+    if (stepFrames.present) {
+      map['step_frames'] = Variable<String>(stepFrames.value);
+    }
+    if (highlight.present) {
+      map['highlight'] = Variable<String>(highlight.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<Uint8List>(payload.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExerciseMotionsCompanion(')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('tier: $tier, ')
+          ..write('view: $view, ')
+          ..write('loop: $loop, ')
+          ..write('mirror: $mirror, ')
+          ..write('stepFrames: $stepFrames, ')
+          ..write('highlight: $highlight, ')
+          ..write('payload: $payload, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LibraryDatabase extends GeneratedDatabase {
   _$LibraryDatabase(QueryExecutor e) : super(e);
   $LibraryDatabaseManager get managers => $LibraryDatabaseManager(this);
@@ -3247,6 +3764,9 @@ abstract class _$LibraryDatabase extends GeneratedDatabase {
       $ExerciseEquipmentTable(this);
   late final $FlowsTable flows = $FlowsTable(this);
   late final $FlowStepsTable flowSteps = $FlowStepsTable(this);
+  late final $ExerciseMotionsTable exerciseMotions = $ExerciseMotionsTable(
+    this,
+  );
   late final Index exercisesCategory = Index(
     'exercises_category',
     'CREATE INDEX exercises_category ON exercises (category)',
@@ -3286,6 +3806,7 @@ abstract class _$LibraryDatabase extends GeneratedDatabase {
     exerciseEquipment,
     flows,
     flowSteps,
+    exerciseMotions,
     exercisesCategory,
     exercisesTracking,
     exercisesDifficulty,
@@ -5609,6 +6130,286 @@ typedef $$FlowStepsTableProcessedTableManager =
       LibraryFlowStepRow,
       PrefetchHooks Function({bool flowId})
     >;
+typedef $$ExerciseMotionsTableCreateCompanionBuilder =
+    ExerciseMotionsCompanion Function({
+      required String exerciseId,
+      required String tier,
+      required String view,
+      required String loop,
+      required bool mirror,
+      required String stepFrames,
+      required String highlight,
+      required Uint8List payload,
+      Value<int> rowid,
+    });
+typedef $$ExerciseMotionsTableUpdateCompanionBuilder =
+    ExerciseMotionsCompanion Function({
+      Value<String> exerciseId,
+      Value<String> tier,
+      Value<String> view,
+      Value<String> loop,
+      Value<bool> mirror,
+      Value<String> stepFrames,
+      Value<String> highlight,
+      Value<Uint8List> payload,
+      Value<int> rowid,
+    });
+
+class $$ExerciseMotionsTableFilterComposer
+    extends Composer<_$LibraryDatabase, $ExerciseMotionsTable> {
+  $$ExerciseMotionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tier => $composableBuilder(
+    column: $table.tier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get view => $composableBuilder(
+    column: $table.view,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get loop => $composableBuilder(
+    column: $table.loop,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get mirror => $composableBuilder(
+    column: $table.mirror,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stepFrames => $composableBuilder(
+    column: $table.stepFrames,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get highlight => $composableBuilder(
+    column: $table.highlight,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ExerciseMotionsTableOrderingComposer
+    extends Composer<_$LibraryDatabase, $ExerciseMotionsTable> {
+  $$ExerciseMotionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tier => $composableBuilder(
+    column: $table.tier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get view => $composableBuilder(
+    column: $table.view,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get loop => $composableBuilder(
+    column: $table.loop,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get mirror => $composableBuilder(
+    column: $table.mirror,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stepFrames => $composableBuilder(
+    column: $table.stepFrames,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get highlight => $composableBuilder(
+    column: $table.highlight,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ExerciseMotionsTableAnnotationComposer
+    extends Composer<_$LibraryDatabase, $ExerciseMotionsTable> {
+  $$ExerciseMotionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get exerciseId => $composableBuilder(
+    column: $table.exerciseId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tier =>
+      $composableBuilder(column: $table.tier, builder: (column) => column);
+
+  GeneratedColumn<String> get view =>
+      $composableBuilder(column: $table.view, builder: (column) => column);
+
+  GeneratedColumn<String> get loop =>
+      $composableBuilder(column: $table.loop, builder: (column) => column);
+
+  GeneratedColumn<bool> get mirror =>
+      $composableBuilder(column: $table.mirror, builder: (column) => column);
+
+  GeneratedColumn<String> get stepFrames => $composableBuilder(
+    column: $table.stepFrames,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get highlight =>
+      $composableBuilder(column: $table.highlight, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+}
+
+class $$ExerciseMotionsTableTableManager
+    extends
+        RootTableManager<
+          _$LibraryDatabase,
+          $ExerciseMotionsTable,
+          ExerciseMotionRow,
+          $$ExerciseMotionsTableFilterComposer,
+          $$ExerciseMotionsTableOrderingComposer,
+          $$ExerciseMotionsTableAnnotationComposer,
+          $$ExerciseMotionsTableCreateCompanionBuilder,
+          $$ExerciseMotionsTableUpdateCompanionBuilder,
+          (
+            ExerciseMotionRow,
+            BaseReferences<
+              _$LibraryDatabase,
+              $ExerciseMotionsTable,
+              ExerciseMotionRow
+            >,
+          ),
+          ExerciseMotionRow,
+          PrefetchHooks Function()
+        > {
+  $$ExerciseMotionsTableTableManager(
+    _$LibraryDatabase db,
+    $ExerciseMotionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExerciseMotionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExerciseMotionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExerciseMotionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> exerciseId = const Value.absent(),
+                Value<String> tier = const Value.absent(),
+                Value<String> view = const Value.absent(),
+                Value<String> loop = const Value.absent(),
+                Value<bool> mirror = const Value.absent(),
+                Value<String> stepFrames = const Value.absent(),
+                Value<String> highlight = const Value.absent(),
+                Value<Uint8List> payload = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseMotionsCompanion(
+                exerciseId: exerciseId,
+                tier: tier,
+                view: view,
+                loop: loop,
+                mirror: mirror,
+                stepFrames: stepFrames,
+                highlight: highlight,
+                payload: payload,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String exerciseId,
+                required String tier,
+                required String view,
+                required String loop,
+                required bool mirror,
+                required String stepFrames,
+                required String highlight,
+                required Uint8List payload,
+                Value<int> rowid = const Value.absent(),
+              }) => ExerciseMotionsCompanion.insert(
+                exerciseId: exerciseId,
+                tier: tier,
+                view: view,
+                loop: loop,
+                mirror: mirror,
+                stepFrames: stepFrames,
+                highlight: highlight,
+                payload: payload,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ExerciseMotionsTable, ExerciseMotionRow>(table),
+                  BaseReferences<
+                    _$LibraryDatabase,
+                    $ExerciseMotionsTable,
+                    ExerciseMotionRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ExerciseMotionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LibraryDatabase,
+      $ExerciseMotionsTable,
+      ExerciseMotionRow,
+      $$ExerciseMotionsTableFilterComposer,
+      $$ExerciseMotionsTableOrderingComposer,
+      $$ExerciseMotionsTableAnnotationComposer,
+      $$ExerciseMotionsTableCreateCompanionBuilder,
+      $$ExerciseMotionsTableUpdateCompanionBuilder,
+      (
+        ExerciseMotionRow,
+        BaseReferences<
+          _$LibraryDatabase,
+          $ExerciseMotionsTable,
+          ExerciseMotionRow
+        >,
+      ),
+      ExerciseMotionRow,
+      PrefetchHooks Function()
+    >;
 
 class $LibraryDatabaseManager {
   final _$LibraryDatabase _db;
@@ -5625,4 +6426,6 @@ class $LibraryDatabaseManager {
       $$FlowsTableTableManager(_db, _db.flows);
   $$FlowStepsTableTableManager get flowSteps =>
       $$FlowStepsTableTableManager(_db, _db.flowSteps);
+  $$ExerciseMotionsTableTableManager get exerciseMotions =>
+      $$ExerciseMotionsTableTableManager(_db, _db.exerciseMotions);
 }

@@ -4,7 +4,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 stage/
+# Pipeline intermediate & review artifacts
+inputs/
+review/
+dist/
 tool/pipeline/stage/
+
 *.prev
 
 # OS / secrets

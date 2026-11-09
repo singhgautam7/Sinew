@@ -88,6 +88,20 @@ Mull also chose Drift, so the family stays on one persistence stack.
 - `sqlite3` 3.x bundles SQLite (with FTS5) through Dart build hooks. `sqlite3_flutter_libs`
   is end-of-life and must not be added.
 
+### Exercise Media Rules (Figure Player)
+
+- **Pure procedural rendering:** `CustomPainter` only. No Rive, Lottie, 3D engines, or game engines.
+  `vector_math` (part of Flutter) is permitted for quaternions and matrices.
+- **Feature structure:** `lib/features/exercise_media/`
+  - `core/`: Pure Dart (no Flutter imports). Rig, quaternion pose, timeline, forward kinematics, projection, depth sort, mirroring.
+  - `data/`: Repositories, binary payload decoding, asset loaders (`figure_style.json`, `rig.json`, `props.json`), LRU caches.
+  - `render/`: `FigurePainter`, `ShapeCache`, thumbnail rasteriser (`dart:ui`).
+  - `presentation/`: `ExerciseMediaView`, `MotionPlayer`, `FrameStrip`, step sync, controls, Riverpod providers.
+- **Zero allocation per frame:** Steady playback reuses pre-allocated buffers. Unit shapes precomputed in `ShapeCache`. No `saveLayer`, blurs, or per-frame paths.
+- **Theme integration:** `FigureColors` (`ThemeExtension`) derived from `ColorScheme`, shared with `MuscleMap`. No `Color(0x…)` literals in `exercise_media/`. Animate theme changes via `lerp`.
+- **Database payload:** `exercise_motion` Drift table stores binary blob of fixed-point int16 quaternions ($< 1\text{ KB}$ target). Build tool validates against `motion.schema.json`.
+- **Resilience:** Uncached or invalid motion falls back to `mapOnly`. Never crash.
+
 ## Offline guarantee
 
 Offline is a hard guarantee. Zero network requests at runtime: no HTTP client, no analytics,
